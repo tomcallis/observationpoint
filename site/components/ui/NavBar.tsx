@@ -40,7 +40,9 @@ export default function NavBar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-slate-900/95 backdrop-blur shadow-lg" : "bg-transparent"
+        scrolled || menuOpen
+          ? "bg-slate-900/95 backdrop-blur shadow-lg"
+          : "bg-transparent"
       }`}
     >
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
@@ -82,26 +84,28 @@ export default function NavBar() {
         </ul>
 
         <button
-          className="md:hidden text-white p-2 relative w-8 h-8"
+          className="md:hidden text-white relative w-11 h-11 flex items-center justify-center"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
         >
-          <span
-            className={`absolute left-1 w-5 h-0.5 bg-white transition-all duration-300 ${
-              menuOpen ? "top-3.5 rotate-45" : "top-2"
-            }`}
-          />
-          <span
-            className={`absolute left-1 top-3.5 w-5 h-0.5 bg-white transition-opacity duration-300 ${
-              menuOpen ? "opacity-0" : "opacity-100"
-            }`}
-          />
-          <span
-            className={`absolute left-1 w-5 h-0.5 bg-white transition-all duration-300 ${
-              menuOpen ? "top-3.5 -rotate-45" : "top-5"
-            }`}
-          />
+          <span className="relative w-5 h-4 flex flex-col justify-between">
+            <span
+              className={`block w-full h-0.5 bg-white transition-all duration-300 origin-center ${
+                menuOpen ? "translate-y-[7px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`block w-full h-0.5 bg-white transition-opacity duration-300 ${
+                menuOpen ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <span
+              className={`block w-full h-0.5 bg-white transition-all duration-300 origin-center ${
+                menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+              }`}
+            />
+          </span>
         </button>
       </nav>
 
@@ -110,14 +114,14 @@ export default function NavBar() {
           menuOpen ? "max-h-96 bg-slate-900/98" : "max-h-0"
         }`}
       >
-        <div className="px-4 pb-4 pt-2">
+        <div className="px-4 pb-5 pt-1">
           {links.map((l) => {
             const isActive = activeSection === l.href.slice(1);
             return (
               <a
                 key={l.href}
                 href={l.href}
-                className={`block py-2 text-sm transition-colors ${
+                className={`block py-3 text-base transition-colors border-b border-white/10 last:border-0 ${
                   isActive ? "text-white font-semibold" : "text-white/70 hover:text-white"
                 }`}
                 onClick={() => setMenuOpen(false)}
@@ -128,7 +132,7 @@ export default function NavBar() {
           })}
           <a
             href="#booking"
-            className="block mt-2 bg-sky-500 text-white text-sm font-medium px-4 py-2 rounded-full text-center"
+            className="block mt-4 bg-sky-500 hover:bg-sky-400 text-white text-base font-medium px-4 py-3 rounded-full text-center transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             Book Now
