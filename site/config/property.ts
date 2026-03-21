@@ -37,7 +37,7 @@ export const property = {
   bedroomDetails: [
     {
       name: "Primary Bedroom",
-      beds: "King bed · soundfront views · private door to deck",
+      beds: "King bed · soundfront views",
     },
     {
       name: "Second Bedroom",
@@ -53,7 +53,6 @@ export const property = {
     { label: "Pamlico Sound Views" },
     { label: "Nightly Sunsets" },
     { label: "Sound Swimming" },
-    { label: "Kayak & Paddleboard" },
     { label: "Fishing Off Dock" },
     { label: "Hammock" },
     { label: "Open Floorplan" },
@@ -311,7 +310,6 @@ export const property = {
         { name: "Ocracoke Island", note: "Take the free ferry from Hatteras · ferry is 45 min" },
       ],
       doAndPlay: [
-        { name: "Kayaking & Paddleboarding", note: "Launch right from the dock" },
         { name: "Kiteboarding at Canadian Hole", note: "World-famous spot, 6 miles north" },
         { name: "Surfing", note: "Multiple breaks between Frisco and Buxton" },
         { name: "Frisco Mini Golf & Go Karts", note: "Great for families · 1 mile" },
