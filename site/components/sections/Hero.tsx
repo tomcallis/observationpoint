@@ -14,7 +14,7 @@ export default function Hero() {
         alt={heroImage.alt}
         fill
         priority
-        className="object-cover"
+        className="object-cover object-left sm:object-center"
         sizes="100vw"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-slate-900/30 to-slate-900/75" />
