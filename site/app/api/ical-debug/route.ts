@@ -1,4 +1,4 @@
-import { getBlockedRanges } from "@/lib/ical";
+import ical from "node-ical";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -9,8 +9,14 @@ export async function GET() {
   }
 
   try {
-    const ranges = await getBlockedRanges();
-    return NextResponse.json({ url_configured: true, blocked_ranges: ranges, count: ranges.length });
+    const events = await ical.async.fromURL(url);
+    const summary = Object.values(events).map((e: any) => ({
+      type: e?.type,
+      summary: e?.summary,
+      start: e?.start,
+      end: e?.end,
+    }));
+    return NextResponse.json({ count: summary.length, events: summary });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
