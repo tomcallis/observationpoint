@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html, body {
+  overflow-x: hidden;
+}
+
 /* Kill react-calendar's default red weekend coloring on non-booked tiles only */
 .react-calendar__month-view__days__day--weekend:not(.booked-tile):not(.checkin-tile):not(.checkout-tile) {
   color: inherit;
