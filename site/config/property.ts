@@ -37,7 +37,7 @@ export const property = {
   bedroomDetails: [
     {
       name: "Primary Bedroom",
-      beds: "King bed · soundfront views",
+      beds: "King bed · soundfront views · private en-suite bath",
     },
     {
       name: "Second Bedroom",
