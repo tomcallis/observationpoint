@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Calendar from "react-calendar";
 import type { BlockedRange } from "@/lib/ical";
 import "react-calendar/dist/Calendar.css";
@@ -13,6 +13,14 @@ interface Props {
 export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }: Props) {
   const [pendingCheckin, setPendingCheckin] = useState<Date | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const { bookedInterior, checkinDates, checkoutDates } = useMemo(() => {
     const bookedInterior = new Set<string>();
@@ -142,7 +150,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
 
       <div className="availability-calendar w-full">
         <Calendar
-          showDoubleView
+          showDoubleView={!isMobile}
           showNeighboringMonth={false}
           tileDisabled={tileDisabled}
           tileClassName={tileClassName}
