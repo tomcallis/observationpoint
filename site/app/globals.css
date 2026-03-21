@@ -5,7 +5,7 @@ html, body {
 }
 
 /* Kill react-calendar's default red weekend coloring on non-booked tiles only */
-.react-calendar__month-view__days__day--weekend:not(.booked-tile):not(.checkin-tile):not(.checkout-tile) {
+.react-calendar__month-view__days__day--weekend:not(.booked-tile):not(.checkin-tile):not(.checkout-tile):not(.selected-checkin-tile) {
   color: inherit;
 }
 
@@ -39,28 +39,28 @@ html, body {
 
 /* Booked / blocked tiles */
 .booked-tile {
-  background-color: #e2e8f0 !important;
-  color: #94a3b8 !important;
+  background-color: #fecdd3 !important;
+  color: #be123c !important;
   cursor: not-allowed !important;
   text-decoration: line-through;
 }
 
-/* Check-in day: upper-left triangle white (available for checkout), lower-right gray (arriving guest) */
+/* Check-in day: upper-left triangle white (available for checkout), lower-right rose (arriving guest) */
 .checkin-tile {
-  background: linear-gradient(135deg, #ffffff 50%, #e2e8f0 50%) !important;
-  color: #94a3b8 !important;
+  background: linear-gradient(135deg, #ffffff 50%, #fecdd3 50%) !important;
+  color: #be123c !important;
   cursor: not-allowed !important;
 }
 
-/* Check-out day: upper-left triangle gray (departed guest), lower-right white (available) */
+/* Check-out day: upper-left triangle rose (departed guest), lower-right white (available) */
 .checkout-tile {
-  background: linear-gradient(135deg, #e2e8f0 50%, #ffffff 50%) !important;
+  background: linear-gradient(135deg, #fecdd3 50%, #ffffff 50%) !important;
   color: #64748b !important;
   cursor: pointer !important;
 }
 
 .checkout-tile:hover {
-  background: linear-gradient(135deg, #e2e8f0 50%, #bae6fd 50%) !important;
+  background: linear-gradient(135deg, #fecdd3 50%, #bae6fd 50%) !important;
 }
 
 /* Selected check-in tile (user's selection in progress) */
