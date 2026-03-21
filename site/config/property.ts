@@ -7,22 +7,24 @@
 export const property = {
   // ── Basic Info ─────────────────────────────────────────────────────────────
   name: "Observation Point",
-  tagline: "Soundfront sunsets on Hatteras Island",
+  tagline: "Wake up on the Pamlico Sound. Watch the sun set over the water every night.",
   description:
-    "A quiet, comfortable cottage perched on the sound in Frisco, NC. Watch pelicans glide past from the private dock, fish at sunrise, and end every day with a sky full of color. No crowds, no checkout rush — just the Outer Banks the way it used to be.",
+    "A quiet, soundfront cottage on Hatteras Island with panoramic views of the Pamlico Sound from every room. Swim, fish, or launch a kayak from the private 30-foot dock. End every day watching the sky turn gold from the deck. No platform fees, no crowds — just the Outer Banks the way it used to be.",
   location: {
     address: "50184 Treasure Ct, Frisco, NC 27936",
     area: "Hatteras Island, Outer Banks",
     mapsEmbedUrl:
       "https://maps.google.com/maps?q=50184+Treasure+Ct,+Frisco,+NC+27936&z=16&output=embed",
     drivingDirections: [
-      "From the north: Take US-158 to NC-12 S through Nags Head, Rodanthe, Waves, Salvo, Avon — continue to Frisco.",
+      "From the north: Take US-158 to NC-12 S through Nags Head, Rodanthe, Waves, Salvo, Avon — continue south to Frisco.",
       "From the south (ferry): Take the Ocracoke–Hatteras ferry (free, ~45 min) to Hatteras, then head north on NC-12 to Frisco.",
     ],
     nearbyAttractions: [
       { name: "Cape Hatteras Lighthouse", distance: "5 miles" },
-      { name: "Canadian Hole (windsurfing)", distance: "6 miles" },
+      { name: "Canadian Hole/Kite Point (windsurfing and kiteboarding)", distance: "6 miles" },
       { name: "Frisco Pier", distance: "1 mile" },
+      { name: "Frisco Native American Museum", distance: "1 mile" },
+      { name: "Graveyard of the Atlantic Museum", distance: "8 miles" },
       { name: "Hatteras Village", distance: "8 miles" },
       { name: "Ocracoke Ferry", distance: "10 miles" },
     ],
@@ -32,24 +34,39 @@ export const property = {
   sleeps: 6,
   bedrooms: 2,
   bathrooms: 2,
+  bedroomDetails: [
+    {
+      name: "Primary Bedroom",
+      beds: "King bed · soundfront views · private door to deck",
+    },
+    {
+      name: "Second Bedroom",
+      beds: "Queen bed + twin bunks · private en-suite bath",
+    },
+  ],
 
   // ── Amenities ──────────────────────────────────────────────────────────────
+  // Used in the Highlights grid and JSON-LD schema.
   highlights: [
-    { label: "Soundfront" },
-    { label: "Private Dock" },
-    { label: "Hammock" },
-    { label: "Ocean Beach 10 min" },
-    { label: "Sleeps 6" },
+    { label: "30-ft Private Dock" },
+    { label: "Soundfront Deck" },
+    { label: "Pamlico Sound Views" },
+    { label: "Nightly Sunsets" },
+    { label: "Sound Swimming" },
+    { label: "Kayak & Paddleboard" },
     { label: "Fishing Off Dock" },
+    { label: "Hammock" },
+    { label: "Open Floorplan" },
+    { label: "Full Kitchen" },
+    { label: "En-Suite Bathrooms" },
     { label: "High-Speed WiFi" },
     { label: "Central A/C" },
-    { label: "Outdoor Shower" },
+    { label: "Ocean Beach 10 min" },
   ],
 
   // ── Rates ──────────────────────────────────────────────────────────────────
   // Seasonal rate table. Dates are MM-DD (month-day, no year).
   // Seasons are checked top-to-bottom; the first match wins.
-  // Update once a year — no code knowledge required.
   seasonalRates: [
     {
       label: "Peak Summer",
@@ -100,26 +117,19 @@ export const property = {
     notes: "Saturday to Saturday · 7-night minimum · No VRBO service fees if booked direct.",
   },
 
-  // ── Stripe Payment Links ────────────────────────────────────────────────────
-  // Tip: create one Payment Link per season in Stripe, or use a single
-  // "deposit" link and invoice the balance manually.
-  stripe: {
-    weeklyLink: process.env.NEXT_PUBLIC_STRIPE_WEEKLY_LINK ?? "#contact",
-    nightlyLink: process.env.NEXT_PUBLIC_STRIPE_NIGHTLY_LINK ?? "#contact",
-  },
-
   // ── Payment ────────────────────────────────────────────────────────────────
   payment: {
     venmo: {
-      handle: "@ObservationPointOBX",
+      handle: "@tomcallis",
     },
     check: {
       payableTo: "Tom Callis",
       mailingAddress: "50184 Treasure Ct, Frisco, NC 27936",
     },
     deposit: {
-      percent: 50,            // % due at signing
-      balanceDueDays: 30,    // days before check-in that balance is due
+      percent: 50,
+      balanceDueDays: 30,
+      holdHours: 48, // hours to send deposit before dates are released
     },
     cancellationPolicy:
       "Full refund if cancelled 60+ days before check-in. 50% refund if cancelled 30–59 days before. No refund within 30 days of check-in.",
@@ -132,6 +142,10 @@ export const property = {
 
   // ── Guest Reviews ─────────────────────────────────────────────────────────
   // Add or remove reviews here. Pull from VRBO, Google, or add manually.
+  vrboStats: {
+    total: 101,
+    excellent: 95,
+  },
   reviews: [
     {
       name: "Sarah M.",
@@ -193,4 +207,117 @@ export const property = {
     { src: "/images/bathroom-2.jpg", alt: "Second bathroom" },
     { src: "/images/covered-porch.jpg", alt: "Covered porch entrance" },
   ],
+
+  // ── FAQ ────────────────────────────────────────────────────────────────────
+  faq: [
+    {
+      question: "Is this the same property as VRBO listing #766628?",
+      answer:
+        "Yes — this is the official direct-booking site for Observation Point, the same property listed on VRBO as listing #766628. You can verify photos, reviews, and details at vrbo.com/766628. Booking direct simply means no VRBO service fee for either of us.",
+    },
+    {
+      question: "Why book direct instead of through VRBO?",
+      answer:
+        "VRBO charges guests a service fee (typically 6–12% on top of the rental rate). When you book directly here, that fee disappears — same property, same host, same experience, just less money going to a platform middleman. You'll work directly with Tom, and any questions get answered faster.",
+    },
+    {
+      question: "Is it safe to pay by Venmo or check?",
+      answer:
+        "Yes. This is a direct relationship between you and Tom Callis, the property owner. The process is the same as any private landlord arrangement: you request dates, Tom confirms availability, you pay a 50% deposit (via Venmo or check), and Tom sends a booking confirmation once payment clears. The property has 101 verified VRBO reviews — feel free to read them before booking.",
+    },
+    {
+      question: "What is your cancellation policy?",
+      answer:
+        "Full refund if cancelled 60 or more days before check-in. 50% refund if cancelled 30–59 days before check-in. No refund within 30 days of check-in. Travel insurance is recommended for unexpected situations.",
+    },
+    {
+      question: "Can I bring a boat?",
+      answer:
+        "Yes! The private dock is 30 feet long with approximately 2 feet of water depth and a sandy bottom — suitable for shallow-draft boats, kayaks, paddleboards, and small motorized craft. Guests are welcome to fish, swim, or launch from the dock. Please be aware of local boating regulations and NC Wildlife Resources Commission requirements.",
+    },
+    {
+      question: "Is the property pet-friendly?",
+      answer:
+        "Pets may be allowed with prior written approval from the owner. Please reach out before booking to discuss your specific situation. Unauthorized pets may result in additional cleaning fees.",
+    },
+    {
+      question: "What are check-in and check-out times?",
+      answer:
+        "Check-in is at 4:00 PM on your arrival Saturday. Check-out is at 10:00 AM on your departure Saturday. Early check-in or late check-out may be possible depending on the schedule — just ask.",
+    },
+    {
+      question: "What amenities does the kitchen have?",
+      answer:
+        "The kitchen is fully equipped with new cookware, utensils, dishes, and glassware. There's a full-size refrigerator, stove, oven, microwave, dishwasher, and coffee maker. You'll have everything you need to cook real meals — most guests prefer it to eating out every night.",
+    },
+  ],
+
+  // ── Guest Guidebook ────────────────────────────────────────────────────────
+  // Accessible at /guidebook — shared with confirmed guests only.
+  // ⚠️ UPDATE BEFORE EACH SEASON: door code, WiFi credentials.
+  guidebook: {
+    // Password guests use to access the guidebook page
+    // Change this each season and include new password in booking confirmation email
+    password: process.env.GUIDEBOOK_PASSWORD ?? "obx2025",
+
+    checkIn: "4:00 PM",
+    checkOut: "10:00 AM",
+
+    // Fill these in before the season begins
+    doorCode: process.env.GUIDEBOOK_DOOR_CODE ?? "", // e.g. "1234"
+    wifiName: process.env.GUIDEBOOK_WIFI_NAME ?? "", // e.g. "ObsPoint_5G"
+    wifiPassword: process.env.GUIDEBOOK_WIFI_PASSWORD ?? "", // e.g. "hatteras2025"
+
+    houseRules: [
+      "No smoking indoors or on enclosed portions of the deck.",
+      "Pets by prior approval only — please contact Tom before bringing a pet.",
+      "Maximum 6 guests at all times.",
+      "Quiet hours: 10:00 PM – 8:00 AM. Please be mindful of neighbors.",
+      "No parties or commercial events without written approval.",
+      "Children must be supervised near the water and on the dock at all times.",
+      "Please report any damage or maintenance issues promptly.",
+      "Leave the property as you found it — dishes clean, trash bagged.",
+    ],
+
+    checkoutReminders: [
+      "Dishes washed and put away (or in the dishwasher running).",
+      "All trash in outdoor bins.",
+      "Towels and linens left in the laundry room.",
+      "All windows and doors locked.",
+      "Thermostat set to 78°F (summer) or 65°F (off-season).",
+      "Kayaks, paddleboards, and dock equipment secured.",
+    ],
+
+    emergencyContacts: [
+      { label: "Emergency / 911", value: "911" },
+      { label: "Dare County Non-Emergency", value: "(252) 473-3444" },
+      { label: "Tom (owner)", value: "Contact via email" },
+      { label: "Nearest hospital: The Outer Banks Hospital (Nags Head)", value: "(252) 449-4500" },
+    ],
+
+    localRecs: {
+      eat: [
+        { name: "Buxton Seafood", note: "Local institution — fresh catch, no frills" },
+        { name: "Hatteras Sol Waterside Grill", note: "Outdoor dining with water views" },
+        { name: "Sonny's Restaurant", note: "Classic OBX breakfast & lunch, Waves" },
+        { name: "Orange Blossom Bakery", note: "Famous apple uglies — worth the detour, Buxton" },
+        { name: "The Froggy Dog", note: "Casual bar & grill, Avon" },
+      ],
+      see: [
+        { name: "Cape Hatteras Lighthouse", note: "Tallest brick lighthouse in the US · 5 miles" },
+        { name: "Frisco Native American Museum", note: "Unique local history · 1 mile" },
+        { name: "Graveyard of the Atlantic Museum", note: "Shipwreck history · Hatteras Village · 8 miles" },
+        { name: "Pea Island National Wildlife Refuge", note: "Birding & beach access · 25 miles north" },
+        { name: "Ocracoke Island", note: "Take the free ferry from Hatteras · ferry is 45 min" },
+      ],
+      doAndPlay: [
+        { name: "Kayaking & Paddleboarding", note: "Launch right from the dock" },
+        { name: "Kiteboarding at Canadian Hole", note: "World-famous spot, 6 miles north" },
+        { name: "Surfing", note: "Multiple breaks between Frisco and Buxton" },
+        { name: "Frisco Mini Golf & Go Karts", note: "Great for families · 1 mile" },
+        { name: "Fishing", note: "Off the dock, or surf fishing along the National Seashore" },
+        { name: "Birdwatching", note: "Brown pelicans, ospreys, herons are regulars" },
+      ],
+    },
+  },
 };

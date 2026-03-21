@@ -17,52 +17,55 @@ export default function Hero() {
         className="object-cover"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-slate-900/30 to-slate-900/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-slate-900/30 to-slate-900/75" />
 
       <div className="relative z-10 max-w-3xl flex flex-col items-center">
         <Image
           src="/Original Logo.png"
           alt={property.name}
-          width={320}
-          height={136}
+          width={600}
+          height={255}
           priority
-          className="w-auto h-28 sm:h-40 mb-6 drop-shadow-2xl rounded"
+          className="w-auto h-48 sm:h-64 lg:h-80 mb-6 drop-shadow-2xl"
         />
-        <p className="text-sky-300 text-sm font-medium uppercase tracking-widest mb-3">
+        <h1 className="sr-only">{property.name}</h1>
+
+        <p className="text-sky-300 text-sm font-semibold uppercase tracking-widest mb-3">
           {property.location.area}
         </p>
-        <h1 className="text-white text-5xl sm:text-7xl font-bold leading-tight mb-4 drop-shadow-lg">
-          {property.name}
-        </h1>
-        <p className="text-white/90 text-xl sm:text-2xl mb-10 drop-shadow">
+        <p className="text-white/90 text-xl sm:text-2xl mb-3 drop-shadow leading-snug max-w-xl">
           {property.tagline}
         </p>
+        <p className="text-white/60 text-sm mb-10 drop-shadow">
+          Frisco, NC · Soundfront cottage · Private dock · Sleeps 6
+        </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* Direct booking value prop */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-5">
           <a
             href="#availability"
-            className="bg-white/20 hover:bg-white/30 backdrop-blur border border-white/40 text-white font-semibold px-8 py-3 rounded-full transition-all text-lg"
+            className="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-lg shadow-lg"
           >
-            Check Availability
-          </a>
-          <a
-            href="#booking"
-            className="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-8 py-3 rounded-full transition-colors text-lg shadow-lg"
-          >
-            Book Now
+            Book Direct — No VRBO Fees
           </a>
         </div>
+
+        {/* Trust micro-copy */}
+        <p className="text-white/50 text-xs">
+          {property.vrboStats.excellent} of {property.vrboStats.total} VRBO guests rated their stay Excellent ·{" "}
+          <a
+            href={property.vrboUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-white/70 transition-colors"
+          >
+            See reviews
+          </a>
+        </p>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 animate-bounce">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 animate-bounce">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M6 9l6 6 6-6" />
         </svg>
       </div>

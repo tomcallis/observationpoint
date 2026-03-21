@@ -1,6 +1,6 @@
 import { property } from "@/config/property";
 
-const { seasonalRates, rates, stripe, vrboUrl, contactEmail, payment } = property;
+const { seasonalRates, rates, vrboUrl, contactEmail, payment } = property;
 
 function formatUSD(n: number) {
   return new Intl.NumberFormat("en-US", {
@@ -10,7 +10,19 @@ function formatUSD(n: number) {
   }).format(n);
 }
 
+function getCurrentSeasonLabel(): string | null {
+  const now = new Date();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const today = `${mm}-${dd}`;
+  for (const s of seasonalRates) {
+    if (today >= s.start && today < s.end) return s.label;
+  }
+  return null;
+}
+
 export default function Booking() {
+  const currentSeasonLabel = getCurrentSeasonLabel();
   const subject = encodeURIComponent(
     `Booking Inquiry — ${property.name}`
   );
@@ -37,22 +49,34 @@ export default function Booking() {
             <span className="text-right">Nightly</span>
             <span className="text-right">Weekly</span>
           </div>
-          {seasonalRates.map((season) => (
-            <div
-              key={season.label}
-              className="grid grid-cols-3 px-6 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
-            >
-              <span className="text-slate-700 font-medium">{season.label}</span>
-              <span className="text-right text-slate-500 text-sm">
-                {formatUSD(Math.round(season.nightly * (1 + rates.taxRate)))}
-                <span className="text-slate-400 text-xs"> / night</span>
-              </span>
-              <span className="text-right text-slate-600">
-                {formatUSD(Math.round(season.weekly * (1 + rates.taxRate)))}
-                <span className="text-slate-400 text-xs"> / week</span>
-              </span>
-            </div>
-          ))}
+          {seasonalRates.map((season) => {
+            const isCurrent = season.label === currentSeasonLabel;
+            return (
+              <div
+                key={season.label}
+                className={`grid grid-cols-3 px-6 py-4 border-b border-slate-50 last:border-0 transition-colors ${
+                  isCurrent ? "bg-sky-50" : "hover:bg-slate-50"
+                }`}
+              >
+                <span className="flex items-center gap-2 text-slate-700 font-medium">
+                  {season.label}
+                  {isCurrent && (
+                    <span className="text-[10px] font-semibold uppercase tracking-wide bg-sky-500 text-white rounded-full px-2 py-0.5 leading-tight">
+                      Now
+                    </span>
+                  )}
+                </span>
+                <span className="text-right text-slate-500 text-sm">
+                  {formatUSD(Math.round(season.nightly * (1 + rates.taxRate)))}
+                  <span className="text-slate-400 text-xs"> / night</span>
+                </span>
+                <span className="text-right text-slate-600">
+                  {formatUSD(Math.round(season.weekly * (1 + rates.taxRate)))}
+                  <span className="text-slate-400 text-xs"> / week</span>
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Terms */}

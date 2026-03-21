@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getBlockedRanges } from "@/lib/ical";
 import AvailabilitySection from "@/components/ui/AvailabilitySection";
 
-export const revalidate = 3600;
+export const revalidate = 900;
 
 function CalendarSkeleton() {
   return (
@@ -46,7 +46,7 @@ export default function Availability() {
             Saturday to Saturday · 7-night minimum
           </p>
           <p className="text-slate-400 text-sm mt-1">
-            Syncs automatically with our VRBO listing — updated hourly.
+            Syncs automatically with our VRBO listing — updated every 15 minutes.
           </p>
         </div>
         <Suspense fallback={<CalendarSkeleton />}>

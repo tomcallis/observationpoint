@@ -13,6 +13,9 @@ export default function Location() {
           <p className="text-slate-500">
             {location.address} · {location.area}
           </p>
+          <p className="text-slate-400 text-sm mt-1">
+            Located within the Brigand&rsquo;s Bay canal community
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-10 items-start">

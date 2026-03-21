@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { property } from "@/config/property";
 
 const links = [
-  { label: "Highlights", href: "#highlights" },
+  { label: "The Property", href: "#highlights" },
   { label: "Gallery", href: "#gallery" },
-  { label: "Reviews", href: "#reviews" },
   { label: "Availability", href: "#availability" },
-  { label: "Booking", href: "#booking" },
+  { label: "Rates", href: "#booking" },
+  { label: "FAQ", href: "#faq" },
   { label: "Location", href: "#location" },
-  { label: "Contact", href: "#contact" },
 ];
 
 export default function NavBar() {
@@ -45,17 +43,16 @@ export default function NavBar() {
         scrolled ? "bg-slate-900/95 backdrop-blur shadow-lg" : "bg-transparent"
       }`}
     >
-      <nav className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-20">
-        <a href="#top" className="flex items-center">
-          <Image
-            src="/Original Logo.png"
-            alt={property.name}
-            width={160}
-            height={68}
-            className="h-16 w-auto rounded"
-          />
+      <nav className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+        {/* Property name — fades in after scrolling past hero */}
+        <a
+          href="#top"
+          className={`text-white font-semibold text-sm tracking-wide transition-opacity duration-300 ${
+            scrolled ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {property.name}
         </a>
-
         <ul className="hidden md:flex items-center gap-6">
           {links.map((l) => {
             const isActive = activeSection === l.href.slice(1);
