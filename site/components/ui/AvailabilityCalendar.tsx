@@ -55,6 +55,8 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
   const tileDisabled = ({ date }: { date: Date }) => isDateUnavailable(date);
 
   const tileClassName = ({ date }: { date: Date }) => {
+    if (date < today) return "past-tile";
+
     const key = date.toISOString().split("T")[0];
     const isCheckout = checkoutDates.has(key);
     const isCheckin = checkinDates.has(key);
@@ -169,6 +171,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
           tileDisabled={tileDisabled}
           tileClassName={tileClassName}
           onClickDay={handleDayClick}
+          minDate={today}
           minDetail="month"
           calendarType="gregory"
           className="!border-0 !font-sans"
@@ -185,17 +188,17 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
           Available
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded-sm inline-block" style={{ backgroundColor: "#fecdd3" }} />
-          Booked
+          <span className="w-4 h-4 rounded-sm inline-block" style={{ backgroundColor: "#bfdbfe" }} />
+          Unavailable
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
-            style={{ background: "linear-gradient(135deg, #ffffff 50%, #fecdd3 50%)" }} />
+            style={{ background: "linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%)" }} />
           Check-in
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
-            style={{ background: "linear-gradient(135deg, #fecdd3 50%, #ffffff 50%)" }} />
+            style={{ background: "linear-gradient(135deg, #bfdbfe 50%, #ffffff 50%)" }} />
           Check-out
         </span>
       </div>

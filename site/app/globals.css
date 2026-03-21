@@ -39,28 +39,46 @@ html, body {
 
 /* Booked / blocked tiles */
 .booked-tile {
-  background-color: #fecdd3 !important;
-  color: #be123c !important;
+  background-color: #bfdbfe !important;
+  color: #1e40af !important;
   cursor: not-allowed !important;
   text-decoration: line-through;
 }
 
-/* Check-in day: upper-left triangle white (available for checkout), lower-right rose (arriving guest) */
+/* Check-in day: upper-left triangle white (available for checkout), lower-right blue (arriving guest) */
 .checkin-tile {
-  background: linear-gradient(135deg, #ffffff 50%, #fecdd3 50%) !important;
-  color: #be123c !important;
+  background: linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%) !important;
+  color: #1e40af !important;
   cursor: not-allowed !important;
 }
 
-/* Check-out day: upper-left triangle rose (departed guest), lower-right white (available) */
+/* Check-out day: upper-left triangle blue (departed guest), lower-right white (available) */
 .checkout-tile {
-  background: linear-gradient(135deg, #fecdd3 50%, #ffffff 50%) !important;
+  background: linear-gradient(135deg, #bfdbfe 50%, #ffffff 50%) !important;
   color: #64748b !important;
   cursor: pointer !important;
 }
 
 .checkout-tile:hover {
-  background: linear-gradient(135deg, #fecdd3 50%, #bae6fd 50%) !important;
+  background: linear-gradient(135deg, #bfdbfe 50%, #e0f2fe 50%) !important;
+}
+
+/* Booked/checkin/checkout tiles override the generic disabled gray */
+.react-calendar__tile:disabled.booked-tile {
+  background-color: #bfdbfe !important;
+  color: #1e40af !important;
+  cursor: not-allowed !important;
+}
+
+.react-calendar__tile:disabled.checkin-tile {
+  background: linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%) !important;
+  color: #1e40af !important;
+  cursor: not-allowed !important;
+}
+
+.react-calendar__tile:disabled.checkout-tile {
+  background: linear-gradient(135deg, #bfdbfe 50%, #ffffff 50%) !important;
+  color: #64748b !important;
 }
 
 /* Selected check-in tile (user's selection in progress) */
@@ -70,11 +88,20 @@ html, body {
   border-radius: 0.375rem;
 }
 
-/* Disabled (past) tiles */
+/* Disabled (non-Saturday) tiles */
 .react-calendar__tile:disabled {
   background-color: #f8fafc !important;
   color: #cbd5e1 !important;
   cursor: not-allowed !important;
+}
+
+/* Past dates — show as unavailable (same blue as booked) */
+.past-tile,
+.react-calendar__tile:disabled.past-tile {
+  background-color: #bfdbfe !important;
+  color: #93c5fd !important;
+  cursor: not-allowed !important;
+  text-decoration: line-through;
 }
 
 /* Navigation buttons */
