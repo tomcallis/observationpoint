@@ -42,8 +42,11 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
 
   const today = new Date(new Date().setHours(0, 0, 0, 0));
 
+  const isSaturday = (date: Date) => date.getDay() === 6;
+
   const isDateUnavailable = (date: Date) => {
     if (date < today) return true;
+    if (!isSaturday(date)) return true;
     const key = date.toISOString().split("T")[0];
     return bookedInterior.has(key) && !checkoutDates.has(key);
   };
@@ -96,7 +99,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
     }
 
     if (diffDays < 7) {
-      setRangeError("Minimum stay is 7 nights. Please select a later checkout date.");
+      setRangeError("Minimum stay is 7 nights (Saturday to Saturday). Please select a later checkout date.");
       return;
     }
 
@@ -125,8 +128,8 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
   };
 
   const instruction = pendingCheckin
-    ? `Check-in: ${pendingCheckin.toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Now select your check-out date (7+ nights)`
-    : "Select your check-in date";
+    ? `Check-in: ${pendingCheckin.toLocaleDateString("en-US", { month: "short", day: "numeric" })} · Now select your check-out Saturday`
+    : "Check-in and check-out are Saturdays only · Select your check-in date";
 
   return (
     <div className="flex flex-col items-center gap-2">
