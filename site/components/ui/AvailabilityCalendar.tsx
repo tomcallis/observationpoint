@@ -67,14 +67,12 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
       if (key === checkinKey) return "selected-checkin-tile";
       if (date > pendingCheckin) {
         if (isCheckout) return "checkout-tile";
-        if (isCheckin) return "checkin-tile";
         if (isInterior) return "booked-tile";
         return null;
       }
     }
 
     if (isCheckout) return "checkout-tile";
-    if (isCheckin) return "checkin-tile";
     if (isInterior) return "booked-tile";
     return null;
   };
@@ -85,9 +83,12 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
 
     if (!pendingCheckin) {
       // First click — set check-in
-      // Back-to-back dates (checkout of one booking + checkin of next) can't be used as check-in
       const key = date.toISOString().split("T")[0];
-      if (checkinDates.has(key)) return;
+      // Back-to-back date (checkout of one booking, check-in of next): can only be used as checkout
+      if (checkinDates.has(key)) {
+        setRangeError("Another booking starts on that date — you can only check out here, not in. Select an earlier check-in date.");
+        return;
+      }
       setPendingCheckin(date);
       return;
     }
@@ -177,11 +178,6 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
         <span className="flex items-center gap-1.5">
           <span className="w-4 h-4 rounded-sm inline-block" style={{ backgroundColor: "#bfdbfe" }} />
           Unavailable
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
-            style={{ background: "linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%)" }} />
-          Check-in
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
