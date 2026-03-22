@@ -42,6 +42,7 @@ html, body {
   background-color: #bfdbfe !important;
   color: #1e40af !important;
   cursor: not-allowed !important;
+  text-decoration: line-through;
 }
 
 /* Check-in day: upper-left triangle white (available for checkout), lower-right blue (arriving guest) */
@@ -100,6 +101,7 @@ html, body {
   background-color: #bfdbfe !important;
   color: #1e40af !important;
   cursor: not-allowed !important;
+  text-decoration: line-through;
 }
 
 /* Navigation buttons */
