@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Calendar from "react-calendar";
 import type { BlockedRange } from "@/lib/ical";
 import "react-calendar/dist/Calendar.css";
@@ -14,7 +14,6 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
   const [pendingCheckin, setPendingCheckin] = useState<Date | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeStartDate, setActiveStartDate] = useState<Date>(new Date());
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
@@ -165,10 +164,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
           minDetail="month"
           calendarType="gregory"
           className="!border-0 !font-sans"
-          activeStartDate={activeStartDate}
-          onActiveStartDateChange={({ activeStartDate }) => {
-            if (activeStartDate) setActiveStartDate(activeStartDate);
-          }}
+          defaultActiveStartDate={new Date(today.getFullYear(), today.getMonth(), 1)}
         />
       </div>
 
