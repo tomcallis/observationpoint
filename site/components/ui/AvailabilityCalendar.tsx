@@ -85,6 +85,9 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
 
     if (!pendingCheckin) {
       // First click — set check-in
+      // Back-to-back dates (checkout of one booking + checkin of next) can't be used as check-in
+      const key = date.toISOString().split("T")[0];
+      if (checkinDates.has(key)) return;
       setPendingCheckin(date);
       return;
     }
