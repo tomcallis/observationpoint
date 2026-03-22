@@ -66,16 +66,14 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
       const checkinKey = pendingCheckin.toISOString().split("T")[0];
       if (key === checkinKey) return "selected-checkin-tile";
       if (date > pendingCheckin) {
-        if (isCheckin && isCheckout) return "booked-tile";
-        if (isCheckout && !isCheckin) return "checkout-tile";
+        if (isCheckout) return "checkout-tile";
         if (isCheckin) return "checkin-tile";
         if (isInterior) return "booked-tile";
         return null;
       }
     }
 
-    if (isCheckin && isCheckout) return "booked-tile";
-    if (isCheckout && !isCheckin) return "checkout-tile";
+    if (isCheckout) return "checkout-tile";
     if (isCheckin) return "checkin-tile";
     if (isInterior) return "booked-tile";
     return null;
