@@ -95,11 +95,11 @@ html, body {
   cursor: not-allowed !important;
 }
 
-/* Past dates — show as unavailable (same blue as booked) */
+/* Past dates — same appearance as unavailable/booked */
 .past-tile,
 .react-calendar__tile:disabled.past-tile {
   background-color: #bfdbfe !important;
-  color: #93c5fd !important;
+  color: #1e40af !important;
   cursor: not-allowed !important;
   text-decoration: line-through;
 }
