@@ -55,7 +55,13 @@ html, body {
 .checkin-tile {
   background: linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%) !important;
   color: #1e40af !important;
-  cursor: not-allowed !important;
+  cursor: pointer !important;
+}
+
+.checkin-tile:hover,
+.react-calendar__tile:enabled:hover.checkin-tile,
+.react-calendar__tile:enabled:focus.checkin-tile {
+  background: linear-gradient(135deg, #e0f2fe 50%, #bfdbfe 50%) !important;
 }
 
 /* Check-out day: upper-left triangle blue (departed guest), lower-right white (available) */
