@@ -190,12 +190,12 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
         <span className="flex items-center gap-1.5">
           <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
             style={{ background: "linear-gradient(135deg, #bfdbfe 50%, #ffffff 50%)" }} />
-          Check-out
+          Check-in only
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
             style={{ background: "linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%)" }} />
-          Check-in only
+          Check-out
         </span>
       </div>
     </div>
