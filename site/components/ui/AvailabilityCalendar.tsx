@@ -48,8 +48,11 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
     if (date < today) return true;
     if (!isSaturday(date)) return true;
     const key = date.toISOString().split("T")[0];
-    if (checkinDates.has(key)) return true; // another booking starts here (incl. back-to-back)
-    return bookedInterior.has(key) && !checkoutDates.has(key);
+    // Back-to-back: same Saturday is checkout of one booking AND check-in of next → block
+    if (checkinDates.has(key) && checkoutDates.has(key)) return true;
+    // Purely interior dates (not a boundary): block
+    if (bookedInterior.has(key) && !checkoutDates.has(key) && !checkinDates.has(key)) return true;
+    return false;
   };
 
   const tileDisabled = ({ date }: { date: Date }) => isDateUnavailable(date);
@@ -67,14 +70,16 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
       const checkinKey = pendingCheckin.toISOString().split("T")[0];
       if (key === checkinKey) return "selected-checkin-tile";
       if (date > pendingCheckin) {
-        if (isCheckin) return "booked-tile"; // another booking starts here — not available as checkout
+        if (isCheckin && isCheckout) return "booked-tile"; // back-to-back: fully blocked
+        if (isCheckin) return "checkin-tile"; // another booking starts here — can checkout, not check-in
         if (isCheckout) return "checkout-tile";
         if (isInterior) return "booked-tile";
         return null;
       }
     }
 
-    if (isCheckin) return "booked-tile"; // another booking starts here (incl. back-to-back)
+    if (isCheckin && isCheckout) return "booked-tile"; // back-to-back: fully blocked
+    if (isCheckin) return "checkin-tile"; // another booking starts here — can checkout, not check-in
     if (isCheckout) return "checkout-tile";
     if (isInterior) return "booked-tile";
     return null;
@@ -186,6 +191,11 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
           <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
             style={{ background: "linear-gradient(135deg, #bfdbfe 50%, #ffffff 50%)" }} />
           Check-out
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-4 h-4 rounded-sm inline-block border border-slate-200"
+            style={{ background: "linear-gradient(135deg, #ffffff 50%, #bfdbfe 50%)" }} />
+          Check-in only
         </span>
       </div>
     </div>
