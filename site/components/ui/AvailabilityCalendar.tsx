@@ -136,16 +136,6 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
 
   return (
     <div className="flex flex-col items-center gap-2">
-      {/* Today button */}
-      <div className="w-full flex justify-end mb-1">
-        <button
-          onClick={() => setActiveStartDate(new Date())}
-          className="text-xs text-sky-600 border border-sky-200 rounded px-2 py-1 hover:bg-sky-50 transition-colors"
-        >
-          Today
-        </button>
-      </div>
-
       {/* Instruction bar */}
       <div className="w-full text-center mb-2">
         <p className={`text-sm font-medium ${pendingCheckin ? "text-sky-600" : "text-slate-500"}`}>
