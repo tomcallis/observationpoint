@@ -48,6 +48,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
     if (date < today) return true;
     if (!isSaturday(date)) return true;
     const key = date.toISOString().split("T")[0];
+    if (checkinDates.has(key)) return true; // another booking starts here (incl. back-to-back)
     return bookedInterior.has(key) && !checkoutDates.has(key);
   };
 
@@ -66,12 +67,14 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
       const checkinKey = pendingCheckin.toISOString().split("T")[0];
       if (key === checkinKey) return "selected-checkin-tile";
       if (date > pendingCheckin) {
+        if (isCheckin) return "booked-tile"; // another booking starts here — not available as checkout
         if (isCheckout) return "checkout-tile";
         if (isInterior) return "booked-tile";
         return null;
       }
     }
 
+    if (isCheckin) return "booked-tile"; // another booking starts here (incl. back-to-back)
     if (isCheckout) return "checkout-tile";
     if (isInterior) return "booked-tile";
     return null;
