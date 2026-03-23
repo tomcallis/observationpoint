@@ -6,8 +6,8 @@ import { property } from "@/config/property";
 const links = [
   { label: "The Property", href: "#highlights" },
   { label: "Gallery", href: "#gallery" },
-  { label: "Availability", href: "#availability" },
   { label: "Rates", href: "#booking" },
+  { label: "Availability", href: "#availability" },
   { label: "FAQ", href: "#faq" },
   { label: "Location", href: "#location" },
 ];

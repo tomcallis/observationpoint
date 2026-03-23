@@ -1,18 +1,6 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import { property } from "@/config/property";
 
 const { guidebook } = property;
-
-function LockIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
-  );
-}
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
@@ -31,62 +19,6 @@ function InfoItem({ label, value, mono }: { label: string; value: string; mono?:
       <span className={`font-medium text-slate-800 ${mono ? "font-mono text-sky-700 text-lg" : "text-sm"}`}>
         {value || <span className="text-slate-400 italic">See booking confirmation</span>}
       </span>
-    </div>
-  );
-}
-
-function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
-  const [pw, setPw] = useState("");
-  const [error, setError] = useState("");
-
-  const attempt = () => {
-    if (pw === guidebook.password) {
-      sessionStorage.setItem("op-guidebook-unlocked", "true");
-      onUnlock();
-    } else {
-      setError("Incorrect password. Check your booking confirmation email.");
-      setPw("");
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-10 max-w-sm w-full text-center">
-        <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-6 text-sky-500">
-          <LockIcon />
-        </div>
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">Guest Guidebook</h1>
-        <p className="text-slate-500 text-sm mb-8">
-          Enter the password from your booking confirmation to access check-in details
-          and local recommendations.
-        </p>
-        <input
-          type="password"
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && attempt()}
-          placeholder="Guidebook password"
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-sky-300 mb-3"
-          autoFocus
-        />
-        {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
-        <button
-          onClick={attempt}
-          disabled={!pw}
-          className="w-full bg-sky-500 hover:bg-sky-400 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold py-3 rounded-xl transition-colors"
-        >
-          Unlock Guidebook
-        </button>
-        <p className="mt-6 text-xs text-slate-400">
-          Questions?{" "}
-          <a
-            href={`mailto:${property.contactEmail}`}
-            className="text-sky-600 hover:underline"
-          >
-            Contact Tom
-          </a>
-        </p>
-      </div>
     </div>
   );
 }
@@ -246,21 +178,5 @@ function GuidebookContent() {
 }
 
 export default function GuidebookPage() {
-  const [unlocked, setUnlocked] = useState(false);
-  const [checking, setChecking] = useState(true);
-
-  useEffect(() => {
-    if (sessionStorage.getItem("op-guidebook-unlocked") === "true") {
-      setUnlocked(true);
-    }
-    setChecking(false);
-  }, []);
-
-  if (checking) return null; // avoid flash
-
-  return unlocked ? (
-    <GuidebookContent />
-  ) : (
-    <PasswordGate onUnlock={() => setUnlocked(true)} />
-  );
+  return <GuidebookContent />;
 }

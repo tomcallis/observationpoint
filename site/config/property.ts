@@ -66,44 +66,47 @@ export const property = {
   // ── Rates ──────────────────────────────────────────────────────────────────
   // Seasonal rate table. Dates are MM-DD (month-day, no year).
   // Seasons are checked top-to-bottom; the first match wins.
+  // Holiday week overrides are stored in data/weekly-prices.json.
   seasonalRates: [
     {
+      label: "Peak (July)",
+      // July only — highest demand
+      start: "07-01",
+      end: "08-01",
+      nightly: 389,
+      weekly: 2725,
+    },
+    {
       label: "Peak Summer",
-      // Late June through Labor Day
-      start: "06-21",
+      // June & August (July is matched above)
+      start: "06-01",
       end: "09-01",
-      nightly: 350,
-      weekly: 2100,
+      nightly: 314,
+      weekly: 2200,
     },
     {
-      label: "Memorial Day Week",
-      start: "05-23",
+      label: "Mid-Season",
+      months: "May",
+      start: "05-01",
       end: "06-01",
-      nightly: 325,
-      weekly: 1950,
+      nightly: 241,
+      weekly: 1685,
     },
     {
-      label: "Spring & Early Fall",
-      // Spring (April–mid-June) and Fall (Sep–Oct)
-      start: "04-01",
-      end: "05-23",
-      nightly: 275,
-      weekly: 1650,
-    },
-    {
-      label: "Fall",
+      label: "Mid-Season",
+      months: "September",
       start: "09-01",
-      end: "11-01",
-      nightly: 250,
-      weekly: 1500,
+      end: "10-01",
+      nightly: 241,
+      weekly: 1685,
     },
     {
-      label: "Off Season",
-      // Everything else (winter / early spring)
+      label: "Off-Season",
+      // Mar, Apr, Oct, Nov, Dec, Jan, Feb
       start: "01-01",
       end: "12-31",
-      nightly: 200,
-      weekly: 1200,
+      nightly: 156,
+      weekly: 1095,
     },
   ],
 

@@ -43,7 +43,7 @@ export default function Hero() {
         {/* Direct booking value prop */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-5">
           <a
-            href="#availability"
+            href="#booking"
             className="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-lg shadow-lg"
           >
             Book Direct — No VRBO Fees

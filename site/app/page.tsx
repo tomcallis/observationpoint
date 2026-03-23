@@ -13,8 +13,8 @@ export default function Home() {
       <Hero />
       <Highlights />
       <Gallery />
-      <Availability />
       <Booking />
+      <Availability />
       <FAQ />
       <Location />
       <Contact />
