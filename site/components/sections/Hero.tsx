@@ -46,7 +46,7 @@ export default function Hero() {
             href="#booking"
             className="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-lg shadow-lg"
           >
-            Book Direct — No VRBO Fees
+            Book Direct with Owners
           </a>
         </div>
 
