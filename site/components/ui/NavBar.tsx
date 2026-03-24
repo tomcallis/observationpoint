@@ -7,7 +7,7 @@ const links = [
   { label: "The Property", href: "#highlights" },
   { label: "Gallery", href: "#gallery" },
   { label: "Rates", href: "#booking" },
-  { label: "Availability", href: "#availability" },
+  { label: "Rates & Availability", href: "#availability" },
   { label: "FAQ", href: "#faq" },
   { label: "Location", href: "#location" },
 ];
