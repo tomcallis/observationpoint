@@ -208,6 +208,7 @@ export const property = {
     { src: "/images/bathroom-1.jpg", alt: "Bathroom" },
     { src: "/images/bathroom-2.jpg", alt: "Second bathroom" },
     { src: "/images/covered-porch.jpg", alt: "Covered porch entrance" },
+    { src: "/images/floor-plan.png", alt: "Observation Point floor plan" },
   ],
 
   // ── FAQ ────────────────────────────────────────────────────────────────────
