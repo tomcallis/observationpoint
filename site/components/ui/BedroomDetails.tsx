@@ -22,17 +22,6 @@ function BedIcon({ className }: { className?: string }) {
   );
 }
 
-function FloorPlanIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="18" height="18" rx="1" />
-      <path d="M3 9h18" />
-      <path d="M9 9v12" />
-      <path d="M9 15h6" />
-    </svg>
-  );
-}
-
 export default function BedroomDetails({ rooms }: { rooms: Bedroom[] }) {
   const [open, setOpen] = useState(false);
 
@@ -51,15 +40,24 @@ export default function BedroomDetails({ rooms }: { rooms: Bedroom[] }) {
               <div className="text-slate-800 font-semibold text-sm">{room.name}</div>
               <div className="text-slate-500 text-sm">{room.beds}</div>
             </div>
-            <button
-              onClick={() => setOpen(true)}
-              title="View floor plan"
-              className="shrink-0 text-slate-300 hover:text-sky-500 transition-colors p-1 rounded"
-            >
-              <FloorPlanIcon />
-            </button>
           </div>
         ))}
+
+        {/* Floor plan card */}
+        <button
+          onClick={() => setOpen(true)}
+          className="sm:col-span-2 flex items-center justify-center gap-3 bg-slate-50 hover:bg-sky-50 border border-dashed border-slate-200 hover:border-sky-300 rounded-xl px-5 py-4 transition-colors group"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-sky-500 transition-colors shrink-0">
+            <rect x="3" y="3" width="18" height="18" rx="1" />
+            <path d="M3 9h18" />
+            <path d="M9 9v12" />
+            <path d="M9 15h6" />
+          </svg>
+          <span className="text-slate-500 group-hover:text-sky-600 text-sm font-medium transition-colors">
+            View Floor Plan
+          </span>
+        </button>
       </div>
 
       <Lightbox
