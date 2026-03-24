@@ -1,4 +1,5 @@
 import { property } from "@/config/property";
+import BedroomDetails from "@/components/ui/BedroomDetails";
 
 // ── Icon definitions ───────────────────────────────────────────────────────
 const ICONS: Record<string, React.ReactNode> = {
@@ -117,19 +118,6 @@ function CheckIcon() {
   );
 }
 
-function BedIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 4v16" />
-      <path d="M22 4v16" />
-      <path d="M2 8h20" />
-      <path d="M2 16h20" />
-      <path d="M6 8v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" />
-      <path d="M2 12h20v4H2z" />
-    </svg>
-  );
-}
-
 export default function Highlights() {
   return (
     <section id="highlights" className="py-20 bg-white">
@@ -178,22 +166,7 @@ export default function Highlights() {
 
         {/* Bedroom details */}
         {property.bedroomDetails && (
-          <div className="mt-10 grid sm:grid-cols-2 gap-4 max-w-xl mx-auto">
-            {property.bedroomDetails.map((room) => (
-              <div
-                key={room.name}
-                className="flex items-center gap-4 bg-slate-50 rounded-xl px-5 py-4"
-              >
-                <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center shrink-0">
-                  <BedIcon className="text-sky-600" />
-                </div>
-                <div>
-                  <div className="text-slate-800 font-semibold text-sm">{room.name}</div>
-                  <div className="text-slate-500 text-sm">{room.beds}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <BedroomDetails rooms={property.bedroomDetails} />
         )}
       </div>
     </section>
