@@ -190,9 +190,9 @@ export const property = {
   // ── Gallery Images ─────────────────────────────────────────────────────────
   // The first image is used as the Hero background.
   images: [
+    { src: "/images/dock-chairs.jpg", alt: "Adirondack chairs on the dock" },
     { src: "/images/deck-sound-view.jpg", alt: "Covered deck looking over the dock and Pamlico Sound" },
     { src: "/images/dock-sound-wide.jpg", alt: "Private dock on the Pamlico Sound" },
-    { src: "/images/dock-chairs.jpg", alt: "Adirondack chairs on the dock" },
     { src: "/images/hammock-sound.jpg", alt: "Hammock under the deck with sound view" },
     { src: "/images/living-room-2.jpg", alt: "Living room with sound view through sliding door" },
     { src: "/images/living-room-1.jpg", alt: "Open-plan living area" },
@@ -203,7 +203,8 @@ export const property = {
     { src: "/images/kitchen-1.jpg", alt: "Fully equipped kitchen" },
     { src: "/images/kitchen-2.jpg", alt: "Kitchen prep area" },
     { src: "/images/kitchen-dining-wide.jpg", alt: "Wide view of kitchen and dining" },
-    { src: "/images/bedroom-soundfront.jpg", alt: "Master bedroom with soundfront views" },
+    { src: "/images/front-bedroom_king_1.jpeg", alt: "Primary bedroom with king bed" },
+    { src: "/images/front-bedroom_king_2.jpeg", alt: "Primary bedroom, second view" },
     { src: "/images/bedroom-bunks.jpg", alt: "Second bedroom with queen bed and bunks" },
     { src: "/images/bathroom-1.jpg", alt: "Bathroom" },
     { src: "/images/bathroom-2.jpg", alt: "Second bathroom" },
@@ -246,7 +247,17 @@ export const property = {
     {
       question: "What are check-in and check-out times?",
       answer:
-        "Check-in is at 4:00 PM on your arrival Saturday. Check-out is at 10:00 AM on your departure Saturday. Early check-in or late check-out may be possible depending on the schedule — just ask.",
+        "Check-in is at 3:30 PM on your arrival Saturday. Check-out is at 10:00 AM on your departure Saturday. The key is in a lockbox under the house — it's mounted to a piling between the stairs and the outdoor shower. Early check-in or late check-out may be possible depending on the schedule — just ask.",
+    },
+    {
+      question: "What should I bring?",
+      answer:
+        "Observation Point does not provide linens or consumables, so please plan to bring: sheets (one king bed, one queen bed, and two twin beds), pillowcases, bath towels, beach towels, garbage bags, toilet paper, paper towels, dish detergent, laundry detergent, all-purpose cleaner, and bath soap and toiletries.",
+    },
+    {
+      question: "How do I reach the owner?",
+      answer:
+        "You can message through VRBO, or reach Tom directly by text or call at 252-996-0578, or by email at tom.callis@gmail.com. If you can't reach Tom, please contact the caretaker, Jennie, at 252-305-2415.",
     },
     {
       question: "What amenities does the kitchen have?",
@@ -265,11 +276,6 @@ export const property = {
 
     checkIn: "4:00 PM",
     checkOut: "10:00 AM",
-
-    // Fill these in before the season begins
-    doorCode: process.env.GUIDEBOOK_DOOR_CODE ?? "", // e.g. "1234"
-    wifiName: process.env.GUIDEBOOK_WIFI_NAME ?? "", // e.g. "ObsPoint_5G"
-    wifiPassword: process.env.GUIDEBOOK_WIFI_PASSWORD ?? "", // e.g. "hatteras2025"
 
     houseRules: [
       "No smoking indoors or on enclosed portions of the deck.",

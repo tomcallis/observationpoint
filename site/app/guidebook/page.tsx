@@ -54,11 +54,6 @@ function GuidebookContent() {
               <p className="text-sm text-slate-500 mt-1">Saturday</p>
             </div>
           </div>
-          <div>
-            <InfoItem label="Door Code" value={guidebook.doorCode} mono />
-            <InfoItem label="WiFi Network" value={guidebook.wifiName} mono />
-            <InfoItem label="WiFi Password" value={guidebook.wifiPassword} mono />
-          </div>
         </section>
 
         {/* House Rules */}
