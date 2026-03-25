@@ -9,7 +9,7 @@ export const property = {
   name: "Observation Point",
   tagline: "Wake up on the Pamlico Sound. Watch the sun set over the water every night.",
   description:
-    "A quiet, soundfront cottage on Hatteras Island with panoramic views of the Pamlico Sound from every room. Swim, fish, or launch a kayak from the private 30-foot dock. End every day watching the sky turn gold from the deck. No platform fees, no crowds — just the Outer Banks the way it used to be.",
+    "A quiet, soundfront cottage on Hatteras Island with panoramic views of the Pamlico Sound. Swim, fish, or launch a kayak from the private 30-foot dock. End every day watching the sky turn gold from the deck. Just the way the Outer Banks should be.",
   location: {
     address: "50184 Treasure Ct, Frisco, NC 27936",
     area: "Hatteras Island, Outer Banks",
