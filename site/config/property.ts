@@ -224,7 +224,7 @@ export const property = {
     {
       question: "Why book direct instead of through VRBO?",
       answer:
-        "VRBO charges guests a service fee (typically 6–12% on top of the rental rate). When you book directly here, that fee disappears — same property, same host, same experience, just less money going to a platform middleman. You'll work directly with Tom, and any questions get answered faster.",
+        "VRBO charges guests a service fee (typically 6–12% on top of the rental rate). When you book directly here, that fee disappears — same property, same host, same experience, just less money going to a platform middleman. You'll work directly with Tom and Miranda, the owners.",
     },
     {
       question: "Is it safe to pay by Venmo or check?",
@@ -244,7 +244,7 @@ export const property = {
     {
       question: "Is the property pet-friendly?",
       answer:
-        "Pets may be allowed with prior written approval from the owner. Please reach out before booking to discuss your specific situation. Unauthorized pets may result in additional cleaning fees.",
+        "No, pets are not permitted at Observation Point.",
     },
     {
       question: "What are check-in and check-out times?",
@@ -281,7 +281,7 @@ export const property = {
 
     houseRules: [
       "No smoking indoors or on enclosed portions of the deck.",
-      "Pets by prior approval only — please contact Tom before bringing a pet.",
+      "No pets permitted.",
       "Maximum 6 guests at all times.",
       "Quiet hours: 10:00 PM – 8:00 AM. Please be mindful of neighbors.",
       "No parties or commercial events without written approval.",

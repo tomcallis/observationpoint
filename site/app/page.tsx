@@ -2,7 +2,6 @@ import Hero from "@/components/sections/Hero";
 import Highlights from "@/components/sections/Highlights";
 import Gallery from "@/components/sections/Gallery";
 import Availability from "@/components/sections/Availability";
-import Booking from "@/components/sections/Booking";
 import FAQ from "@/components/sections/FAQ";
 import Location from "@/components/sections/Location";
 import Contact from "@/components/sections/Contact";
@@ -13,7 +12,6 @@ export default function Home() {
       <Hero />
       <Highlights />
       <Gallery />
-      <Booking />
       <Availability />
       <FAQ />
       <Location />

@@ -3,7 +3,7 @@ import { getBlockedRanges } from "@/lib/ical";
 import AvailabilitySection from "@/components/ui/AvailabilitySection";
 import { property } from "@/config/property";
 
-const { seasonalRates, rates } = property;
+const { seasonalRates, rates, payment } = property;
 
 function formatUSD(n: number) {
   return new Intl.NumberFormat("en-US", {
@@ -77,19 +77,23 @@ export default function Availability() {
   const displayRates = getDisplayRates();
 
   return (
-    <section id="availability" className="py-20 bg-white">
+    <section id="booking" className="py-20 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
+
+        {/* Header */}
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2">
             Rates &amp; Availability
           </h2>
           <p className="text-slate-500">
-            Saturday to Saturday · 7-night minimum
+            Saturday to Saturday · 7-night minimum · No VRBO service fees if booked direct.
           </p>
           <p className="text-slate-400 text-sm mt-1">
             Syncs automatically with our VRBO listing — updated every 15 minutes.
           </p>
         </div>
+
+        {/* Availability calendar */}
         <Suspense fallback={<CalendarSkeleton />}>
           <CalendarLoader />
         </Suspense>
@@ -133,6 +137,85 @@ export default function Availability() {
             })}
           </div>
         </div>
+
+        {/* Payment & cancellation */}
+        <div className="grid sm:grid-cols-2 gap-4 mt-12">
+          <div className="bg-sky-50 rounded-xl p-5 border border-sky-100">
+            <h3 className="text-sm font-semibold text-slate-800 mb-2">Payment</h3>
+            <ul className="space-y-1.5 text-sm text-slate-600">
+              <li className="flex gap-2">
+                <span className="text-sky-500 shrink-0">&#x2713;</span>
+                {payment.deposit.percent}% deposit due at booking
+              </li>
+              <li className="flex gap-2">
+                <span className="text-sky-500 shrink-0">&#x2713;</span>
+                Balance due {payment.deposit.balanceDueDays} days before check-in
+              </li>
+              <li className="flex gap-2">
+                <span className="text-sky-500 shrink-0">&#x2713;</span>
+                Pay via Venmo or check
+              </li>
+            </ul>
+          </div>
+          <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-800 mb-2">Cancellation Policy</h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              {payment.cancellationPolicy}
+            </p>
+          </div>
+        </div>
+
+        {/* How Direct Booking Works */}
+        <div className="mt-12">
+          <h3 className="text-center text-lg font-bold text-slate-800 mb-6">
+            How Direct Booking Works
+          </h3>
+          <ol className="grid sm:grid-cols-2 gap-4">
+            {[
+              {
+                n: 1,
+                title: "Pick your dates",
+                desc: "Use the availability calendar above to select your check-in and checkout Saturday.",
+              },
+              {
+                n: 2,
+                title: "Submit a request",
+                desc: "Fill in your details and submit. Tom receives an email and confirms availability within a few hours.",
+              },
+              {
+                n: 3,
+                title: "Pay the deposit",
+                desc: `Send ${payment.deposit.percent}% of the total by Venmo (@tomcallis) or check. Your dates are held for ${payment.deposit.holdHours} hours while payment clears.`,
+              },
+              {
+                n: 4,
+                title: "Pay the balance",
+                desc: `The remaining balance is due ${payment.deposit.balanceDueDays} days before check-in. Tom sends a reminder.`,
+              },
+              {
+                n: 5,
+                title: "Get your check-in details",
+                desc: "A few days before arrival, Tom sends a link to the guest guidebook with everything you need to know.",
+              },
+              {
+                n: 6,
+                title: "Enjoy the Outer Banks",
+                desc: "Check in Saturday at 3:30 PM. Questions during your stay? Text or email Tom directly.",
+              },
+            ].map(({ n, title, desc }) => (
+              <li key={n} className="bg-white rounded-xl p-5 border border-slate-100 flex gap-4">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-sky-500 text-white text-sm font-bold flex items-center justify-center">
+                  {n}
+                </span>
+                <div>
+                  <p className="font-semibold text-slate-800 text-sm mb-1">{title}</p>
+                  <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
       </div>
     </section>
   );
