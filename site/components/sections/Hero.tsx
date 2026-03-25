@@ -2,7 +2,7 @@ import Image from "next/image";
 import { property } from "@/config/property";
 
 export default function Hero() {
-  const heroImage = property.images[0];
+  const heroImage = property.heroImage;
 
   return (
     <section

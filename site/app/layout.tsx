@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: property.name,
     description: property.tagline,
-    images: [property.images[0].src],
+    images: [property.heroImage.src],
   },
 };
 
@@ -22,7 +22,7 @@ const jsonLd = {
   "@type": "LodgingBusiness",
   name: property.name,
   description: property.description,
-  image: property.images[0].src,
+  image: property.heroImage.src,
   address: {
     "@type": "PostalAddress",
     streetAddress: "50184 Treasure Ct",

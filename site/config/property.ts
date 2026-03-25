@@ -187,14 +187,16 @@ export const property = {
     },
   ],
 
+  // ── Hero Image ─────────────────────────────────────────────────────────────
+  heroImage: { src: "/images/dock-chairs.jpg", alt: "Adirondack chairs on the dock" },
+
   // ── Gallery Images ─────────────────────────────────────────────────────────
-  // The first image is used as the Hero background.
   images: [
+    { src: "/images/living-room-2.jpg", alt: "Living room with sound view through sliding door" },
     { src: "/images/dock-chairs.jpg", alt: "Adirondack chairs on the dock" },
     { src: "/images/deck-sound-view.jpg", alt: "Covered deck looking over the dock and Pamlico Sound" },
     { src: "/images/dock-sound-wide.jpg", alt: "Private dock on the Pamlico Sound" },
     { src: "/images/hammock-sound.jpg", alt: "Hammock under the deck with sound view" },
-    { src: "/images/living-room-2.jpg", alt: "Living room with sound view through sliding door" },
     { src: "/images/living-room-1.jpg", alt: "Open-plan living area" },
     { src: "/images/living-room-3.jpg", alt: "Living room seating area" },
     { src: "/images/open-plan.jpg", alt: "Dining and living area" },
@@ -262,7 +264,7 @@ export const property = {
     {
       question: "What amenities does the kitchen have?",
       answer:
-        "The kitchen is fully equipped with new cookware, utensils, dishes, and glassware. There's a full-size refrigerator, stove, oven, microwave, dishwasher, and coffee maker. You'll have everything you need to cook real meals — most guests prefer it to eating out every night.",
+        "The kitchen is fully equipped with cookware, utensils, dishes, and glassware. There's a full-size refrigerator, stove, oven, microwave, dishwasher, and coffee maker (basket-style and a Keurig).",
     },
   ],
 
