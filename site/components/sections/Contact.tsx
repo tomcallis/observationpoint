@@ -3,7 +3,7 @@ import { property } from "@/config/property";
 export default function Contact() {
   const email = property.contactEmail;
   const subject = encodeURIComponent(
-    `Inquiry about ${property.name} - Frisco OBX`
+    `Inquiry about ${property.name} - Frisco, NC`
   );
   const body = encodeURIComponent(
     `Hi,\n\nI'm interested in booking ${property.name}.\n\nDates: \nNumber of guests: \nQuestions: \n\nThank you!`

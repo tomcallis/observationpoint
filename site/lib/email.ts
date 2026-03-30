@@ -35,7 +35,7 @@ function wrap(headerColor: string, headerText: string, headerSub: string, body: 
               </td>
               <td style="vertical-align:middle;">
                 <span style="display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:2px;">Observation Point</span>
-                <span style="display:block;font-size:11px;color:rgba(255,255,255,0.55);">Frisco, Hatteras Island · OBX</span>
+                <span style="display:block;font-size:11px;color:rgba(255,255,255,0.55);">Frisco, Hatteras Island, NC</span>
               </td>
             </tr>
           </table>

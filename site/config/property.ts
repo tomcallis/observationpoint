@@ -60,7 +60,6 @@ export const property = {
     { label: "Sound Swimming" },
     { label: "Fishing Off Dock" },
     { label: "Hammock" },
-    { label: "Open Floorplan" },
     { label: "Full Kitchen" },
     { label: "En-Suite Bathrooms" },
     { label: "High-Speed WiFi" },
