@@ -1,9 +1,60 @@
 import { Suspense } from "react";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { getBlockedRanges } from "@/lib/ical";
 import AvailabilitySection from "@/components/ui/AvailabilitySection";
 import { property } from "@/config/property";
 
-const { seasonalRates, rateTable, payment } = property;
+const { payment } = property;
+
+type WeeklyEntry = number | { price: number; label?: string };
+
+interface SeasonData {
+  label: string;
+  start: string;
+  end: string;
+  nightly: number;
+  weekly: number;
+}
+
+interface SeasonalRates {
+  bookingCutoffDate?: string;
+  seasons: SeasonData[];
+}
+
+interface NamedWeek {
+  date: string;
+  label: string;
+  price: number;
+}
+
+function loadRateData(): { seasons: SeasonData[]; bookingCutoffDate: string | null; namedWeeks: NamedWeek[] } {
+  try {
+    const seasonal: SeasonalRates = JSON.parse(
+      readFileSync(join(process.cwd(), "data", "seasonal-rates.json"), "utf-8")
+    );
+    const weekly: Record<string, WeeklyEntry> = JSON.parse(
+      readFileSync(join(process.cwd(), "data", "weekly-prices.json"), "utf-8")
+    );
+
+    const namedWeeks: NamedWeek[] = Object.entries(weekly)
+      .filter(([, v]) => typeof v === "object" && v !== null && (v as { label?: string }).label)
+      .map(([date, v]) => ({
+        date,
+        label: (v as { price: number; label: string }).label,
+        price: (v as { price: number; label: string }).price,
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    return {
+      seasons: seasonal.seasons ?? [],
+      bookingCutoffDate: seasonal.bookingCutoffDate ?? null,
+      namedWeeks,
+    };
+  } catch {
+    return { seasons: property.seasonalRates, bookingCutoffDate: null, namedWeeks: [] };
+  }
+}
 
 function formatUSD(n: number) {
   return new Intl.NumberFormat("en-US", {
@@ -13,12 +64,12 @@ function formatUSD(n: number) {
   }).format(n);
 }
 
-function getCurrentSeasonLabel(): string | null {
+function getCurrentSeasonLabel(seasons: SeasonData[]): string | null {
   const now = new Date();
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   const today = `${mm}-${dd}`;
-  for (const s of seasonalRates) {
+  for (const s of seasons) {
     if (today >= s.start && today < s.end) return s.label;
   }
   return null;
@@ -51,13 +102,25 @@ function CalendarSkeleton() {
   );
 }
 
-async function CalendarLoader() {
+async function CalendarLoader({ bookingCutoffDate }: { bookingCutoffDate: string | null }) {
   const blockedRanges = await getBlockedRanges();
-  return <AvailabilitySection blockedRanges={blockedRanges} />;
+  return (
+    <AvailabilitySection
+      blockedRanges={blockedRanges}
+      bookingCutoffDate={bookingCutoffDate ?? undefined}
+    />
+  );
 }
 
 export default function Availability() {
-  const currentSeasonLabel = getCurrentSeasonLabel();
+  const { seasons, bookingCutoffDate, namedWeeks } = loadRateData();
+  const currentSeasonLabel = getCurrentSeasonLabel(seasons);
+
+  // Only show upcoming named weeks (within next 18 months)
+  const cutoffDate = new Date();
+  cutoffDate.setMonth(cutoffDate.getMonth() + 18);
+  const cutoffStr = cutoffDate.toISOString().split("T")[0];
+  const upcomingNamedWeeks = namedWeeks.filter(w => w.date >= new Date().toISOString().split("T")[0] && w.date <= cutoffStr);
 
   return (
     <section id="booking" className="py-20 bg-white">
@@ -78,7 +141,7 @@ export default function Availability() {
 
         {/* Availability calendar */}
         <Suspense fallback={<CalendarSkeleton />}>
-          <CalendarLoader />
+          <CalendarLoader bookingCutoffDate={bookingCutoffDate} />
         </Suspense>
 
         {/* Seasonal rate table */}
@@ -88,7 +151,7 @@ export default function Availability() {
               <span>Season</span>
               <span className="text-right">Weekly</span>
             </div>
-            {rateTable.map((row) => {
+            {seasons.map((row) => {
               const isCurrent = currentSeasonLabel?.startsWith(row.label) ?? false;
               return (
                 <div
@@ -98,14 +161,7 @@ export default function Availability() {
                   }`}
                 >
                   <span className="flex items-center gap-2 text-slate-700 font-medium">
-                    <span>
-                      {row.label}
-                      {row.subtitle && (
-                        <span className="block text-xs font-normal text-slate-400">
-                          {row.subtitle}
-                        </span>
-                      )}
-                    </span>
+                    <span>{row.label}</span>
                     {isCurrent && (
                       <span className="text-[10px] font-semibold uppercase tracking-wide bg-sky-500 text-white rounded-full px-2 py-0.5 leading-tight shrink-0">
                         Now
@@ -118,6 +174,37 @@ export default function Availability() {
                 </div>
               );
             })}
+
+            {/* Named holiday weeks */}
+            {upcomingNamedWeeks.length > 0 && (
+              <>
+                <div className="px-6 py-2 bg-amber-50 border-t border-amber-100">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-amber-600">Holiday Weeks</span>
+                </div>
+                {upcomingNamedWeeks.map((week) => {
+                  const checkin = new Date(week.date + "T12:00:00");
+                  const checkout = new Date(checkin);
+                  checkout.setDate(checkout.getDate() + 7);
+                  const fmtDate = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+                  return (
+                    <div
+                      key={week.date}
+                      className="grid grid-cols-2 px-6 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
+                    >
+                      <span className="text-slate-700 font-medium">
+                        {week.label}
+                        <span className="block text-xs font-normal text-slate-400">
+                          {fmtDate(checkin)} – {fmtDate(checkout)}
+                        </span>
+                      </span>
+                      <span className="text-right text-slate-600 font-medium self-center">
+                        {formatUSD(week.price)}
+                      </span>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
           <p className="text-center text-xs text-slate-400 mt-2">Plus NC and Dare County tax (12.75%)</p>
         </div>
@@ -137,7 +224,7 @@ export default function Availability() {
               </li>
               <li className="flex gap-2">
                 <span className="text-sky-500 shrink-0">&#x2713;</span>
-                Pay via Venmo or check
+                Pay securely via Stripe (credit or debit card)
               </li>
             </ul>
           </div>
@@ -169,12 +256,12 @@ export default function Availability() {
               {
                 n: 3,
                 title: "Pay the deposit",
-                desc: `Send ${payment.deposit.percent}% of the total by Venmo (@tomcallis) or check. Your dates are held for ${payment.deposit.holdHours} hours while payment clears.`,
+                desc: `Once confirmed, you'll receive a secure Stripe payment link for your ${payment.deposit.percent}% deposit. Stripe handles all payments safely — no account needed.`,
               },
               {
                 n: 4,
                 title: "Pay the balance",
-                desc: `The remaining balance is due ${payment.deposit.balanceDueDays} days before check-in. Tom sends a reminder.`,
+                desc: `The remaining balance is due ${payment.deposit.balanceDueDays} days before check-in. You'll receive a payment link automatically.`,
               },
               {
                 n: 5,

@@ -7,10 +7,11 @@ import "react-calendar/dist/Calendar.css";
 
 interface Props {
   blockedRanges: BlockedRange[];
+  bookingCutoffDate?: string;
   onRangeSelected?: (checkin: Date, checkout: Date) => void;
 }
 
-export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }: Props) {
+export default function AvailabilityCalendar({ blockedRanges, bookingCutoffDate, onRangeSelected }: Props) {
   const [pendingCheckin, setPendingCheckin] = useState<Date | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -41,7 +42,9 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
   }, [blockedRanges]);
 
   const today = new Date(new Date().setHours(0, 0, 0, 0));
-  const bookingCutoff = new Date(2027, 0, 10); // Jan 10, 2027 — covers Christmas + New Year's weeks; open full 2027 in October
+  const bookingCutoff = bookingCutoffDate
+    ? new Date(bookingCutoffDate + "T12:00:00")
+    : new Date(2027, 0, 10);
 
   const isSaturday = (date: Date) => date.getDay() === 6;
 

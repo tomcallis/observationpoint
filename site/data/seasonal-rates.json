@@ -1,6 +1,9 @@
-[
-  { "label": "Summer",  "start": "06-01", "end": "09-01", "nightly": 364, "weekly": 2550 },
-  { "label": "Spring",  "start": "04-01", "end": "06-01", "nightly": 225, "weekly": 1575 },
-  { "label": "Fall",    "start": "09-01", "end": "11-01", "nightly": 200, "weekly": 1400 },
-  { "label": "Winter",  "start": "01-01", "end": "12-31", "nightly": 150, "weekly": 1050 }
-]
+{
+  "bookingCutoffDate": "2027-01-10",
+  "seasons": [
+    { "label": "Summer",  "start": "06-01", "end": "09-01", "nightly": 364, "weekly": 2550 },
+    { "label": "Spring",  "start": "04-01", "end": "06-01", "nightly": 225, "weekly": 1575 },
+    { "label": "Fall",    "start": "09-01", "end": "11-01", "nightly": 200, "weekly": 1400 },
+    { "label": "Winter",  "start": "01-01", "end": "12-31", "nightly": 150, "weekly": 1050 }
+  ]
+}

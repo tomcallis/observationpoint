@@ -7,15 +7,17 @@ import type { BlockedRange } from "@/lib/ical";
 
 interface Props {
   blockedRanges: BlockedRange[];
+  bookingCutoffDate?: string;
 }
 
-export default function AvailabilitySection({ blockedRanges }: Props) {
+export default function AvailabilitySection({ blockedRanges, bookingCutoffDate }: Props) {
   const [booking, setBooking] = useState<{ checkin: Date; checkout: Date } | null>(null);
 
   return (
     <>
       <AvailabilityCalendar
         blockedRanges={blockedRanges}
+        bookingCutoffDate={bookingCutoffDate}
         onRangeSelected={(checkin, checkout) => setBooking({ checkin, checkout })}
       />
       {booking && (

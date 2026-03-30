@@ -232,9 +232,9 @@ export const property = {
         "VRBO charges guests a service fee (typically 6–12% on top of the rental rate). When you book directly here, that fee disappears — same property, same host, same experience, just less money going to a platform middleman. You'll work directly with Tom and Miranda, the owners.",
     },
     {
-      question: "Is it safe to pay by Venmo or check?",
+      question: "How does payment work?",
       answer:
-        "Yes. This is a direct relationship between you and Tom Callis, the property owner. The process is the same as any private landlord arrangement: you request dates, Tom confirms availability, you pay a 50% deposit (via Venmo or check), and Tom sends a booking confirmation once payment clears. The remaining 50% balance is due 30 days before check-in. The property has 101 verified VRBO reviews — feel free to read them before booking.",
+        "All payments are processed securely through Stripe — the same payment platform used by Airbnb, Amazon, and millions of other businesses. Once Tom confirms your booking, you'll receive a secure link to pay your 50% deposit by credit or debit card. No Stripe account is needed. The remaining 50% balance is due 30 days before check-in and you'll receive a payment link automatically. Your card details are never shared with the property owner.",
     },
     {
       question: "Is there an age requirement?",

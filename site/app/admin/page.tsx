@@ -322,32 +322,99 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
 
 // ── Pricing Tab ───────────────────────────────────────────────────────────────
 
-function getSaturdays(count: number): Date[] {
+interface OverrideEntry { price: string; label: string; }
+
+function getYearSaturdays(year: number): Date[] {
   const result: Date[] = [];
-  const d = new Date();
+  const d = new Date(year, 0, 1);
   d.setHours(0, 0, 0, 0);
   while (d.getDay() !== 6) d.setDate(d.getDate() + 1);
-  for (let i = 0; i < count; i++) {
+  while (d.getFullYear() === year) {
     result.push(new Date(d));
     d.setDate(d.getDate() + 7);
   }
   return result;
 }
 
+function getHolidayLabel(sat: Date): string | null {
+  const year = sat.getFullYear();
+  const key = sat.toDateString();
+
+  // Memorial Day: Saturday before last Monday of May
+  const lastMayMonday = new Date(year, 4, 31);
+  while (lastMayMonday.getDay() !== 1) lastMayMonday.setDate(lastMayMonday.getDate() - 1);
+  const memSat = new Date(lastMayMonday); memSat.setDate(memSat.getDate() - 2);
+  if (key === memSat.toDateString()) return "Memorial Day";
+
+  // July 4th: Saturday on or before July 4
+  const july4 = new Date(year, 6, 4);
+  const july4Sat = new Date(july4);
+  while (july4Sat.getDay() !== 6) july4Sat.setDate(july4Sat.getDate() - 1);
+  if (key === july4Sat.toDateString()) return "July 4th";
+
+  // Labor Day: Saturday before first Monday of September
+  const sep = new Date(year, 8, 1);
+  while (sep.getDay() !== 1) sep.setDate(sep.getDate() + 1);
+  const labSat = new Date(sep); labSat.setDate(labSat.getDate() - 2);
+  if (key === labSat.toDateString()) return "Labor Day";
+
+  // Thanksgiving: Saturday before 4th Thursday of November
+  const novCur = new Date(year, 10, 1);
+  let thursCount = 0;
+  while (thursCount < 4) {
+    if (novCur.getDay() === 4) thursCount++;
+    if (thursCount < 4) novCur.setDate(novCur.getDate() + 1);
+  }
+  const thanksSat = new Date(novCur); thanksSat.setDate(thanksSat.getDate() - 5);
+  if (key === thanksSat.toDateString()) return "Thanksgiving";
+
+  // Christmas: Saturday on or before Dec 25
+  const dec25 = new Date(year, 11, 25);
+  const xmasSat = new Date(dec25);
+  while (xmasSat.getDay() !== 6) xmasSat.setDate(xmasSat.getDate() - 1);
+  if (key === xmasSat.toDateString()) return "Christmas";
+
+  // New Year's: Saturday on or before Jan 1 (of next year's holiday)
+  const jan1 = new Date(year + 1, 0, 1);
+  const nyeSat = new Date(jan1);
+  while (nyeSat.getDay() !== 6) nyeSat.setDate(nyeSat.getDate() - 1);
+  if (key === nyeSat.toDateString()) return "New Year's";
+
+  return null;
+}
+
 function PricingTab() {
   const [seasonal, setSeasonal] = useState<SeasonalRate[]>([]);
-  const [overrides, setOverrides] = useState<Record<string, string>>({});
+  const [bookingCutoffDate, setBookingCutoffDate] = useState("");
+  const [overrides, setOverrides] = useState<Record<string, OverrideEntry>>({});
+  const [activeYear, setActiveYear] = useState(new Date().getFullYear());
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const saturdays = getSaturdays(52);
+
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear, currentYear + 1, currentYear + 2];
+  const saturdays = getYearSaturdays(activeYear);
 
   useEffect(() => {
-    fetch("/api/admin/prices?type=seasonal").then(r => r.json()).then(setSeasonal);
-    fetch("/api/admin/prices").then(r => r.json()).then((data: Record<string, number>) => {
-      const s: Record<string, string> = {};
-      for (const [k, v] of Object.entries(data)) s[k] = String(v);
-      setOverrides(s);
-    });
+    fetch("/api/admin/prices?type=seasonal")
+      .then(r => r.json())
+      .then((data: { bookingCutoffDate?: string; seasons?: SeasonalRate[] }) => {
+        setSeasonal(data.seasons ?? []);
+        setBookingCutoffDate(data.bookingCutoffDate ?? "");
+      });
+    fetch("/api/admin/prices")
+      .then(r => r.json())
+      .then((data: Record<string, number | { price: number; label?: string }>) => {
+        const entries: Record<string, OverrideEntry> = {};
+        for (const [k, v] of Object.entries(data)) {
+          if (typeof v === "number") {
+            entries[k] = { price: String(v), label: "" };
+          } else {
+            entries[k] = { price: String(v.price), label: v.label ?? "" };
+          }
+        }
+        setOverrides(entries);
+      });
   }, []);
 
   const getSeasonForDate = (d: Date) => {
@@ -355,34 +422,64 @@ function PricingTab() {
     return seasonal.find(s => mmdd >= s.start && mmdd < s.end) ?? seasonal[seasonal.length - 1];
   };
 
+  const setOverride = (key: string, field: "price" | "label", value: string) => {
+    setOverrides(p => ({ ...p, [key]: { ...(p[key] ?? { price: "", label: "" }), [field]: value } }));
+  };
+
   const save = async () => {
     setSaving(true); setMsg(null);
-    const weeklyPayload: Record<string, number> = {};
+    const weeklyPayload: Record<string, number | { price: number; label: string }> = {};
     for (const [k, v] of Object.entries(overrides)) {
-      const n = parseFloat(v);
-      if (!isNaN(n) && n > 0) weeklyPayload[k] = n;
+      const price = parseFloat(v.price);
+      if (!isNaN(price) && price > 0) {
+        weeklyPayload[k] = v.label.trim() ? { price, label: v.label.trim() } : price;
+      }
     }
     const [r1, r2] = await Promise.all([
       fetch("/api/admin/prices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(weeklyPayload) }),
-      fetch("/api/admin/prices?type=seasonal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(seasonal) }),
+      fetch("/api/admin/prices?type=seasonal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ bookingCutoffDate, seasons: seasonal }) }),
     ]);
     setSaving(false);
     setMsg(r1.ok && r2.ok ? "Saved!" : "Error saving.");
   };
 
+  const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
   return (
     <div className="space-y-8">
+      {/* Booking window */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <h2 className="font-semibold text-slate-800 mb-1">Booking Window</h2>
+        <p className="text-xs text-slate-400 mb-4">Guests can&apos;t book beyond this date. Controls the calendar cutoff on the public site.</p>
+        <div className="flex items-center gap-4">
+          <div>
+            <label className="text-xs text-slate-500 block mb-1">Last bookable date</label>
+            <input type="date" value={bookingCutoffDate}
+              onChange={e => setBookingCutoffDate(e.target.value)}
+              className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300" />
+          </div>
+          {bookingCutoffDate && (
+            <p className="text-sm text-slate-600 mt-4">
+              Guests can book through{" "}
+              <span className="font-semibold">
+                {new Date(bookingCutoffDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+              </span>
+            </p>
+          )}
+        </div>
+      </div>
+
       {/* Seasonal rates */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <h2 className="font-semibold text-slate-800">Seasonal Rates</h2>
-          <p className="text-xs text-slate-400">Changes apply to new server-side calculations immediately</p>
+          <p className="text-xs text-slate-400">All prices pre-tax · 12.75% added at checkout</p>
         </div>
         <div className="grid grid-cols-5 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
           <span>Season</span><span>Start (MM-DD)</span><span>End (MM-DD)</span><span>Nightly</span><span>Weekly</span>
         </div>
         {seasonal.map((s, i) => (
-          <div key={i} className="grid grid-cols-5 px-6 py-3 border-b border-slate-50 last:border-0 items-center">
+          <div key={i} className="grid grid-cols-5 px-6 py-3 border-b border-slate-50 last:border-0 items-center gap-2">
             <input value={s.label} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, label: e.target.value } : r))}
               className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
             <input value={s.start} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, start: e.target.value } : r))}
@@ -397,29 +494,53 @@ function PricingTab() {
         ))}
       </div>
 
-      {/* Weekly overrides */}
+      {/* Weekly overrides with year tabs */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h2 className="font-semibold text-slate-800">Weekly Overrides</h2>
-          <p className="text-xs text-slate-400 mt-1">Leave blank to use seasonal rate. Prices pre-tax (12.75% added at checkout).</p>
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-slate-800">Weekly Overrides</h2>
+            <div className="flex gap-1">
+              {years.map(y => (
+                <button key={y} onClick={() => setActiveYear(y)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${activeYear === y ? "bg-sky-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
+                  {y}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="text-xs text-slate-400 mt-1">Override weekly rate for specific check-in dates. Add a label (e.g. "July 4th") to show it on the public rate table. Amber rows are auto-detected holidays.</p>
         </div>
-        <div className="grid grid-cols-5 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-          <span>Check-in</span><span>Check-out</span><span>Season</span><span>Base Rate</span><span>Override</span>
+        <div className="grid grid-cols-[1fr_auto_auto_auto_1fr_1fr] bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400 gap-4">
+          <span>Check-in</span><span>Check-out</span><span>Season</span><span>Base Rate</span><span>Label</span><span>Override Price</span>
         </div>
         {saturdays.map(sat => {
           const co = new Date(sat); co.setDate(co.getDate() + 7);
           const s = getSeasonForDate(sat);
           const key = sat.toISOString().split("T")[0];
-          const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          const holiday = getHolidayLabel(sat);
+          const entry = overrides[key] ?? { price: "", label: "" };
+          const isHighlighted = !!holiday || !!entry.label;
+
           return (
-            <div key={key} className="grid grid-cols-5 px-6 py-3 border-b border-slate-50 last:border-0 items-center hover:bg-slate-50 transition-colors">
-              <span className="text-slate-700 text-sm">{fmt(sat)}</span>
+            <div key={key} className={`grid grid-cols-[1fr_auto_auto_auto_1fr_1fr] px-6 py-2.5 border-b border-slate-50 last:border-0 items-center gap-4 transition-colors ${isHighlighted ? "bg-amber-50" : "hover:bg-slate-50"}`}>
+              <span className="text-slate-700 text-sm font-medium">{fmt(sat)}</span>
               <span className="text-slate-500 text-sm">{fmt(co)}</span>
               <span className="text-slate-500 text-sm">{s?.label ?? "—"}</span>
               <span className="text-slate-600 text-sm">{s ? formatUSD(s.weekly) : "—"}</span>
-              <input type="number" value={overrides[key] ?? ""} onChange={e => setOverrides(p => ({ ...p, [key]: e.target.value }))}
+              <input
+                type="text"
+                value={entry.label || (holiday && !entry.price ? "" : entry.label)}
+                placeholder={holiday ?? ""}
+                onChange={e => setOverride(key, "label", e.target.value)}
+                className={`border rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300 ${isHighlighted ? "border-amber-200" : "border-slate-200"}`}
+              />
+              <input
+                type="number"
+                value={entry.price}
                 placeholder={String(s?.weekly ?? "")}
-                className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-28 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                onChange={e => setOverride(key, "price", e.target.value)}
+                className={`border rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300 ${isHighlighted ? "border-amber-200" : "border-slate-200"}`}
+              />
             </div>
           );
         })}

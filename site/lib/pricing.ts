@@ -8,10 +8,12 @@ export interface PriceBreakdown {
   nights: number;
 }
 
+type WeeklyOverride = number | { price: number; label?: string };
+
 export function getPriceForStay(
   checkin: Date,
   checkout: Date,
-  weeklyOverrides: Record<string, number> = {}
+  weeklyOverrides: Record<string, WeeklyOverride> = {}
 ): PriceBreakdown {
   const nights = Math.round(
     (checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24)
@@ -20,9 +22,11 @@ export function getPriceForStay(
 
   // Manual override for this specific check-in date (weekly stays only)
   if (nights === 7 && weeklyOverrides[checkinKey] !== undefined) {
-    const baseRate = weeklyOverrides[checkinKey];
+    const override = weeklyOverrides[checkinKey];
+    const baseRate = typeof override === "number" ? override : override.price;
+    const season = typeof override === "object" && override.label ? override.label : "Custom Rate";
     const taxAmount = Math.round(baseRate * property.rates.taxRate);
-    return { season: "Custom Rate", baseRate, taxAmount, total: baseRate + taxAmount, nights };
+    return { season, baseRate, taxAmount, total: baseRate + taxAmount, nights };
   }
 
   // Find matching seasonal rate
