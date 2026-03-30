@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import NavBar from "@/components/ui/NavBar";
 import BackToTop from "@/components/ui/BackToTop";
@@ -41,11 +42,15 @@ const jsonLd = {
   checkoutTime: "10:00",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-invoke-path") ?? headersList.get("x-pathname") ?? "";
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
@@ -53,9 +58,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <NavBar />
+        {!isAdmin && <NavBar />}
         {children}
-        <BackToTop />
+        {!isAdmin && <BackToTop />}
       </body>
     </html>
   );
