@@ -26,7 +26,7 @@ export default function Hero() {
           width={600}
           height={255}
           priority
-          className="w-auto h-64 sm:h-80 lg:h-96 mb-6 drop-shadow-2xl"
+          className="w-64 sm:w-80 lg:w-96 h-auto mb-6 drop-shadow-2xl"
         />
         <h1 className="sr-only">{property.name}</h1>
 
