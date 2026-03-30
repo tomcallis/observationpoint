@@ -1,0 +1,310 @@
+================================================================================
+  OBSERVATION POINT RENTAL ANALYSIS REPORT
+  Generated: March 23, 2026
+================================================================================
+
+1. DATA CLEANING SUMMARY
+--------------------------------------------------------------------------------
+  * 2026 Rates: Could not detect column 'holiday' from header; using default index 2.
+  * 2024 Rates: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2024 Rates: Could not detect column 'rental_type' from header; using default index 8.
+  * 2024 Rates: Could not detect column 'renter_name' from header; using default index 9.
+  * 2023 Rates: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2023 Rates: Could not detect column 'actual_income' from header; using default index 7.
+  * 2023 Rates: Could not detect column 'rental_type' from header; using default index 8.
+  * 2023 Rates: Could not detect column 'renter_name' from header; using default index 9.
+  * 2022 Rates: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2022 Rates: Could not detect column 'actual_income' from header; using default index 7.
+  * 2022 Rates: Could not detect column 'rental_type' from header; using default index 8.
+  * 2022 Rates: Could not detect column 'renter_name' from header; using default index 9.
+  * 2021 Rates: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2021 Rates: Could not detect column 'nightly_rate' from header; using default index 4.
+  * 2021 Rates: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2021 Rates: Could not detect column 'pred_income' from header; using default index 6.
+  * 2021 Rates: Could not detect column 'actual_income' from header; using default index 7.
+  * 2021 Rates: Could not detect column 'rental_type' from header; using default index 8.
+  * 2021 Rates: Could not detect column 'renter_name' from header; using default index 9.
+  * 2020 Rates: Could not detect column 'sat' from header; using default index 0.
+  * 2020 Rates: Could not detect column 'fri' from header; using default index 1.
+  * 2020 Rates: Could not detect column 'holiday' from header; using default index 2.
+  * 2020 Rates: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2020 Rates: Could not detect column 'nightly_rate' from header; using default index 4.
+  * 2020 Rates: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2020 Rates: Could not detect column 'pred_income' from header; using default index 6.
+  * 2020 Rates: Could not detect column 'actual_income' from header; using default index 7.
+  * 2020 Rates: Could not detect column 'rental_type' from header; using default index 8.
+  * 2020 Rates: Could not detect column 'renter_name' from header; using default index 9.
+  * 2020 Rates row 2: Could not parse Saturday date 'We need $?? to be cash flow neutral'.
+  * 2019 Rates: Could not detect column 'sat' from header; using default index 0.
+  * 2019 Rates: Could not detect column 'fri' from header; using default index 1.
+  * 2019 Rates: Could not detect column 'holiday' from header; using default index 2.
+  * 2019 Rates: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2019 Rates: Could not detect column 'nightly_rate' from header; using default index 4.
+  * 2019 Rates: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2019 Rates: Could not detect column 'pred_income' from header; using default index 6.
+  * 2019 Rates: Could not detect column 'actual_income' from header; using default index 7.
+  * 2019 Rates: Could not detect column 'rental_type' from header; using default index 8.
+  * 2019 Rates: Could not detect column 'renter_name' from header; using default index 9.
+  * 2019 Rates row 2: Could not parse Saturday date 'We need $27-28k to be cash flow neutral'.
+  * 2018: Could not detect column 'sat' from header; using default index 0.
+  * 2018: Could not detect column 'fri' from header; using default index 1.
+  * 2018: Could not detect column 'holiday' from header; using default index 2.
+  * 2018: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2018: Could not detect column 'nightly_rate' from header; using default index 4.
+  * 2018: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2018: Could not detect column 'pred_income' from header; using default index 6.
+  * 2018: Could not detect column 'actual_income' from header; using default index 7.
+  * 2018: Could not detect column 'rental_type' from header; using default index 8.
+  * 2018: Could not detect column 'renter_name' from header; using default index 9.
+  * 2018 row 2: Could not parse Saturday date 'Sat'.
+  * 2018 summary: Could not detect column 'sat' from header; using default index 0.
+  * 2018 summary: Could not detect column 'fri' from header; using default index 1.
+  * 2018 summary: Could not detect column 'holiday' from header; using default index 2.
+  * 2018 summary: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2018 summary: Could not detect column 'nightly_rate' from header; using default index 4.
+  * 2018 summary: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2018 summary: Could not detect column 'pred_income' from header; using default index 6.
+  * 2018 summary: Could not detect column 'actual_income' from header; using default index 7.
+  * 2018 summary: Could not detect column 'rental_type' from header; using default index 8.
+  * 2018 summary: Could not detect column 'renter_name' from header; using default index 9.
+  * 2018 summary row 2: Could not parse Saturday date 'Group'.
+  * 2018 summary row 3: Could not parse Saturday date '1'.
+  * 2018 summary row 4: Could not parse Saturday date '2'.
+  * 2018 summary row 5: Could not parse Saturday date '3'.
+  * 2018 summary row 6: Could not parse Saturday date '4'.
+  * 2018 summary row 7: Could not parse Saturday date '5'.
+  * 2018 summary row 8: Could not parse Saturday date '6'.
+  * 2018 summary row 9: Could not parse Saturday date '7'.
+  * 2018 summary row 10: Could not parse Saturday date '8'.
+  * 2018 summary row 11: Could not parse Saturday date '9'.
+  * 2017: Could not detect column 'sat' from header; using default index 0.
+  * 2017: Could not detect column 'fri' from header; using default index 1.
+  * 2017: Could not detect column 'holiday' from header; using default index 2.
+  * 2017: Could not detect column 'weekly_rate' from header; using default index 3.
+  * 2017: Could not detect column 'nightly_rate' from header; using default index 4.
+  * 2017: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2017: Could not detect column 'pred_income' from header; using default index 6.
+  * 2017: Could not detect column 'actual_income' from header; using default index 7.
+  * 2017: Could not detect column 'rental_type' from header; using default index 8.
+  * 2017: Could not detect column 'renter_name' from header; using default index 9.
+  * 2017 row 2: Could not parse Saturday date 'Sat'.
+  * 2017 summary: Could not detect column 'sat' from header; using default index 0.
+  * 2017 summary: Could not detect column 'fri' from header; using default index 1.
+  * 2017 summary: Could not detect column 'holiday' from header; using default index 2.
+  * 2017 summary: Could not detect column 'pred_weeks' from header; using default index 5.
+  * 2017 summary: Could not detect column 'pred_income' from header; using default index 6.
+  * 2017 summary: Could not detect column 'actual_income' from header; using default index 7.
+  * 2017 summary: Could not detect column 'rental_type' from header; using default index 8.
+  * 2017 summary: Could not detect column 'renter_name' from header; using default index 9.
+  * 2017 summary row 2: Could not parse Saturday date '1'.
+  * 2017 summary row 3: Could not parse Saturday date '2'.
+  * 2017 summary row 4: Could not parse Saturday date '3'.
+  * 2017 summary row 5: Could not parse Saturday date '4'.
+  * 2017 summary row 6: Could not parse Saturday date '5'.
+  * 2017 summary row 7: Could not parse Saturday date '6'.
+  * 2017 summary row 8: Could not parse Saturday date '7'.
+  * 2017 summary row 9: Could not parse Saturday date '8'.
+  * 2017 summary row 10: Could not parse Saturday date '9'.
+
+2. YEAR-BY-YEAR SUMMARY TABLE
+--------------------------------------------------------------------------------
+Year   Avail Rented   Occ%  Actual Income  Pred (future)      ADR   VRBO%  Direct%  Fam/Comp
+--------------------------------------------------------------------------------------------
+2026 Rates    47      7  14.9%   $     11,418   $      1,043   $ 1,903   57.1%    42.9%         8
+2025 Rates    47     16  34.0%   $     24,497   $          0   $ 1,633   50.0%    50.0%         8
+2024 Rates    54      1   1.9%   $      1,544   $          0   $ 1,544  100.0%     0.0%         0
+2023 Rates    54      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2022 Rates    53      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2021 Rates    53      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2020 Rates    54      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2019 Rates    54      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2018      54      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2018 summary     0      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2017      54      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+2017 summary     0      0   0.0%   $          0   $          0   $     0    0.0%     0.0%         0
+
+  Channel Breakdown Detail:
+  Year    Channel        Weeks     Income
+  2026 Rates:
+    Direct               3 wks  $     3,504
+    VRBO                 4 wks  $     7,914
+  2025 Rates:
+    Direct               8 wks  $    12,465
+    VRBO                 8 wks  $    12,032
+  2024 Rates:
+    VRBO                 1 wks  $     1,544
+
+  Seasonal Occupancy Detail:
+  Year    Season        Avail  Booked    Occ%        Income
+  2026 Rates  Off-Peak         20       0    0.0%  $         0
+  2026 Rates  Shoulder         10       0    0.0%  $         0
+  2026 Rates  Mid-Season        9       4   44.4%  $     4,816
+  2026 Rates  Peak              8       3   37.5%  $     6,602
+  2025 Rates  Off-Peak         19       1    5.3%  $     1,176
+  2025 Rates  Shoulder         12       3   25.0%  $     3,241
+  2025 Rates  Mid-Season        9       7   77.8%  $     9,890
+  2025 Rates  Peak              7       5   71.4%  $    10,190
+  2024 Rates  Off-Peak         19       0    0.0%  $         0
+  2024 Rates  Shoulder         13       0    0.0%  $         0
+  2024 Rates  Mid-Season        8       1   12.5%  $     1,544
+  2024 Rates  Peak             14       0    0.0%  $         0
+  2023 Rates  Off-Peak         19       0    0.0%  $         0
+  2023 Rates  Shoulder         13       0    0.0%  $         0
+  2023 Rates  Mid-Season        9       0    0.0%  $         0
+  2023 Rates  Peak             13       0    0.0%  $         0
+  2022 Rates  Off-Peak         18       0    0.0%  $         0
+  2022 Rates  Shoulder         14       0    0.0%  $         0
+  2022 Rates  Mid-Season        8       0    0.0%  $         0
+  2022 Rates  Peak             13       0    0.0%  $         0
+  2021 Rates  Off-Peak         18       0    0.0%  $         0
+  2021 Rates  Shoulder         13       0    0.0%  $         0
+  2021 Rates  Mid-Season        9       0    0.0%  $         0
+  2021 Rates  Peak             13       0    0.0%  $         0
+  2020 Rates  Off-Peak         19       0    0.0%  $         0
+  2020 Rates  Shoulder         13       0    0.0%  $         0
+  2020 Rates  Mid-Season        9       0    0.0%  $         0
+  2020 Rates  Peak             13       0    0.0%  $         0
+  2019 Rates  Off-Peak         19       0    0.0%  $         0
+  2019 Rates  Shoulder         13       0    0.0%  $         0
+  2019 Rates  Mid-Season        8       0    0.0%  $         0
+  2019 Rates  Peak             14       0    0.0%  $         0
+  2018    Off-Peak         19       0    0.0%  $         0
+  2018    Shoulder         13       0    0.0%  $         0
+  2018    Mid-Season        9       0    0.0%  $         0
+  2018    Peak             13       0    0.0%  $         0
+  2017    Off-Peak         19       0    0.0%  $         0
+  2017    Shoulder         13       0    0.0%  $         0
+  2017    Mid-Season        9       0    0.0%  $         0
+  2017    Peak             13       0    0.0%  $         0
+
+3. TREND ANALYSIS
+--------------------------------------------------------------------------------
+  Year-over-Year Income Change:
+    2026 -> 2025: $11,418 -> $24,497  (+114.6%)
+    2025 -> 2024: $24,497 -> $1,544  (-93.7%)
+
+  ADR (Average Daily/Weekly Rate) Trend:
+    2026 Rates $  1,903  |||||||||||||||||||
+    2025 Rates $  1,633  ||||||||||||||||
+    2024 Rates $  1,544  |||||||||||||||
+
+  Occupancy Rate Trend:
+    2026 Rates  14.9%  |||||
+    2025 Rates  34.0%  |||||||||||||
+    2024 Rates   1.9%  
+    2023 Rates   0.0%  
+    2022 Rates   0.0%  
+    2021 Rates   0.0%  
+    2020 Rates   0.0%  
+    2019 Rates   0.0%  
+    2018       0.0%  
+    2018 summary   0.0%  
+    2017       0.0%  
+    2017 summary   0.0%  
+
+  Channel Mix Over Time (VRBO% vs Direct%):
+    2026 Rates  VRBO:  57.1%  Direct:  42.9%  Other:   0.0%
+    2025 Rates  VRBO:  50.0%  Direct:  50.0%  Other:   0.0%
+    2024 Rates  VRBO: 100.0%  Direct:   0.0%  Other:   0.0%
+    2023 Rates  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2022 Rates  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2021 Rates  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2020 Rates  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2019 Rates  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2018      VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2018 summary  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2017      VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+    2017 summary  VRBO:   0.0%  Direct:   0.0%  Other: 100.0%
+
+  Seasonal Average Weekly Rate by Year:
+  Season          2026    2025    2024    2023    2022    2021    2020    2019    2018    2018    2017    2017
+  Off-Peak           -  $1,176       -       -       -       -       -       -       -       -       -       -
+  Shoulder           -  $1,080       -       -       -       -       -       -       -       -       -       -
+  Mid-Season    $1,605  $1,648  $1,544       -       -       -       -       -       -       -       -       -
+  Peak          $2,201  $2,038       -       -       -       -       -       -       -       -       -       -
+
+  Predicted vs Actual Income Variance (completed years):
+    2025 Rates  Predicted: $    39,767  Actual: $    24,497  Variance: -38.4%
+    2024 Rates  Predicted: $    40,110  Actual: $     1,544  Variance: -96.2%
+    2023 Rates  Predicted: $    50,925  Actual: $         0  Variance: -100.0%
+    2022 Rates  Predicted: $    42,609  Actual: $         0  Variance: -100.0%
+    2019 Rates  Predicted: $     5,025  Actual: $         0  Variance: -100.0%
+    2017      Predicted: $       302  Actual: $         0  Variance: -100.0%
+
+  Family/Comp Impact on Revenue:
+    2026 Rates  Family/Comp weeks:  8  Estimated foregone revenue: $  14,024
+    2025 Rates  Family/Comp weeks:  8  Estimated foregone revenue: $  12,887
+    2024 Rates  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2023 Rates  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2022 Rates  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2021 Rates  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2020 Rates  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2019 Rates  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2018      Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2018 summary  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2017      Family/Comp weeks:  0  Estimated foregone revenue: $       0
+    2017 summary  Family/Comp weeks:  0  Estimated foregone revenue: $       0
+
+4. 2027 PRICING RECOMMENDATIONS
+--------------------------------------------------------------------------------
+  Based on year-over-year rate progression and occupancy trends.
+
+  Month        Season       Suggested Weekly  Suggested Nightly Notes
+  ----------------------------------------------------------------------------
+  January      Off-Peak     $         1,200 $             170   (insufficient data)  Post-holiday slow; consider 7-night minimum
+  February     Off-Peak     $         1,200 $             170   (insufficient data)  Presidents Day wknd - small premium possible
+  March        Shoulder     $         1,100 $             155   (insufficient data)  Spring Break potential; shoulder push
+  April        Shoulder     $         1,100 $             155   (insufficient data)  Spring shoulder; Easter = holiday premium
+  May          Mid-Season   $         1,850 $             265   (proj. +6.5%/yr)  Memorial Day wknd = holiday premium
+  June         Peak         $         2,350 $             335   (proj. +7.7%/yr)  Peak season begins; high demand
+  July         Peak         $         2,350 $             335   (proj. +7.7%/yr)  Peak - 4th of July = highest demand week
+  August       Peak         $         2,350 $             335   (proj. +7.7%/yr)  Late peak; Labor Day wknd premium
+  September    Mid-Season   $         1,850 $             265   (proj. +6.5%/yr)  Labor Day wknd premium; shoulder starts mid-month
+  October      Shoulder     $         1,100 $             155   (insufficient data)  Shoulder; Columbus Day wknd small premium
+  November     Off-Peak     $         1,200 $             170   (insufficient data)  Off-peak; Thanksgiving wknd premium
+  December     Off-Peak     $         1,200 $             170   (insufficient data)  Christmas/NYE = holiday premium; Jan 1 wknd
+
+  Holiday Premium Recommendations:
+    - Memorial Day week:      +15-20% above standard weekly rate
+    - 4th of July week:       +20-25% above standard weekly rate
+    - Labor Day week:         +15-20% above standard weekly rate
+    - Thanksgiving week:      +10-15% above standard weekly rate
+    - Christmas/New Year wk:  +20-30% above standard weekly rate
+    - Easter week:            +10-15% above standard weekly rate
+
+  Seasonal Rate History & Projections:
+    Off-Peak:
+      2025: $   1,176/week  ($168/night)
+      2027 PROJECTED: $   1,176/week  ($168/night)  [insufficient data for trend]
+
+    Shoulder:
+      2025: $   1,080/week  ($154/night)
+      2027 PROJECTED: $   1,080/week  ($154/night)  [insufficient data for trend]
+
+    Mid-Season:
+      2024: $   1,544/week  ($221/night)
+      2025: $   1,648/week  ($235/night)
+      2026: $   1,605/week  ($229/night)
+      2027 PROJECTED: $   1,857/week  ($265/night)  [+6.5%/yr growth rate]
+
+    Peak:
+      2025: $   2,038/week  ($291/night)
+      2026: $   2,201/week  ($314/night)
+      2027 PROJECTED: $   2,363/week  ($338/night)  [+7.7%/yr growth rate]
+
+5. CONFIDENCE NOTES
+--------------------------------------------------------------------------------
+  * Column detection is automated; if a year's data looks off, check col_map manually.
+  * 2025 and 2026 projections include predicted (not actual) income for future weeks.
+  * Rate projections use linear regression on 5 most recent complete years.
+  * Occupancy rates exclude Family/Comp weeks from the denominator.
+  * ADR is based on actual income only (not predicted); future weeks excluded.
+  * Holiday detection relies on non-empty holiday/notes column; verify manually.
+  * Channel mix may undercount Direct bookings if rental type field was left blank.
+  * 2026 data is partial-year; income figures will grow as the year fills in.
+  * Recommend 3-5% annual rate increase minimum to match inflation trends.
+  * Peak season (Jun-Aug) has highest occupancy leverage; prioritize rate over discount.
+
+================================================================================
+  END OF REPORT
+================================================================================

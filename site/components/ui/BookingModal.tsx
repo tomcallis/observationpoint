@@ -14,7 +14,6 @@ interface Props {
 
 const weeklyOverrides = weeklyPricesData as Record<string, number>;
 
-type PaymentMethod = "venmo" | "check";
 type Step = "agreement" | "details" | "payment" | "confirm";
 
 const REFERRAL_OPTIONS = [
@@ -41,8 +40,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
   const [referralSource, setReferralSource] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
 
-  // Payment & submission
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("venmo");
+  // Submission
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -79,7 +77,6 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
       total: pricing.total,
       depositAmount,
       balanceAmount,
-      paymentMethod,
     };
 
     try {
@@ -112,12 +109,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
   };
 
   const openMailtoFallback = () => {
-    const pmDetails =
-      paymentMethod === "venmo"
-        ? `Payment: Venmo to ${payment.venmo.handle} — Deposit: ${formatUSD(depositAmount)}`
-        : `Payment: Check to "${payment.check.payableTo}", ${payment.check.mailingAddress} — Deposit: ${formatUSD(depositAmount)}`;
-
-    const body = `BOOKING REQUEST — Observation Point\n\nGuest: ${guestName}\nEmail: ${guestEmail}\nPhone: ${guestPhone}\nGuests: ${numGuests}\nHeard about us: ${referralSource}\n\nCheck-in: ${formatDisplayDate(checkin)}\nCheck-out: ${formatDisplayDate(checkout)}\nNights: ${pricing.nights} · Total: ${formatUSD(pricing.total)}\n\n${pmDetails}\n\nSpecial requests: ${specialRequests || "None"}\n\nGuest agreed to the Vacation Rental Agreement.`;
+    const body = `BOOKING REQUEST — Observation Point\n\nGuest: ${guestName}\nEmail: ${guestEmail}\nPhone: ${guestPhone}\nGuests: ${numGuests}\nHeard about us: ${referralSource}\n\nCheck-in: ${formatDisplayDate(checkin)}\nCheck-out: ${formatDisplayDate(checkout)}\nNights: ${pricing.nights} · Total: ${formatUSD(pricing.total)}\n\nSpecial requests: ${specialRequests || "None"}\n\nGuest agreed to the Vacation Rental Agreement.`;
 
     const subject = encodeURIComponent(`Booking Request — Observation Point ${formatDisplayDate(checkin)}`);
     window.open(`mailto:${property.contactEmail}?subject=${subject}&body=${encodeURIComponent(body)}`);
@@ -158,7 +150,7 @@ If authorities order a mandatory evacuation, Traveler must comply and is entitle
 Owner will provide the cottage in fit and habitable condition and make good faith efforts to repair inoperative equipment promptly. Owner or agents may enter the cottage for repairs, maintenance, or other necessary purposes. If Owner cannot provide the cottage in habitable condition at the time of occupancy, all payments will be refunded. Traveler agrees to indemnify and hold harmless the Owner from liability for personal injury or property damage unless caused by the negligent or willful act of the Owner. Owner will conduct all activities without regard to race, religion, sex, national origin, handicap, or familial status.
 
 PAYMENT
-Pay by Venmo (${payment.venmo.handle}) or check payable to ${payment.check.payableTo}, ${payment.check.mailingAddress}.
+Payment is processed securely via Stripe. A 50% deposit is due within 48 hours of booking confirmation. The remaining 50% balance is due 30 days before check-in.
 
 By checking the box below, Traveler acknowledges having read and agreed to this Vacation Rental Agreement.`;
 
@@ -347,51 +339,38 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
             </div>
           )}
 
-          {/* ── Step 3: Payment ── */}
+          {/* ── Step 3: Review & Submit ── */}
           {step === "payment" && (
             <div>
-              <h3 className="font-semibold text-slate-800 mb-1">Payment Method</h3>
+              <h3 className="font-semibold text-slate-800 mb-1">Review &amp; Submit</h3>
               <p className="text-sm text-slate-500 mb-4">
-                Your {formatUSD(depositAmount)} deposit is due within 48 hours. Choose how you&rsquo;d like to pay.
+                Your request will be sent to Tom for review. If confirmed, you&rsquo;ll receive a secure Stripe payment link for your {formatUSD(depositAmount)} deposit.
               </p>
-              <div className="space-y-3">
-                <label className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${paymentMethod === "venmo" ? "border-sky-400 bg-sky-50" : "border-slate-200 hover:border-slate-300"}`}>
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="venmo"
-                    checked={paymentMethod === "venmo"}
-                    onChange={() => setPaymentMethod("venmo")}
-                    className="mt-0.5 accent-sky-500"
-                  />
-                  <div>
-                    <div className="font-semibold text-slate-800">Pay by Venmo</div>
-                    <div className="text-sm text-slate-500 mt-0.5">
-                      Send to <span className="font-mono font-semibold text-slate-700">{payment.venmo.handle}</span>
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      Include your name and check-in date in the Venmo note
-                    </div>
-                  </div>
-                </label>
-                <label className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${paymentMethod === "check" ? "border-sky-400 bg-sky-50" : "border-slate-200 hover:border-slate-300"}`}>
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="check"
-                    checked={paymentMethod === "check"}
-                    onChange={() => setPaymentMethod("check")}
-                    className="mt-0.5 accent-sky-500"
-                  />
-                  <div>
-                    <div className="font-semibold text-slate-800">Mail a Check</div>
-                    <div className="text-sm text-slate-500 mt-0.5">
-                      Payable to <span className="font-semibold text-slate-700">&quot;{payment.check.payableTo}&quot;</span>
-                    </div>
-                    <div className="text-xs text-slate-400 mt-0.5">{payment.check.mailingAddress}</div>
-                    <div className="text-xs text-slate-400">Must be received within 5 business days</div>
-                  </div>
-                </label>
+              <div className="bg-slate-50 rounded-xl p-4 text-sm space-y-2 mb-2">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Check-in</span>
+                  <span className="font-medium">{formatDisplayDate(checkin)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Check-out</span>
+                  <span className="font-medium">{formatDisplayDate(checkout)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Guests</span>
+                  <span className="font-medium">{numGuests}</span>
+                </div>
+                <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
+                  <span className="text-slate-500">Total (incl. tax)</span>
+                  <span className="font-bold text-sky-600">{formatUSD(pricing.total)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Deposit (50%)</span>
+                  <span className="font-medium">{formatUSD(depositAmount)} via Stripe</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Balance (50%)</span>
+                  <span className="font-medium">{formatUSD(balanceAmount)} · due 30 days before check-in</span>
+                </div>
               </div>
 
               {submitError && (
@@ -424,7 +403,7 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
                 )}
               </button>
               <p className="text-xs text-slate-400 text-center mt-2">
-                You&apos;ll receive a confirmation email with payment instructions.
+                You&apos;ll receive a confirmation email once Tom reviews your request.
               </p>
             </div>
           )}
@@ -442,7 +421,7 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
                 A confirmation has been sent to <strong>{guestEmail}</strong>.
               </p>
               <p className="text-slate-500 text-sm mb-6">
-                Check your inbox for payment instructions. Tom will confirm once your deposit is received.
+                Tom will review your request and email you a payment link for your deposit if confirmed.
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-left text-sm space-y-2 mb-6">
                 <div className="flex justify-between">
@@ -458,14 +437,8 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
                   <span className="font-bold text-sky-600">{formatUSD(pricing.total)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Deposit due</span>
-                  <span className="font-medium">{formatUSD(depositAmount)} within 48 hrs</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Payment via</span>
-                  <span className="font-medium capitalize">
-                    {paymentMethod === "venmo" ? `Venmo (${payment.venmo.handle})` : "Check by mail"}
-                  </span>
+                  <span className="text-slate-500">Deposit (if confirmed)</span>
+                  <span className="font-medium">{formatUSD(depositAmount)} via Stripe</span>
                 </div>
               </div>
               <button

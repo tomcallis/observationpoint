@@ -9,12 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@vercel/postgres": "^0.10.0",
+    "googleapis": "^171.4.0",
     "next": "16.1.6",
     "node-ical": "^0.25.6",
     "react": "19.2.3",
     "react-calendar": "^6.0.0",
     "react-dom": "19.2.3",
     "resend": "^6.9.4",
+    "stripe": "^21.0.1",
     "yet-another-react-lightbox": "^3.29.1"
   },
   "devDependencies": {
