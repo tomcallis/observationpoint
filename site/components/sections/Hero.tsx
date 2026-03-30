@@ -37,7 +37,7 @@ export default function Hero() {
           {property.tagline}
         </p>
         <p className="text-white/60 text-sm mb-10 drop-shadow">
-          Frisco, NC · Soundfront cottage · Private dock · Sleeps 6
+          Soundfront cottage · Private dock · Sleeps 6
         </p>
 
         {/* Direct booking value prop */}
