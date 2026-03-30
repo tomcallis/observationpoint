@@ -26,9 +26,14 @@ export default function Hero() {
           width={600}
           height={600}
           priority
-          className="w-64 sm:w-80 lg:w-96 h-auto mb-6 drop-shadow-2xl"
+          className="w-40 sm:w-48 lg:w-56 h-auto mb-6 drop-shadow-2xl"
         />
-        <h1 className="sr-only">{property.name}</h1>
+        <h1 className="text-white text-2xl sm:text-3xl font-black uppercase tracking-widest mb-1 drop-shadow">
+          Observation Point
+        </h1>
+        <p className="text-white/70 text-xs sm:text-sm font-semibold uppercase tracking-widest mb-5 drop-shadow">
+          Frisco, NC
+        </p>
 
         <p className="text-sky-300 text-sm font-semibold uppercase tracking-widest mb-3">
           {property.location.area}
