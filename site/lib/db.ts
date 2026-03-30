@@ -5,6 +5,37 @@ function getSQL() {
   return neon(process.env.DATABASE_URL);
 }
 
+// Neon returns DATE columns as JS Date objects — normalize to ISO strings
+function toDateStr(v: unknown): string {
+  if (v instanceof Date) return v.toISOString().split("T")[0];
+  return String(v ?? "");
+}
+function toTsStr(v: unknown): string {
+  if (v instanceof Date) return v.toISOString();
+  return String(v ?? "");
+}
+function normalizeBooking(row: Record<string, unknown>): Booking {
+  return {
+    ...row,
+    check_in: toDateStr(row.check_in),
+    check_out: toDateStr(row.check_out),
+    created_at: toTsStr(row.created_at),
+    updated_at: toTsStr(row.updated_at),
+    deposit_paid_at: row.deposit_paid_at ? toTsStr(row.deposit_paid_at) : null,
+    balance_paid_at: row.balance_paid_at ? toTsStr(row.balance_paid_at) : null,
+  } as Booking;
+}
+function normalizeEvent(row: Record<string, unknown>): BookingEvent {
+  return { ...row, created_at: toTsStr(row.created_at) } as BookingEvent;
+}
+function normalizeBlock(row: Record<string, unknown>): BlockedDate {
+  return {
+    ...row,
+    check_in: toDateStr(row.check_in),
+    check_out: toDateStr(row.check_out),
+  } as BlockedDate;
+}
+
 export type BookingStatus =
   | "pending"
   | "confirmed"
@@ -77,41 +108,41 @@ export async function createBooking(data: {
        ${data.ownerToken})
     RETURNING *
   `;
-  return rows[0] as Booking;
+  return normalizeBooking(rows[0] as Record<string, unknown>);
 }
 
 export async function getBookingByToken(token: string): Promise<Booking | null> {
   const sql = getSQL();
   const rows = await sql`SELECT * FROM bookings WHERE owner_token = ${token}`;
-  return (rows[0] as Booking) ?? null;
+  return rows[0] ? normalizeBooking(rows[0] as Record<string, unknown>) : null;
 }
 
 export async function getBookingById(id: string): Promise<Booking | null> {
   const sql = getSQL();
   const rows = await sql`SELECT * FROM bookings WHERE id = ${id}`;
-  return (rows[0] as Booking) ?? null;
+  return rows[0] ? normalizeBooking(rows[0] as Record<string, unknown>) : null;
 }
 
 export async function getBookingByDepositSession(sessionId: string): Promise<Booking | null> {
   const sql = getSQL();
   const rows = await sql`SELECT * FROM bookings WHERE stripe_deposit_session_id = ${sessionId}`;
-  return (rows[0] as Booking) ?? null;
+  return rows[0] ? normalizeBooking(rows[0] as Record<string, unknown>) : null;
 }
 
 export async function getBookingByBalanceSession(sessionId: string): Promise<Booking | null> {
   const sql = getSQL();
   const rows = await sql`SELECT * FROM bookings WHERE stripe_balance_session_id = ${sessionId}`;
-  return (rows[0] as Booking) ?? null;
+  return rows[0] ? normalizeBooking(rows[0] as Record<string, unknown>) : null;
 }
 
 export async function listBookings(status?: BookingStatus): Promise<Booking[]> {
   const sql = getSQL();
   if (status) {
     const rows = await sql`SELECT * FROM bookings WHERE status = ${status} ORDER BY check_in ASC`;
-    return rows as Booking[];
+    return (rows as Record<string, unknown>[]).map(normalizeBooking);
   }
   const rows = await sql`SELECT * FROM bookings ORDER BY created_at DESC`;
-  return rows as Booking[];
+  return (rows as Record<string, unknown>[]).map(normalizeBooking);
 }
 
 export async function updateBookingStatus(
@@ -158,7 +189,7 @@ export async function insertBookingEvent(
 export async function getBookingEvents(bookingId: string): Promise<BookingEvent[]> {
   const sql = getSQL();
   const rows = await sql`SELECT * FROM booking_events WHERE booking_id = ${bookingId} ORDER BY created_at ASC`;
-  return rows as BookingEvent[];
+  return (rows as Record<string, unknown>[]).map(normalizeEvent);
 }
 
 // ── Blocked Dates ───────────────────────────────────────────────────────────
@@ -166,7 +197,7 @@ export async function getBookingEvents(bookingId: string): Promise<BookingEvent[
 export async function listBlockedDates(): Promise<BlockedDate[]> {
   const sql = getSQL();
   const rows = await sql`SELECT * FROM blocked_dates ORDER BY check_in ASC`;
-  return rows as BlockedDate[];
+  return (rows as Record<string, unknown>[]).map(normalizeBlock);
 }
 
 export async function createBlockedDate(data: {
@@ -180,7 +211,7 @@ export async function createBlockedDate(data: {
     VALUES (${data.checkIn}, ${data.checkOut}, ${data.reason})
     RETURNING *
   `;
-  return rows[0] as BlockedDate;
+  return normalizeBlock(rows[0] as Record<string, unknown>);
 }
 
 export async function deleteBlockedDate(id: string): Promise<void> {
