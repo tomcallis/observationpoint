@@ -28,15 +28,11 @@ export default function Hero() {
           priority
           className="w-40 sm:w-48 lg:w-56 h-auto mb-6 drop-shadow-2xl"
         />
-        <h1 className="text-sky-300 text-base sm:text-lg font-bold uppercase tracking-widest mb-1 drop-shadow">
+        <h1 className="text-white text-2xl sm:text-3xl font-light uppercase tracking-widest mb-2 drop-shadow">
           Observation Point
         </h1>
-        <p className="text-sky-300 text-sm font-semibold uppercase tracking-widest mb-3 drop-shadow">
-          Frisco, NC
-        </p>
-
         <p className="text-sky-300 text-sm font-semibold uppercase tracking-widest mb-3">
-          {property.location.area}
+          Frisco, NC · {property.location.area}
         </p>
         <p className="text-white/90 text-xl sm:text-2xl mb-3 drop-shadow leading-snug max-w-xl">
           {property.tagline}
