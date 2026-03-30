@@ -261,27 +261,17 @@ export default function Availability() {
               {
                 n: 2,
                 title: "Submit a request",
-                desc: "Fill in your details and submit. Tom receives an email and confirms availability usually within an hour.",
+                desc: "Fill in your details and submit. Tom confirms availability usually within an hour.",
               },
               {
                 n: 3,
-                title: "Pay the deposit",
-                desc: `Once confirmed, you'll receive a secure Stripe payment link for your ${payment.deposit.percent}% deposit. Stripe handles all payments safely — no account needed.`,
+                title: "Pay your deposit",
+                desc: `Once confirmed, you'll receive a secure Stripe payment link for your ${payment.deposit.percent}% deposit. The remaining balance is charged automatically ${payment.deposit.balanceDueDays} days before check-in — no action needed.`,
               },
               {
                 n: 4,
-                title: "Pay the balance",
-                desc: `The remaining balance is due ${payment.deposit.balanceDueDays} days before check-in. You'll receive a payment link automatically.`,
-              },
-              {
-                n: 5,
-                title: "Get your check-in details",
-                desc: "A few days before arrival, you'll receive an email with check-in and property access information.",
-              },
-              {
-                n: 6,
-                title: "Enjoy the Outer Banks",
-                desc: "Check in Saturday at 3:30 PM. Questions during your stay? Text or email Tom directly.",
+                title: "Arrive & enjoy",
+                desc: "A few days before arrival you'll receive check-in and property access details. Check in Saturday at 3:30 PM.",
               },
             ].map(({ n, title, desc }) => (
               <li key={n} className="bg-white rounded-xl p-5 border border-slate-100 flex gap-4">
