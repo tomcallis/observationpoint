@@ -5,6 +5,7 @@ import "./globals.css";
 import NavBar from "@/components/ui/NavBar";
 import BackToTop from "@/components/ui/BackToTop";
 import { property } from "@/config/property";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,6 +62,7 @@ export default async function RootLayout({
         {!isAdmin && <NavBar />}
         {children}
         {!isAdmin && <BackToTop />}
+        <Analytics />
       </body>
     </html>
   );

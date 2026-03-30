@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "@vercel/analytics": "^2.0.1",
     "googleapis": "^171.4.0",
     "next": "16.1.6",
     "node-ical": "^0.25.6",
