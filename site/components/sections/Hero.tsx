@@ -21,12 +21,12 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-3xl flex flex-col items-center">
         <Image
-          src="/Original Logo.png"
+          src="/images/logo-white-square.png"
           alt={property.name}
           width={600}
-          height={255}
+          height={600}
           priority
-          className="w-64 sm:w-80 lg:w-96 h-auto mb-6 drop-shadow-2xl"
+          className="w-48 sm:w-64 lg:w-72 h-auto mb-6 drop-shadow-2xl"
         />
         <h1 className="sr-only">{property.name}</h1>
 
