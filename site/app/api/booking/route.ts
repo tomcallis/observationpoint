@@ -328,7 +328,7 @@ export async function POST(req: Request) {
   }
 
   const fromEmail =
-    process.env.RESEND_FROM_EMAIL ?? "Observation Point <noreply@observationpointnc.com>";
+    process.env.RESEND_FROM_EMAIL ?? "Observation Point <reservations@observationpointnc.com>";
   const ownerEmail = property.contactEmail;
 
   const checkinDate = new Date(body.checkin + "T12:00:00");
