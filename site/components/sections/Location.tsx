@@ -2,6 +2,17 @@ import { property } from "@/config/property";
 
 const { location } = property;
 
+function renderWithLinks(text: string) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  return parts.map((part, i) => {
+    const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (match) {
+      return <a key={i} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-sky-500 hover:underline">{match[1]}</a>;
+    }
+    return part;
+  });
+}
+
 export default function Location() {
   return (
     <section id="location" className="py-20 bg-white">
@@ -44,7 +55,7 @@ export default function Location() {
                 {location.drivingDirections.map((d, i) => (
                   <li key={i} className="flex gap-2 text-slate-600 text-sm">
                     <span className="text-sky-500 mt-0.5">→</span>
-                    <span>{d}</span>
+                    <span>{renderWithLinks(d)}</span>
                   </li>
                 ))}
               </ul>
