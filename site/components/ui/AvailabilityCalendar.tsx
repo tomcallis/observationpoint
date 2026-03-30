@@ -41,11 +41,13 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
   }, [blockedRanges]);
 
   const today = new Date(new Date().setHours(0, 0, 0, 0));
+  const bookingCutoff = new Date(2026, 11, 31); // Dec 31, 2026 — open 2027 in October
 
   const isSaturday = (date: Date) => date.getDay() === 6;
 
   const isDateUnavailable = (date: Date) => {
     if (date < today) return true;
+    if (date > bookingCutoff) return true;
     if (!isSaturday(date)) return true;
     const key = date.toISOString().split("T")[0];
     // Back-to-back: same Saturday is checkout of one booking AND check-in of next → block
@@ -171,6 +173,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
           tileClassName={tileClassName}
           onClickDay={handleDayClick}
           minDate={today}
+          maxDate={bookingCutoff}
           minDetail="month"
           calendarType="gregory"
           className="!border-0 !font-sans"
