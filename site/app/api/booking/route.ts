@@ -275,7 +275,7 @@ function guestConfirmationHtml(b: BookingPayload): string {
             <p style="margin:0 0 12px;">If you must cancel, notify us in writing as soon as possible. If we are unable to re-rent the cottage, the full rent payment will be forfeited. We will make a reasonable effort to re-rent the cottage. If we re-rent the cottage, all monies (less a $100 cancellation fee) will be returned within 30 days of receiving the new Traveler's payment. Traveler shall not assign this Agreement nor sublet Observation Point.</p>
 
             <p style="margin:0 0 4px;"><strong>3. House Rules</strong></p>
-            <p style="margin:0 0 12px;"><strong>Pets:</strong> No pets permitted. &nbsp;<strong>Smoking:</strong> No smoking or vaping inside the cottage. &nbsp;<strong>Parking:</strong> Driveway only. The septic field (marked by posts and rope) is off-limits. &nbsp;<strong>Grills:</strong> No grill use on deck.</p>
+            <p style="margin:0 0 12px;"><strong>Pets:</strong> No pets permitted. &nbsp;<strong>Smoking:</strong> No smoking or vaping inside the cottage. &nbsp;<strong>Parking:</strong> Do not park or drive on septic field (marked by posts and rope). &nbsp;<strong>Grills:</strong> No grill use on deck.</p>
 
             <p style="margin:0 0 4px;"><strong>4. Check-in and Check-out</strong></p>
             <p style="margin:0 0 12px;">Check-in begins at 3:30 PM. Access instructions will be provided before arrival. Report any cleaning issues within 2 hours of check-in. Vacate by 10:00 AM. Before leaving: start the dishwasher, remove all food and drinks, return furniture to original positions, bag trash and roll the cart to the street, clean the grill if used. Report any damage or maintenance issues.</p>

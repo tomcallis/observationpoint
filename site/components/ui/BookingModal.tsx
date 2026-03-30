@@ -141,7 +141,7 @@ If you must cancel, notify us in writing as soon as possible. If we are unable t
 
 3. HOUSE RULES
 Pets: No pets permitted.
-Smoking: No smoking or vaping inside the cottage.Parking: Driveway only. The septic field (marked by posts and rope) is off-limits.
+Smoking: No smoking or vaping inside the cottage.Parking: Do not park or drive on septic field (marked by posts and rope).
 Grills: No grill use on deck.
 
 4. CHECK-IN AND CHECK-OUT
