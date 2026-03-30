@@ -249,7 +249,7 @@ export default function Availability() {
         {/* How Direct Booking Works */}
         <div className="mt-12">
           <h3 className="text-center text-lg font-bold text-slate-800 mb-6">
-            How Direct Booking Works
+            How Booking Works
           </h3>
           <ol className="grid sm:grid-cols-2 gap-4">
             {[
@@ -261,7 +261,7 @@ export default function Availability() {
               {
                 n: 2,
                 title: "Submit a request",
-                desc: "Fill in your details and submit. Tom receives an email and confirms availability within a few hours.",
+                desc: "Fill in your details and submit. Tom receives an email and confirms availability usually within an hour.",
               },
               {
                 n: 3,
@@ -276,7 +276,7 @@ export default function Availability() {
               {
                 n: 5,
                 title: "Get your check-in details",
-                desc: "A few days before arrival, Tom sends a link to the guest guidebook with everything you need to know.",
+                desc: "A few days before arrival, you'll receive an email with check-in and property access information.",
               },
               {
                 n: 6,
