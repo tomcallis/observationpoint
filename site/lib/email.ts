@@ -19,6 +19,7 @@ function d(iso: string) {
 // ── Shared layout wrapper ───────────────────────────────────────────────────
 
 function wrap(headerColor: string, headerText: string, headerSub: string, body: string): string {
+  const logoUrl = `${BASE_URL}/images/logo.png`;
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -27,12 +28,35 @@ function wrap(headerColor: string, headerText: string, headerSub: string, body: 
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
         <tr><td style="background:${headerColor};padding:28px 32px;">
+          <table cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+            <tr>
+              <td style="vertical-align:middle;padding-right:14px;">
+                <img src="${logoUrl}" alt="Observation Point" width="52" height="52" style="display:block;border-radius:50%;background:#ffffff;" />
+              </td>
+              <td style="vertical-align:middle;">
+                <span style="display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:2px;">Observation Point</span>
+                <span style="display:block;font-size:11px;color:rgba(255,255,255,0.55);">Frisco, Hatteras Island · OBX</span>
+              </td>
+            </tr>
+          </table>
           <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">${headerText}</h1>
           <p style="margin:6px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">${headerSub}</p>
         </td></tr>
         ${body}
         <tr><td style="padding:20px 32px;border-top:1px solid #f1f5f9;background:#f8fafc;">
-          <p style="margin:0;font-size:11px;color:#94a3b8;text-align:center;">Observation Point · 50184 Treasure Ct, Frisco, NC 27936</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td align="center" style="padding-bottom:8px;">
+                <img src="${logoUrl}" alt="" width="28" height="28" style="display:inline-block;border-radius:50%;" />
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <p style="margin:0;font-size:11px;color:#94a3b8;">Observation Point · 50184 Treasure Ct, Frisco, NC 27936</p>
+                <p style="margin:4px 0 0;font-size:11px;color:#cbd5e1;"><a href="${BASE_URL}" style="color:#94a3b8;text-decoration:none;">observationpointnc.com</a></p>
+              </td>
+            </tr>
+          </table>
         </td></tr>
       </table>
     </td></tr>

@@ -132,10 +132,7 @@ export default function Availability() {
             Rates &amp; Availability
           </h2>
           <p className="text-slate-500">
-            Saturday to Saturday · 7-night minimum · No VRBO service fees if booked direct.
-          </p>
-          <p className="text-slate-400 text-sm mt-1">
-            Syncs automatically with our VRBO listing — updated every 15 minutes.
+            Saturday to Saturday · 7-night minimum
           </p>
         </div>
 

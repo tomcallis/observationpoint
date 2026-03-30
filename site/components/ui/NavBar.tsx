@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { property } from "@/config/property";
 
 const links = [
@@ -45,14 +46,21 @@ export default function NavBar() {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-        {/* Property name — fades in after scrolling past hero */}
+        {/* Logo — fades in after scrolling past hero */}
         <a
           href="#top"
-          className={`text-white font-semibold text-sm tracking-wide transition-opacity duration-300 ${
+          className={`flex items-center gap-2.5 transition-opacity duration-300 ${
             scrolled ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          {property.name}
+          <Image
+            src="/images/logo.png"
+            alt={property.name}
+            width={32}
+            height={32}
+            className="rounded-full"
+          />
+          <span className="text-white font-semibold text-sm tracking-wide">{property.name}</span>
         </a>
         <ul className="hidden md:flex items-center gap-6">
           {links.map((l) => {
