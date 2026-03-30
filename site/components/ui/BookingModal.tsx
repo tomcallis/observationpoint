@@ -137,7 +137,7 @@ NC and Dare County tax (12.75%): ${formatUSD(pricing.taxAmount)}
 Total Due: ${formatUSD(pricing.total)}
 
 2. CANCELLATION
-If you must cancel, notify us in writing as soon as possible. If we are unable to re-rent the cottage, the full rent payment will be forfeited. We will make a reasonable effort to re-rent the cottage. If we re-rent the cottage, all monies (less a $100 cancellation fee) will be returned within 30 days of receiving the new Traveler's payment. Traveler shall not assign this Agreement nor sublet Observation Point.
+Cancellations must be submitted in writing to tom.callis@gmail.com. Refunds are issued as follows: full refund if cancelled 60 or more days before check-in; 50% refund if cancelled 30–59 days before check-in; no refund if cancelled fewer than 30 days before check-in. Traveler shall not assign this Agreement nor sublet Observation Point. Travel insurance is strongly recommended.
 
 3. HOUSE RULES
 Pets: No pets permitted.
@@ -149,7 +149,7 @@ Check-in begins at 3:30 PM. Access instructions will be provided before arrival.
 Vacate by 10:00 AM. Before leaving: start the dishwasher, remove all food and drinks, return furniture to original positions, bag trash and roll the cart to the street, clean the grill if used. Report any damage or maintenance issues.
 
 5. TRAVELER DUTIES AND OCCUPANCY
-Traveler agrees to keep the cottage clean and safe and to comply with all obligations under the NC Vacation Rental Act. Maximum occupancy is 6 guests at all times. Traveler agrees not to use the cottage for any unlawful purpose. Any material breach — including holding over, failure to pay rent, or obtaining possession by fraud — may result in expedited eviction under Article 4 of the NC Vacation Rental Act (NCGS 42A).
+The primary renter must be at least 25 years of age and must be present for the duration of the stay. Traveler agrees to keep the cottage clean and safe and to comply with all obligations under the NC Vacation Rental Act. Maximum occupancy is 6 guests at all times. Traveler agrees not to use the cottage for any unlawful purpose. Any material breach — including holding over, failure to pay rent, or obtaining possession by fraud — may result in expedited eviction under Article 4 of the NC Vacation Rental Act (NCGS 42A).
 
 6. MANDATORY EVACUATION
 If authorities order a mandatory evacuation, Traveler must comply and is entitled to a prorated refund for nights unable to occupy the cottage. Travel interruption insurance is available through providers such as Allianz (allianztravelinsurance.com).

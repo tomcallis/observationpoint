@@ -234,7 +234,12 @@ export const property = {
     {
       question: "Is it safe to pay by Venmo or check?",
       answer:
-        "Yes. This is a direct relationship between you and Tom Callis, the property owner. The process is the same as any private landlord arrangement: you request dates, Tom confirms availability, you pay a 50% deposit (via Venmo or check), and Tom sends a booking confirmation once payment clears. The property has 101 verified VRBO reviews — feel free to read them before booking.",
+        "Yes. This is a direct relationship between you and Tom Callis, the property owner. The process is the same as any private landlord arrangement: you request dates, Tom confirms availability, you pay a 50% deposit (via Venmo or check), and Tom sends a booking confirmation once payment clears. The remaining 50% balance is due 30 days before check-in. The property has 101 verified VRBO reviews — feel free to read them before booking.",
+    },
+    {
+      question: "Is there an age requirement?",
+      answer:
+        "Yes. The primary renter must be at least 25 years of age and must be present for the duration of the stay.",
     },
     {
       question: "What is your cancellation policy?",
