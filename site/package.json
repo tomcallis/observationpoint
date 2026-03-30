@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@vercel/postgres": "^0.10.0",
+    "@neondatabase/serverless": "^1.0.2",
     "googleapis": "^171.4.0",
     "next": "16.1.6",
     "node-ical": "^0.25.6",
