@@ -65,7 +65,7 @@ export const property = {
     { label: "En-Suite Bathrooms" },
     { label: "High-Speed WiFi" },
     { label: "Central A/C" },
-    { label: "Ocean Beach 10 min" },
+    { label: "Beach Access 10 min" },
   ],
 
   // ── Rates ──────────────────────────────────────────────────────────────────

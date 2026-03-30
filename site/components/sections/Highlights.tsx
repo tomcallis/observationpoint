@@ -102,7 +102,7 @@ const ICONS: Record<string, React.ReactNode> = {
       <path d="M5 19h14" />
     </svg>
   ),
-  "Ocean Beach 10 min": (
+  "Beach Access 10 min": (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="10" r="4" />
       <path d="M12 2v2M12 18v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
