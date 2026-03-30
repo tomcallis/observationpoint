@@ -141,13 +141,12 @@ If you must cancel, notify us in writing as soon as possible. If we are unable t
 
 3. HOUSE RULES
 Pets: No pets permitted.
-Smoking: No smoking or vaping inside the cottage. Violation results in immediate eviction.
-Parking: Driveway only. The septic field (marked by posts and rope) is off-limits.
-Grills: No grill use on decks, porches, or within 10 feet of the building.
+Smoking: No smoking or vaping inside the cottage.Parking: Driveway only. The septic field (marked by posts and rope) is off-limits.
+Grills: No grill use on deck.
 
 4. CHECK-IN AND CHECK-OUT
 Check-in begins at 3:30 PM. Access instructions will be provided before arrival. Report any cleaning issues within 2 hours of check-in.
-Vacate by 10:00 AM. Before leaving: start the dishwasher, remove all food and drinks, return furniture to original positions, bag trash and roll the cart to the street, clean the grill if used, and leave all linens and towels in the laundry room. Report any damage or maintenance issues.
+Vacate by 10:00 AM. Before leaving: start the dishwasher, remove all food and drinks, return furniture to original positions, bag trash and roll the cart to the street, clean the grill if used. Report any damage or maintenance issues.
 
 5. TRAVELER DUTIES AND OCCUPANCY
 Traveler agrees to keep the cottage clean and safe and to comply with all obligations under the NC Vacation Rental Act. Maximum occupancy is 6 guests at all times. Traveler agrees not to use the cottage for any unlawful purpose. Any material breach — including holding over, failure to pay rent, or obtaining possession by fraud — may result in expedited eviction under Article 4 of the NC Vacation Rental Act (NCGS 42A).
