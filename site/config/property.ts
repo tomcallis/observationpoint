@@ -276,7 +276,7 @@ export const property = {
     // Change this each season and include new password in booking confirmation email
     password: process.env.GUIDEBOOK_PASSWORD ?? "obx2025",
 
-    checkIn: "4:00 PM",
+    checkIn: "3:30 PM",
     checkOut: "10:00 AM",
 
     houseRules: [

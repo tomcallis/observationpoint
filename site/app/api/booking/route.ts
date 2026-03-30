@@ -48,7 +48,7 @@ function ownerEmailHtml(b: BookingPayload): string {
               <td style="padding:16px 20px;border-bottom:1px solid #e0f2fe;">
                 <span style="display:block;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Check-in</span>
                 <span style="font-size:16px;font-weight:600;color:#0f172a;">${formatDisplayDate(checkinDate)}</span>
-                <span style="font-size:13px;color:#64748b;margin-left:8px;">at 4:00 PM</span>
+                <span style="font-size:13px;color:#64748b;margin-left:8px;">at 3:30 PM</span>
               </td>
             </tr>
             <tr>
@@ -179,7 +179,7 @@ function guestConfirmationHtml(b: BookingPayload): string {
               <td colspan="2" style="padding:12px 16px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Your Stay</td>
             </tr>
             ${[
-              ["Check-in", `${formatDisplayDate(checkinDate)} at 4:00 PM`],
+              ["Check-in", `${formatDisplayDate(checkinDate)} at 3:30 PM`],
               ["Check-out", `${formatDisplayDate(checkoutDate)} at 10:00 AM`],
               ["Duration", `${b.nights} nights`],
               ["Guests", b.numGuests],
@@ -255,6 +255,40 @@ function guestConfirmationHtml(b: BookingPayload): string {
             Observation Point · Frisco, NC<br>
             <a href="${property.vrboUrl}" style="color:#0ea5e9;text-decoration:none;">View on VRBO</a>
           </p>
+        </td></tr>
+
+        <!-- Rental Agreement -->
+        <tr><td style="padding:28px 32px 0;">
+          <h2 style="margin:0 0 6px;font-size:15px;font-weight:600;color:#0f172a;">Vacation Rental Agreement</h2>
+          <p style="margin:0 0 16px;font-size:12px;color:#64748b;">Per the NC Vacation Rental Act, your payment of the deposit constitutes acceptance of this agreement.</p>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;font-size:12px;color:#334155;line-height:1.7;">
+            <p style="margin:0 0 12px;font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">THIS IS A VACATION RENTAL AGREEMENT UNDER THE NORTH CAROLINA VACATION RENTAL ACT. THE RIGHTS AND OBLIGATIONS OF THE PARTIES TO THIS AGREEMENT ARE DEFINED BY LAW AND INCLUDE UNIQUE PROVISIONS PERMITTING THE DISBURSEMENT OF RENT PRIOR TO TENANCY AND EXPEDITED EVICTION OF TENANTS. YOUR SIGNATURE ON THIS AGREEMENT, OR PAYMENT OF MONEY OR TAKING POSSESSION OF THE PROPERTY AFTER RECEIPT OF THE AGREEMENT, IS EVIDENCE OF YOUR ACCEPTANCE OF THE AGREEMENT AND YOUR INTENT TO USE THIS PROPERTY FOR A VACATION RENTAL.</p>
+            <p style="margin:0 0 8px;"><strong>Traveler:</strong> ${b.guestName} &nbsp;·&nbsp; <strong>Phone:</strong> ${b.guestPhone} &nbsp;·&nbsp; <strong>Email:</strong> ${b.guestEmail}<br>
+            <strong>Owners:</strong> Tom and Miranda Callis &nbsp;·&nbsp; <strong>Phone:</strong> 252-996-0578 &nbsp;·&nbsp; <strong>Email:</strong> tom.callis@gmail.com</p>
+            <p style="margin:0 0 12px;">The Owner hereby rents to Traveler, and Traveler hereby rents from Owner, the vacation cottage known as Observation Point located at 50184 Treasure Court, Frisco, NC 27936 ("cottage") on the terms of this Agreement.</p>
+
+            <p style="margin:0 0 4px;"><strong>1. Term and Charges</strong></p>
+            <p style="margin:0 0 12px;">Check-in: ${formatDisplayDate(checkinDate)} at 3:30 PM &nbsp;·&nbsp; Check-out: ${formatDisplayDate(checkoutDate)} at 10:00 AM<br>
+            Weekly rental rate: ${formatUSD(b.baseRate)} &nbsp;·&nbsp; NC and Dare County tax (12.75%): ${formatUSD(b.taxAmount)} &nbsp;·&nbsp; <strong>Total Due: ${formatUSD(b.total)}</strong></p>
+
+            <p style="margin:0 0 4px;"><strong>2. Cancellation</strong></p>
+            <p style="margin:0 0 12px;">If you must cancel, notify us in writing as soon as possible. If we are unable to re-rent the cottage, the full rent payment will be forfeited. We will make a reasonable effort to re-rent the cottage. If we re-rent the cottage, all monies (less a $100 cancellation fee) will be returned within 30 days of receiving the new Traveler's payment. Traveler shall not assign this Agreement nor sublet Observation Point.</p>
+
+            <p style="margin:0 0 4px;"><strong>3. House Rules</strong></p>
+            <p style="margin:0 0 12px;"><strong>Pets:</strong> No pets permitted. &nbsp;<strong>Smoking:</strong> No smoking or vaping inside the cottage. Violation results in immediate eviction. &nbsp;<strong>Parking:</strong> Driveway only. The septic field (marked by posts and rope) is off-limits. &nbsp;<strong>Grills:</strong> No grill use on decks, porches, or within 10 feet of the building.</p>
+
+            <p style="margin:0 0 4px;"><strong>4. Check-in and Check-out</strong></p>
+            <p style="margin:0 0 12px;">Check-in begins at 3:30 PM. Access instructions will be provided before arrival. Report any cleaning issues within 2 hours of check-in. Vacate by 10:00 AM. Before leaving: start the dishwasher, remove all food and drinks, return furniture to original positions, bag trash and roll the cart to the street, clean the grill if used, and leave all linens and towels in the laundry room. Report any damage or maintenance issues.</p>
+
+            <p style="margin:0 0 4px;"><strong>5. Traveler Duties and Occupancy</strong></p>
+            <p style="margin:0 0 12px;">Traveler agrees to keep the cottage clean and safe and to comply with all obligations under the NC Vacation Rental Act. Maximum occupancy is 6 guests at all times. Traveler agrees not to use the cottage for any unlawful purpose. Any material breach — including holding over, failure to pay rent, or obtaining possession by fraud — may result in expedited eviction under Article 4 of the NC Vacation Rental Act (NCGS 42A).</p>
+
+            <p style="margin:0 0 4px;"><strong>6. Mandatory Evacuation</strong></p>
+            <p style="margin:0 0 12px;">If authorities order a mandatory evacuation, Traveler must comply and is entitled to a prorated refund for nights unable to occupy the cottage. Travel interruption insurance is available through providers such as Allianz (allianztravelinsurance.com).</p>
+
+            <p style="margin:0 0 4px;"><strong>7. Owner Duties and Indemnification</strong></p>
+            <p style="margin:0;">Owner will provide the cottage in fit and habitable condition and make good faith efforts to repair inoperative equipment promptly. Owner or agents may enter the cottage for repairs, maintenance, or other necessary purposes. If Owner cannot provide the cottage in habitable condition at the time of occupancy, all payments will be refunded. Traveler agrees to indemnify and hold harmless the Owner from liability for personal injury or property damage unless caused by the negligent or willful act of the Owner. Owner will conduct all activities without regard to race, religion, sex, national origin, handicap, or familial status.</p>
+          </div>
         </td></tr>
 
         <!-- Footer -->
