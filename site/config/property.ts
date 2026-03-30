@@ -69,45 +69,45 @@ export const property = {
   // Holiday week overrides are stored in data/weekly-prices.json.
   seasonalRates: [
     {
-      label: "Peak (July)",
-      // July only — highest demand
-      start: "07-01",
-      end: "08-01",
-      nightly: 389,
-      weekly: 2725,
-    },
-    {
-      label: "Peak Summer",
-      // June & August (July is matched above)
+      label: "Peak (Jun–Aug)",
       start: "06-01",
       end: "09-01",
-      nightly: 314,
-      weekly: 2200,
+      nightly: 364,
+      weekly: 2550,
     },
     {
-      label: "Mid-Season",
-      months: "May",
-      start: "05-01",
+      label: "Shoulder 1 (Apr–May)",
+      start: "04-01",
       end: "06-01",
-      nightly: 241,
-      weekly: 1685,
+      nightly: 225,
+      weekly: 1575,
     },
     {
-      label: "Mid-Season",
-      months: "September",
+      label: "Shoulder 2 (Sep–Oct)",
       start: "09-01",
-      end: "10-01",
-      nightly: 241,
-      weekly: 1685,
+      end: "11-01",
+      nightly: 200,
+      weekly: 1400,
     },
     {
-      label: "Off-Season",
-      // Mar, Apr, Oct, Nov, Dec, Jan, Feb
+      label: "Off (Jan–Mar, Nov–Dec)",
       start: "01-01",
       end: "12-31",
-      nightly: 156,
-      weekly: 1095,
+      nightly: 150,
+      weekly: 1050,
     },
+  ],
+
+  // Display-only rate table (shown on the website). Order controls row order.
+  // All rates are pre-tax. NC sales & occupancy tax (~12.75%) is added at checkout.
+  rateTable: [
+    { label: "Off", subtitle: "Jan–Mar, Nov–Dec", weekly: 1050 },
+    { label: "Shoulder 1", subtitle: "Apr–May", weekly: 1575 },
+    { label: "Memorial Day Week", subtitle: null as null, weekly: 2075 },
+    { label: "Peak", subtitle: "Jun–Aug", weekly: 2550 },
+    { label: "July 4 Week", subtitle: null as null, weekly: 2750 },
+    { label: "Shoulder 2", subtitle: "Sep–Oct", weekly: 1400 },
+    { label: "Labor Day Week", subtitle: null as null, weekly: 2075 },
   ],
 
   rates: {

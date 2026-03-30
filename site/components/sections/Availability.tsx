@@ -3,7 +3,7 @@ import { getBlockedRanges } from "@/lib/ical";
 import AvailabilitySection from "@/components/ui/AvailabilitySection";
 import { property } from "@/config/property";
 
-const { seasonalRates, rates, payment } = property;
+const { seasonalRates, rateTable, payment } = property;
 
 function formatUSD(n: number) {
   return new Intl.NumberFormat("en-US", {
@@ -22,22 +22,6 @@ function getCurrentSeasonLabel(): string | null {
     if (today >= s.start && today < s.end) return s.label;
   }
   return null;
-}
-
-type DisplayRate = (typeof seasonalRates)[0] & { displayMonths?: string };
-function getDisplayRates(): DisplayRate[] {
-  const seen = new Map<string, DisplayRate>();
-  for (const s of seasonalRates) {
-    if (seen.has(s.label)) {
-      const existing = seen.get(s.label)!;
-      if (existing.months && s.months) {
-        existing.displayMonths = `${existing.months} & ${s.months}`;
-      }
-    } else {
-      seen.set(s.label, { ...s, displayMonths: s.months });
-    }
-  }
-  return Array.from(seen.values());
 }
 
 export const revalidate = 900;
@@ -74,7 +58,6 @@ async function CalendarLoader() {
 
 export default function Availability() {
   const currentSeasonLabel = getCurrentSeasonLabel();
-  const displayRates = getDisplayRates();
 
   return (
     <section id="booking" className="py-20 bg-white">
@@ -103,23 +86,23 @@ export default function Availability() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="grid grid-cols-2 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
               <span>Season</span>
-              <span className="text-right">Weekly (incl. tax)</span>
+              <span className="text-right">Weekly</span>
             </div>
-            {displayRates.map((season) => {
-              const isCurrent = season.label === currentSeasonLabel;
+            {rateTable.map((row) => {
+              const isCurrent = currentSeasonLabel?.startsWith(row.label) ?? false;
               return (
                 <div
-                  key={season.label}
+                  key={row.label}
                   className={`grid grid-cols-2 px-6 py-4 border-b border-slate-50 last:border-0 transition-colors ${
                     isCurrent ? "bg-sky-50" : "hover:bg-slate-50"
                   }`}
                 >
                   <span className="flex items-center gap-2 text-slate-700 font-medium">
                     <span>
-                      {season.label}
-                      {season.displayMonths && (
+                      {row.label}
+                      {row.subtitle && (
                         <span className="block text-xs font-normal text-slate-400">
-                          {season.displayMonths}
+                          {row.subtitle}
                         </span>
                       )}
                     </span>
@@ -130,12 +113,13 @@ export default function Availability() {
                     )}
                   </span>
                   <span className="text-right text-slate-600 font-medium">
-                    {formatUSD(Math.round(season.weekly * (1 + rates.taxRate)))}
+                    {formatUSD(row.weekly)}
                   </span>
                 </div>
               );
             })}
           </div>
+          <p className="text-center text-xs text-slate-400 mt-2">Plus NC sales &amp; occupancy tax</p>
         </div>
 
         {/* Payment & cancellation */}
