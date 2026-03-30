@@ -144,7 +144,7 @@ export const property = {
 
   // ── Contact ────────────────────────────────────────────────────────────────
   contactEmail:
-    process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "owner@observationpointobx.com",
+    process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "tom.callis@gmail.com",
   vrboUrl: "https://www.vrbo.com/766628",
 
   // ── Guest Reviews ─────────────────────────────────────────────────────────
