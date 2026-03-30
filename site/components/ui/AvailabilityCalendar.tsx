@@ -41,7 +41,7 @@ export default function AvailabilityCalendar({ blockedRanges, onRangeSelected }:
   }, [blockedRanges]);
 
   const today = new Date(new Date().setHours(0, 0, 0, 0));
-  const bookingCutoff = new Date(2026, 11, 31); // Dec 31, 2026 — open 2027 in October
+  const bookingCutoff = new Date(2027, 0, 10); // Jan 10, 2027 — covers Christmas + New Year's weeks; open full 2027 in October
 
   const isSaturday = (date: Date) => date.getDay() === 6;
 
