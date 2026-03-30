@@ -123,57 +123,45 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
     window.open(`mailto:${property.contactEmail}?subject=${subject}&body=${encodeURIComponent(body)}`);
   };
 
-  const agreementText = `VACATION RENTAL AGREEMENT
+  const agreementText = `THIS IS A VACATION RENTAL AGREEMENT UNDER THE NORTH CAROLINA VACATION RENTAL ACT. THE RIGHTS AND OBLIGATIONS OF THE PARTIES TO THIS AGREEMENT ARE DEFINED BY LAW AND INCLUDE UNIQUE PROVISIONS PERMITTING THE DISBURSEMENT OF RENT PRIOR TO TENANCY AND EXPEDITED EVICTION OF TENANTS. YOUR SIGNATURE ON THIS AGREEMENT, OR PAYMENT OF MONEY OR TAKING POSSESSION OF THE PROPERTY AFTER RECEIPT OF THE AGREEMENT, IS EVIDENCE OF YOUR ACCEPTANCE OF THE AGREEMENT AND YOUR INTENT TO USE THIS PROPERTY FOR A VACATION RENTAL.
 
-This Vacation Rental Agreement ("Agreement") is entered into between the property owner ("Owner") and the guest ("Guest") identified in this booking request.
+The Owner hereby rents to Traveler, and Traveler hereby rents from Owner, the vacation cottage known as Observation Point located at 50184 Treasure Court, Frisco, NC 27936 ("cottage") on the terms of this Agreement.
 
-PROPERTY
-Observation Point · 50184 Treasure Ct, Frisco, NC 27936
+Owners: Tom and Miranda Callis · Phone: 252-996-0578 · Email: tom.callis@gmail.com
 
-RENTAL PERIOD
-Check-in: ${formatDisplayDate(checkin)} at 4:00 PM
+1. TERM AND CHARGES
+Check-in: ${formatDisplayDate(checkin)} at 3:30 PM
 Check-out: ${formatDisplayDate(checkout)} at 10:00 AM
-Duration: ${pricing.nights} nights
+Weekly rental rate: ${formatUSD(pricing.baseRate)}
+NC and Dare County tax (12.75%): ${formatUSD(pricing.taxAmount)}
+Total Due: ${formatUSD(pricing.total)}
 
-TOTAL RENTAL AMOUNT
-${formatUSD(pricing.total)} (includes all applicable taxes)
+2. CANCELLATION
+If you must cancel, notify us in writing as soon as possible. If we are unable to re-rent the cottage, the full rent payment will be forfeited. We will make a reasonable effort to re-rent the cottage. If we re-rent the cottage, all monies (less a $100 cancellation fee) will be returned within 30 days of receiving the new Traveler's payment. Traveler shall not assign this Agreement nor sublet Observation Point.
 
-PAYMENT TERMS
-A deposit of 50% (${formatUSD(depositAmount)}) is due within 48 hours of submitting this request to hold the dates. The remaining balance of ${formatUSD(balanceAmount)} is due no later than 30 days before the check-in date. Payment may be made via Venmo (${payment.venmo.handle}) or by personal check payable to "${payment.check.payableTo}" mailed to ${payment.check.mailingAddress}.
+3. HOUSE RULES
+Pets: No pets permitted.
+Smoking: No smoking or vaping inside the cottage. Violation results in immediate eviction.
+Parking: Driveway only. The septic field (marked by posts and rope) is off-limits.
+Grills: No grill use on decks, porches, or within 10 feet of the building.
 
-CANCELLATION POLICY
-${payment.cancellationPolicy}
+4. CHECK-IN AND CHECK-OUT
+Check-in begins at 3:30 PM. Access instructions will be provided before arrival. Report any cleaning issues within 2 hours of check-in.
+Vacate by 10:00 AM. Before leaving: start the dishwasher, remove all food and drinks, return furniture to original positions, bag trash and roll the cart to the street, clean the grill if used, and leave all linens and towels in the laundry room. Report any damage or maintenance issues.
 
-OCCUPANCY
-Maximum occupancy is 6 guests. Guest must be at least 25 years of age or accompanied by a parent or guardian. Only registered guests may occupy the property.
+5. TRAVELER DUTIES AND OCCUPANCY
+Traveler agrees to keep the cottage clean and safe and to comply with all obligations under the NC Vacation Rental Act. Maximum occupancy is 6 guests at all times. Traveler agrees not to use the cottage for any unlawful purpose. Any material breach — including holding over, failure to pay rent, or obtaining possession by fraud — may result in expedited eviction under Article 4 of the NC Vacation Rental Act (NCGS 42A).
 
-CHECK-IN / CHECK-OUT
-Check-in is at 4:00 PM on the arrival date. Check-out is at 10:00 AM on the departure date. Early check-in or late check-out may be arranged in advance subject to availability.
+6. MANDATORY EVACUATION
+If authorities order a mandatory evacuation, Traveler must comply and is entitled to a prorated refund for nights unable to occupy the cottage. Travel interruption insurance is available through providers such as Allianz (allianztravelinsurance.com).
 
-HOUSE RULES
-• No smoking inside the property or on enclosed decks.
-• No pets without prior written approval from the Owner.
-• Quiet hours: 10:00 PM – 8:00 AM daily.
-• No commercial activities, events, or parties without prior written approval.
-• Maximum occupancy must not be exceeded at any time.
-• Please treat the property with respect and report any damage promptly.
+7. OWNER DUTIES AND INDEMNIFICATION
+Owner will provide the cottage in fit and habitable condition and make good faith efforts to repair inoperative equipment promptly. Owner or agents may enter the cottage for repairs, maintenance, or other necessary purposes. If Owner cannot provide the cottage in habitable condition at the time of occupancy, all payments will be refunded. Traveler agrees to indemnify and hold harmless the Owner from liability for personal injury or property damage unless caused by the negligent or willful act of the Owner. Owner will conduct all activities without regard to race, religion, sex, national origin, handicap, or familial status.
 
-DOCK AND WATER SAFETY
-Use of the private dock and any watercraft or water equipment is entirely at Guest's own risk. Owner is not responsible for accidents, injuries, or losses on or near the water. Children must be supervised by an adult at all times near the water. Guests should be aware of local boating and fishing regulations.
+PAYMENT
+Pay by Venmo (${payment.venmo.handle}) or check payable to ${payment.check.payableTo}, ${payment.check.mailingAddress}.
 
-PROPERTY CARE
-Guest agrees to return the property in the same condition as received, normal wear excepted. Guest is responsible for the cost of repairing any damage caused during the rental period, beyond normal wear and tear.
-
-INDEMNIFICATION
-Guest agrees to indemnify and hold harmless the Owner and property managers from any and all claims, damages, losses, or expenses arising from Guest's use of the property or breach of this Agreement, except where directly caused by Owner's negligence or willful misconduct.
-
-RIGHT OF ENTRY
-Owner or Owner's agents reserve the right to enter the property for emergency repairs or safety inspections with reasonable notice, except in cases of emergency.
-
-ENTIRE AGREEMENT
-This Agreement constitutes the entire agreement between Owner and Guest and shall be governed by the laws of the State of North Carolina.
-
-By checking the box below, Guest acknowledges having read, understood, and agreed to all terms and conditions of this Vacation Rental Agreement.`;
+By checking the box below, Traveler acknowledges having read and agreed to this Vacation Rental Agreement.`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
