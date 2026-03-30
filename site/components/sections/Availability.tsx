@@ -119,7 +119,7 @@ export default function Availability() {
               );
             })}
           </div>
-          <p className="text-center text-xs text-slate-400 mt-2">Plus NC sales &amp; occupancy tax</p>
+          <p className="text-center text-xs text-slate-400 mt-2">Plus NC and Dare County tax (12.75%)</p>
         </div>
 
         {/* Payment & cancellation */}
