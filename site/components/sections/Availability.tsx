@@ -15,6 +15,14 @@ interface SeasonData {
   end: string;
   nightly: number;
   weekly: number;
+  subtitle?: string;
+}
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function formatMonthRange(start: string, end: string): string {
+  const startMonth = MONTHS[parseInt(start.split("-")[0]) - 1];
+  const endMonth = MONTHS[parseInt(end.split("-")[0]) - 1];
+  return startMonth === endMonth ? startMonth : `${startMonth} – ${endMonth}`;
 }
 
 interface SeasonalRates {
@@ -158,7 +166,12 @@ export default function Availability() {
                   }`}
                 >
                   <span className="flex items-center gap-2 text-slate-700 font-medium">
-                    <span>{row.label}</span>
+                    <span>
+                      {row.label}
+                      <span className="block text-xs font-normal text-slate-400">
+                        {row.subtitle ?? formatMonthRange(row.start, row.end)}
+                      </span>
+                    </span>
                     {isCurrent && (
                       <span className="text-[10px] font-semibold uppercase tracking-wide bg-sky-500 text-white rounded-full px-2 py-0.5 leading-tight shrink-0">
                         Now
