@@ -16,7 +16,7 @@ export const property = {
     mapsEmbedUrl:
       "https://maps.google.com/maps?q=50184+Treasure+Ct,+Frisco,+NC+27936&z=16&output=embed",
     drivingDirections: [
-      "From the north: Take US-158 to NC-12 S through Nags Head, Rodanthe, Waves, Salvo, Avon — continue south to Frisco.",
+      "From the north: Head south on NC 12 through Nags Head, Rodanthe, Waves, Salvo, Avon — continue south to Frisco.",
       "From the south (ferry): Take the Ocracoke–Hatteras ferry (free, ~45 min) to Hatteras, then head north on NC-12 to Frisco.",
     ],
     nearbyAttractions: [
