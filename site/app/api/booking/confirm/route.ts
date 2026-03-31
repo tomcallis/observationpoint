@@ -13,15 +13,26 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://observationpointnc
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
+  console.log("[confirm] called, token present:", !!token);
+
   if (!token) {
     return NextResponse.redirect(`${BASE_URL}/admin?error=invalid-token`);
   }
 
-  const booking = await getBookingByToken(token);
+  let booking;
+  try {
+    booking = await getBookingByToken(token);
+  } catch (err) {
+    console.error("[confirm] DB lookup failed:", err);
+    return NextResponse.redirect(`${BASE_URL}/admin?error=db-error`);
+  }
+
   if (!booking) {
+    console.log("[confirm] token not found in DB:", token.slice(0, 8) + "...");
     return NextResponse.redirect(`${BASE_URL}/admin?error=not-found`);
   }
   if (booking.status !== "pending") {
+    console.log("[confirm] booking already actioned:", booking.status);
     return NextResponse.redirect(`${BASE_URL}/admin?error=already-actioned`);
   }
 
