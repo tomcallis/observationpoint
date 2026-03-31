@@ -51,7 +51,7 @@ function wrap(headerColor: string, headerText: string, body: string): string {
             </tr>
             <tr>
               <td align="center">
-                <p style="margin:0;font-size:11px;color:#94a3b8;">Observation Point · 50184 Treasure Ct, Frisco, NC 27936</p>
+                <p style="margin:0;font-size:11px;color:#94a3b8;">Observation Point<br>50184 Treasure Ct, Frisco, NC 27936</p>
                 <p style="margin:4px 0 0;font-size:11px;color:#cbd5e1;"><a href="${BASE_URL}" style="color:#94a3b8;text-decoration:none;">observationpointnc.com</a></p>
               </td>
             </tr>
