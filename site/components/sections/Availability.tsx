@@ -234,7 +234,7 @@ export default function Availability() {
               {
                 n: 2,
                 title: "Submit a request",
-                desc: "Fill in your details and submit. Tom will confirm within 24 hours.",
+                desc: "Fill in your details and submit. Tom will confirm by email within 24 hours.",
               },
               {
                 n: 3,
