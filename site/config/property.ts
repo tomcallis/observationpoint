@@ -282,13 +282,31 @@ export const property = {
   // ⚠️ UPDATE BEFORE EACH SEASON: lockboxCode, wifiName, wifiPassword.
   guidebook: {
     // Lockbox is mounted to a piling between the stairs and the outdoor shower
-    lockboxCode: process.env.LOCKBOX_CODE ?? "XXXX",
+    lockboxCode: process.env.LOCKBOX_CODE ?? "1870",
 
     wifiName: process.env.WIFI_NAME ?? "ObservationPoint",
     wifiPassword: process.env.WIFI_PASSWORD ?? "XXXXXXXXXX",
 
     checkIn: "3:30 PM",
     checkOut: "10:00 AM",
+
+    whatToBring: [
+      "Sheets (one king bed, one queen bed, and two twin beds)",
+      "Pillow cases",
+      "Bath towels",
+      "Beach towels",
+      "Garbage bags",
+      "Toilet paper",
+      "Paper towels",
+      "Dish detergent",
+      "Laundry detergent",
+      "All-purpose cleaner",
+      "Bath soap and toiletries",
+    ],
+
+    caretakerName: "Jennie",
+    caretakerPhone: "252-305-2415",
+    ownerPhone: "252-996-0578",
 
     houseRules: [
       "No smoking indoors or on enclosed portions of the deck.",

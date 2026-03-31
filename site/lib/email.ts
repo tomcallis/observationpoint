@@ -379,21 +379,13 @@ export async function sendGuestPreArrival(b: {
 }) {
   const firstName = b.guestName.split(" ")[0];
   const { guidebook } = property;
-  const { address } = property.location;
 
-  const houseRulesHtml = guidebook.houseRules
-    .map(r => `<li style="font-size:13px;color:#334155;padding:4px 0;border-bottom:1px solid #f1f5f9;">${r}</li>`)
+  const whatToBringHtml = (guidebook.whatToBring as string[])
+    .map(item => `<li style="font-size:13px;color:#334155;padding:3px 0;">${item}</li>`)
     .join("");
 
   const checkoutHtml = guidebook.checkoutReminders
-    .map(r => `<li style="font-size:13px;color:#334155;padding:4px 0;border-bottom:1px solid #f1f5f9;">${r}</li>`)
-    .join("");
-
-  const emergencyHtml = guidebook.emergencyContacts
-    .map(c => `<tr>
-      <td style="font-size:12px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">${c.label}</td>
-      <td style="font-size:13px;color:#0f172a;font-weight:500;">${c.value}</td>
-    </tr>`)
+    .map(r => `<li style="font-size:13px;color:#334155;padding:3px 0;">${r}</li>`)
     .join("");
 
   const recsEat = guidebook.localRecs.eat
@@ -416,63 +408,41 @@ export async function sendGuestPreArrival(b: {
 
   const body = `
     <tr><td style="padding:24px 32px 0;">
-      <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
-      <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
-        Your stay at Observation Point is one week away — we're excited to have you!
-        Here's everything you need for a smooth arrival.
-      </p>
+      <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Your Hatteras Island vacation is coming up soon! Here's the check-in and checkout information and helpful reminders.</p>
     </td></tr>
 
     <tr><td style="padding:16px 32px 0;">
-      ${sectionHead("Check-in & Check-out")}
-      ${infoBox(`
-        <tr>
-          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Address</td>
-          <td style="font-size:13px;color:#0f172a;font-weight:500;">${address}</td>
-        </tr>
-        <tr>
-          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Check-in</td>
-          <td style="font-size:13px;color:#0f172a;font-weight:500;">${guidebook.checkIn} on ${d(b.checkIn)} (Saturday)</td>
-        </tr>
-        <tr>
-          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Check-out</td>
-          <td style="font-size:13px;color:#0f172a;font-weight:500;">${guidebook.checkOut} on ${d(b.checkOut)} (Saturday)</td>
-        </tr>
-      `)}
 
-      ${sectionHead("Property Access")}
+      ${sectionHead("Observation Point Access")}
       ${infoBox(`
         <tr>
-          <td colspan="2" style="padding-bottom:8px;">
-            <p style="margin:0;font-size:13px;color:#334155;">The key is in a <strong>lockbox</strong> mounted to a piling between the stairs and the outdoor shower, on the ground floor under the house.</p>
+          <td colspan="2" style="padding-bottom:10px;">
+            <p style="margin:0;font-size:13px;color:#334155;">The key will be in a lockbox under the house. The lockbox is mounted to a piling between the stairs and the outdoor shower.</p>
           </td>
         </tr>
         <tr>
           <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Lockbox code</td>
-          <td style="font-size:20px;font-weight:700;color:#0ea5e9;font-family:monospace;letter-spacing:.15em;">${guidebook.lockboxCode}</td>
+          <td style="font-size:22px;font-weight:700;color:#0ea5e9;font-family:monospace;letter-spacing:.2em;">${guidebook.lockboxCode}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Address</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">50184 Treasure Court, Frisco, NC 27953</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Check-in</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${guidebook.checkIn} on ${d(b.checkIn)}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Check-out</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${guidebook.checkOut} on ${d(b.checkOut)}</td>
         </tr>
       `)}
 
-      ${sectionHead("WiFi")}
-      ${infoBox(`
-        <tr>
-          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Network</td>
-          <td style="font-size:13px;color:#0f172a;font-weight:500;font-family:monospace;">${guidebook.wifiName}</td>
-        </tr>
-        <tr>
-          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Password</td>
-          <td style="font-size:13px;color:#0f172a;font-weight:500;font-family:monospace;">${guidebook.wifiPassword}</td>
-        </tr>
-      `)}
+      ${sectionHead("What to Bring")}
+      <ul style="margin:0;padding-left:0;list-style:none;">${whatToBringHtml}</ul>
 
-      ${sectionHead("House Rules")}
-      <ul style="margin:0;padding-left:0;list-style:none;">${houseRulesHtml}</ul>
-
-      ${sectionHead("Before You Leave (by ${guidebook.checkOut})")}
+      ${sectionHead("Before You Leave")}
       <ul style="margin:0;padding-left:0;list-style:none;">${checkoutHtml}</ul>
-
-      ${sectionHead("Emergency Contacts")}
-      ${infoBox(`${emergencyHtml}`)}
 
       ${sectionHead("Local Recommendations")}
       <p style="margin:4px 0 6px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">Where to Eat</p>
@@ -480,14 +450,31 @@ export async function sendGuestPreArrival(b: {
       <p style="margin:4px 0 6px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">What to See</p>
       <ul style="margin:0 0 12px;padding-left:0;list-style:none;">${recsSee}</ul>
       <p style="margin:4px 0 6px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">Things to Do</p>
-      <ul style="margin:0 0 0;padding-left:0;list-style:none;">${recsDo}</ul>
+      <ul style="margin:0 0 16px;padding-left:0;list-style:none;">${recsDo}</ul>
 
       ${sectionHead("Questions?")}
-      <p style="margin:0;font-size:13px;color:#334155;">Reply to this email or reach Tom at <a href="mailto:${OWNER_EMAIL}" style="color:#0ea5e9;">${OWNER_EMAIL}</a>. We're here to help make your stay perfect.</p>
+      ${infoBox(`
+        <tr>
+          <td style="font-size:13px;color:#334155;padding-bottom:6px;" colspan="2">Please feel free to reach out with any questions.</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 12px 3px 0;white-space:nowrap;">Email</td>
+          <td style="font-size:13px;color:#0f172a;"><a href="mailto:${OWNER_EMAIL}" style="color:#0ea5e9;">${OWNER_EMAIL}</a></td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 12px 3px 0;white-space:nowrap;">Phone / text</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${(guidebook as { ownerPhone?: string }).ownerPhone ?? "252-996-0578"}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 12px 3px 0;white-space:nowrap;">Caretaker (${(guidebook as { caretakerName?: string }).caretakerName ?? "Jennie"})</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${(guidebook as { caretakerPhone?: string }).caretakerPhone ?? "252-305-2415"}</td>
+        </tr>
+      `)}
 
     </td></tr>
-    <tr><td style="padding:24px 32px 8px;">
-      <p style="margin:0;font-size:15px;color:#334155;font-weight:600;">See you ${d(b.checkIn)}! 🌊</p>
+    <tr><td style="padding:20px 32px 24px;">
+      <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">We look forward to having you at Observation Point!</p>
+      <p style="margin:8px 0 0;font-size:14px;color:#64748b;">Warm regards,<br>Tom and Miranda</p>
     </td></tr>`;
 
   const resend = getResend();
