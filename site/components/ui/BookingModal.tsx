@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { getPriceForStay, formatUSD, formatDisplayDate } from "@/lib/pricing";
 import { property } from "@/config/property";
-import weeklyPricesData from "@/data/weekly-prices.json";
 import type { BookingPayload } from "@/app/api/booking/route";
 
 interface Props {
@@ -11,8 +10,6 @@ interface Props {
   checkout: Date;
   onClose: () => void;
 }
-
-const weeklyOverrides = weeklyPricesData as Record<string, number>;
 
 type Step = "agreement" | "details" | "payment" | "confirm";
 
@@ -25,6 +22,17 @@ const REFERRAL_OPTIONS = [
 ];
 
 export default function BookingModal({ checkin, checkout, onClose }: Props) {
+  const [weeklyOverrides, setWeeklyOverrides] = useState<Record<string, number | { price: number; label?: string }>>({});
+
+  useEffect(() => {
+    fetch("/api/rates")
+      .then(r => r.json())
+      .then((data: { weekly?: Record<string, number | { price: number; label?: string }> }) => {
+        if (data.weekly) setWeeklyOverrides(data.weekly);
+      })
+      .catch(() => {});
+  }, []);
+
   const pricing = getPriceForStay(checkin, checkout, weeklyOverrides);
   const { payment } = property;
 

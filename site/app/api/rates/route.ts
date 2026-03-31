@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { readFileSync } from "fs";
 import { join } from "path";
-
-const SEASONAL_FILE = join(process.cwd(), "data", "seasonal-rates.json");
-const WEEKLY_FILE = join(process.cwd(), "data", "weekly-prices.json");
-
-export const revalidate = 900;
+import { getSetting } from "@/lib/db";
 
 type WeeklyEntry = number | { price: number; label?: string };
 
@@ -14,10 +10,24 @@ interface SeasonalRates {
   seasons: Array<{ label: string; start: string; end: string; nightly: number; weekly: number }>;
 }
 
+function readJSONFile(path: string) {
+  try { return JSON.parse(readFileSync(path, "utf-8")); } catch { return null; }
+}
+
 export async function GET() {
   try {
-    const seasonal: SeasonalRates = JSON.parse(readFileSync(SEASONAL_FILE, "utf-8"));
-    const weekly: Record<string, WeeklyEntry> = JSON.parse(readFileSync(WEEKLY_FILE, "utf-8"));
+    const [seasonalDB, weeklyDB] = await Promise.all([
+      getSetting("seasonal-rates"),
+      getSetting("weekly-prices"),
+    ]);
+
+    const seasonal: SeasonalRates =
+      (seasonalDB as SeasonalRates | null) ??
+      readJSONFile(join(process.cwd(), "data", "seasonal-rates.json")) ?? {};
+
+    const weekly: Record<string, WeeklyEntry> =
+      (weeklyDB as Record<string, WeeklyEntry> | null) ??
+      readJSONFile(join(process.cwd(), "data", "weekly-prices.json")) ?? {};
 
     const namedWeeks = Object.entries(weekly)
       .filter(([, v]) => typeof v === "object" && v !== null && (v as { label?: string }).label)
@@ -32,8 +42,9 @@ export async function GET() {
       seasons: seasonal.seasons ?? [],
       bookingCutoffDate: seasonal.bookingCutoffDate ?? null,
       namedWeeks,
+      weekly,
     });
   } catch {
-    return NextResponse.json({ seasons: [], bookingCutoffDate: null, namedWeeks: [] });
+    return NextResponse.json({ seasons: [], bookingCutoffDate: null, namedWeeks: [], weekly: {} });
   }
 }
