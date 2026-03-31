@@ -93,7 +93,7 @@ export default function FAQ() {
           <p className="text-slate-500 text-sm">
             Still have questions?{" "}
             <a
-              href="#contact"
+              href={`mailto:${property.contactEmail}`}
               className="text-sky-600 hover:text-sky-500 font-medium"
             >
               Send us a message
