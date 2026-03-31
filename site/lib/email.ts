@@ -2,7 +2,7 @@ import { Resend } from "resend";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { property } from "@/config/property";
-import { formatUSD, formatDisplayDate } from "@/lib/pricing";
+import { formatUSD, formatDisplayDate, buildAgreementText } from "@/lib/pricing";
 
 function loadGuidebook() {
   try {
@@ -207,12 +207,7 @@ export function renderGuestRequestReceived(b: {
         Once confirmed, you'll receive check payment instructions for your deposit.
       </p>
     </td></tr>
-    <tr><td style="padding:20px 32px 0;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>
-    <tr><td style="padding:20px 32px;">
-      <p style="margin:0;padding:14px 16px;background:#fef9c3;border-radius:10px;font-size:12px;color:#78350f;line-height:1.5;">
-        <strong>Cancellation policy:</strong> ${property.payment.cancellationPolicy}
-      </p>
-    </td></tr>`;
+    <tr><td style="padding:20px 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
 
   return wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", body);
 }
@@ -270,7 +265,11 @@ export function renderGuestConfirmed(b: {
       </p>
       ${paymentSection}
     </td></tr>
-    <tr><td style="padding:0 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
+    <tr><td style="padding:0 32px 0;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>
+    <tr><td style="padding:20px 32px 24px;">
+      <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Vacation Rental Agreement (copy for your records)</p>
+      <pre style="margin:0;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;font-size:11px;color:#475569;line-height:1.6;white-space:pre-wrap;font-family:inherit;">${(() => { const taxAmt = Math.round(b.total * property.rates.taxRate / (1 + property.rates.taxRate)); return buildAgreementText({ checkIn: b.checkIn, checkOut: b.checkOut, baseRate: b.total - taxAmt, taxAmount: taxAmt, total: b.total }); })()}</pre>
+    </td></tr>`;
 
   return wrap("#16a34a", "Your Booking is Confirmed!", body);
 }
