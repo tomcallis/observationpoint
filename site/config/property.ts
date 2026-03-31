@@ -144,8 +144,12 @@ export const property = {
       fullPaymentThresholdDays: 45, // if check-in is this many days away or less, full payment is due upfront
       holdDays: 5, // days guest has to mail deposit check before dates are released
     },
-    cancellationPolicy:
-      "Full refund if cancelled 60+ days before check-in. 50% refund if cancelled 30–59 days before. No refund within 30 days of check-in.",
+    cancellationPolicy: [
+      "Any changes, including changing dates, switching of properties, or complete cancellations will invoke the cancellation policy. We strongly recommend the purchase of Travel Insurance to protect you from an unexpected event affecting your vacation.",
+      "We cannot offer future credits or immediate refunds for unexpected cancellations due to emergencies regardless of the situation, including but not limited to weather events and acts of God, unexpected illnesses, injury or death, changing of plans, or job loss.",
+      "Any cancellations must be submitted to us in writing (email is acceptable) and are subject to a $50 cancellation fee. No refund of monies paid will be made unless the property is re-rented for the same price and time period of the original vacation rental agreement. If the property is re-rented for a lesser price or time period, you will receive a refund for the difference between the originally agreed upon rental amount and the re-booked rental amount, as the homeowner is entitled to receive the full amount of the original rental agreement.",
+      "We will make every effort to re-rent the property at the full amount, but we will negotiate rental rates in an effort to get the property re-rented to get you the highest refund possible.",
+    ],
   },
 
   // ── Contact ────────────────────────────────────────────────────────────────
@@ -255,7 +259,7 @@ export const property = {
     {
       question: "What is your cancellation policy?",
       answer:
-        "Full refund if cancelled 60 or more days before check-in. 50% refund if cancelled 30–59 days before check-in. No refund within 30 days of check-in. Travel insurance is recommended for unexpected situations.",
+        "Any cancellations must be submitted in writing (email is acceptable) and are subject to a $50 cancellation fee. No refund will be made unless the property is re-rented for the same price and time period. If re-rented for a lesser amount, you will receive a refund for the difference. We cannot offer credits or refunds for emergencies including weather events, illness, or job loss — travel insurance is strongly recommended.",
     },
     {
       question: "Can I bring a boat?",
