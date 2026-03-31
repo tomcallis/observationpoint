@@ -28,7 +28,7 @@ export default function Hero() {
           priority
           className="w-40 sm:w-48 lg:w-56 h-auto mb-6 drop-shadow-2xl"
         />
-        <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-widest mb-2 drop-shadow">
+        <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-widest mb-1 drop-shadow">
           Observation Point
         </h1>
         <p className="mb-3">
