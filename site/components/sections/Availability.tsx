@@ -72,13 +72,19 @@ function formatUSD(n: number) {
   }).format(n);
 }
 
+function matchesSeason(mmdd: string, start: string, end: string): boolean {
+  if (start <= end) return mmdd >= start && mmdd < end;
+  // Wraparound (e.g. Nov–Apr): matches if date is >= start OR < end
+  return mmdd >= start || mmdd < end;
+}
+
 function getCurrentSeasonLabel(seasons: SeasonData[]): string | null {
   const now = new Date();
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   const today = `${mm}-${dd}`;
   for (const s of seasons) {
-    if (today >= s.start && today < s.end) return s.label;
+    if (matchesSeason(today, s.start, s.end)) return s.label;
   }
   return null;
 }

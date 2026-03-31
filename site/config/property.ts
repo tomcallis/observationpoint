@@ -102,8 +102,8 @@ export const property = {
     },
     {
       label: "Winter",
-      start: "01-01",
-      end: "12-31",
+      start: "11-01",
+      end: "04-01",
       nightly: 150,
       weekly: 1050,
     },

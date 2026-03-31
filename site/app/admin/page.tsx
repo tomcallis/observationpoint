@@ -521,7 +521,9 @@ function PricingTab() {
 
   const getSeasonForDate = (d: Date) => {
     const mmdd = d.toISOString().split("T")[0].slice(5);
-    return seasonal.find(s => mmdd >= s.start && mmdd < s.end) ?? seasonal[seasonal.length - 1];
+    const matchesSeason = (start: string, end: string) =>
+      start <= end ? mmdd >= start && mmdd < end : mmdd >= start || mmdd < end;
+    return seasonal.find(s => matchesSeason(s.start, s.end)) ?? seasonal[seasonal.length - 1];
   };
 
   const setOverride = (key: string, field: "price" | "label", value: string) => {
