@@ -368,7 +368,139 @@ export async function sendGuestBalanceDue(b: {
   });
 }
 
-// ── 7. Guest: paid in full ───────────────────────────────────────────────────
+// ── 7. Guest: pre-arrival (sent 7 days before check-in) ──────────────────────
+
+export async function sendGuestPreArrival(b: {
+  guestName: string;
+  guestEmail: string;
+  numGuests: number;
+  checkIn: string;
+  checkOut: string;
+}) {
+  const firstName = b.guestName.split(" ")[0];
+  const { guidebook } = property;
+  const { address } = property.location;
+
+  const houseRulesHtml = guidebook.houseRules
+    .map(r => `<li style="font-size:13px;color:#334155;padding:4px 0;border-bottom:1px solid #f1f5f9;">${r}</li>`)
+    .join("");
+
+  const checkoutHtml = guidebook.checkoutReminders
+    .map(r => `<li style="font-size:13px;color:#334155;padding:4px 0;border-bottom:1px solid #f1f5f9;">${r}</li>`)
+    .join("");
+
+  const emergencyHtml = guidebook.emergencyContacts
+    .map(c => `<tr>
+      <td style="font-size:12px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">${c.label}</td>
+      <td style="font-size:13px;color:#0f172a;font-weight:500;">${c.value}</td>
+    </tr>`)
+    .join("");
+
+  const recsEat = guidebook.localRecs.eat
+    .map(r => `<li style="font-size:13px;color:#334155;padding:3px 0;"><strong>${r.name}</strong> — <span style="color:#64748b;">${r.note}</span></li>`)
+    .join("");
+  const recsSee = guidebook.localRecs.see
+    .map(r => `<li style="font-size:13px;color:#334155;padding:3px 0;"><strong>${r.name}</strong> — <span style="color:#64748b;">${r.note}</span></li>`)
+    .join("");
+  const recsDo = guidebook.localRecs.doAndPlay
+    .map(r => `<li style="font-size:13px;color:#334155;padding:3px 0;"><strong>${r.name}</strong> — <span style="color:#64748b;">${r.note}</span></li>`)
+    .join("");
+
+  function infoBox(content: string) {
+    return `<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:10px;padding:14px 18px;margin:8px 0;">${content}</table>`;
+  }
+
+  function sectionHead(text: string) {
+    return `<p style="margin:20px 0 8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;">${text}</p>`;
+  }
+
+  const body = `
+    <tr><td style="padding:24px 32px 0;">
+      <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
+      <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
+        Your stay at Observation Point is one week away — we're excited to have you!
+        Here's everything you need for a smooth arrival.
+      </p>
+    </td></tr>
+
+    <tr><td style="padding:16px 32px 0;">
+      ${sectionHead("Check-in & Check-out")}
+      ${infoBox(`
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Address</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${address}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Check-in</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${guidebook.checkIn} on ${d(b.checkIn)} (Saturday)</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Check-out</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;">${guidebook.checkOut} on ${d(b.checkOut)} (Saturday)</td>
+        </tr>
+      `)}
+
+      ${sectionHead("Property Access")}
+      ${infoBox(`
+        <tr>
+          <td colspan="2" style="padding-bottom:8px;">
+            <p style="margin:0;font-size:13px;color:#334155;">The key is in a <strong>lockbox</strong> mounted to a piling between the stairs and the outdoor shower, on the ground floor under the house.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Lockbox code</td>
+          <td style="font-size:20px;font-weight:700;color:#0ea5e9;font-family:monospace;letter-spacing:.15em;">${guidebook.lockboxCode}</td>
+        </tr>
+      `)}
+
+      ${sectionHead("WiFi")}
+      ${infoBox(`
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Network</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;font-family:monospace;">${guidebook.wifiName}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:4px 12px 4px 0;white-space:nowrap;">Password</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:500;font-family:monospace;">${guidebook.wifiPassword}</td>
+        </tr>
+      `)}
+
+      ${sectionHead("House Rules")}
+      <ul style="margin:0;padding-left:0;list-style:none;">${houseRulesHtml}</ul>
+
+      ${sectionHead("Before You Leave (by ${guidebook.checkOut})")}
+      <ul style="margin:0;padding-left:0;list-style:none;">${checkoutHtml}</ul>
+
+      ${sectionHead("Emergency Contacts")}
+      ${infoBox(`${emergencyHtml}`)}
+
+      ${sectionHead("Local Recommendations")}
+      <p style="margin:4px 0 6px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">Where to Eat</p>
+      <ul style="margin:0 0 12px;padding-left:0;list-style:none;">${recsEat}</ul>
+      <p style="margin:4px 0 6px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">What to See</p>
+      <ul style="margin:0 0 12px;padding-left:0;list-style:none;">${recsSee}</ul>
+      <p style="margin:4px 0 6px;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">Things to Do</p>
+      <ul style="margin:0 0 0;padding-left:0;list-style:none;">${recsDo}</ul>
+
+      ${sectionHead("Questions?")}
+      <p style="margin:0;font-size:13px;color:#334155;">Reply to this email or reach Tom at <a href="mailto:${OWNER_EMAIL}" style="color:#0ea5e9;">${OWNER_EMAIL}</a>. We're here to help make your stay perfect.</p>
+
+    </td></tr>
+    <tr><td style="padding:24px 32px 8px;">
+      <p style="margin:0;font-size:15px;color:#334155;font-weight:600;">See you ${d(b.checkIn)}! 🌊</p>
+    </td></tr>`;
+
+  const resend = getResend();
+  await resend.emails.send({
+    from: FROM,
+    to: [b.guestEmail],
+    replyTo: OWNER_EMAIL,
+    subject: `Your Stay is One Week Away — Observation Point · ${d(b.checkIn)}`,
+    html: wrap("#0ea5e9", "See You in One Week!", body),
+  });
+}
+
+// ── 8. Guest: paid in full ───────────────────────────────────────────────────
 
 export async function sendGuestPaidInFull(b: {
   guestName: string;
@@ -383,8 +515,8 @@ export async function sendGuestPaidInFull(b: {
     <tr><td style="padding:24px 32px;">
       <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
       <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
-        You're all paid up! We'll send your Guest Guidebook with check-in details, the door code,
-        and local tips a few days before your arrival.
+        You're all paid up! One week before your arrival you'll receive a pre-arrival email
+        with check-in instructions, the door code, WiFi, and local recommendations.
       </p>
       <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
         We can't wait to welcome you to the Outer Banks. See you ${d(b.checkIn)}!

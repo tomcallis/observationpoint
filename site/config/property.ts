@@ -279,12 +279,13 @@ export const property = {
   ],
 
   // ── Guest Guidebook ────────────────────────────────────────────────────────
-  // Accessible at /guidebook — shared with confirmed guests only.
-  // ⚠️ UPDATE BEFORE EACH SEASON: door code, WiFi credentials.
+  // ⚠️ UPDATE BEFORE EACH SEASON: lockboxCode, wifiName, wifiPassword.
   guidebook: {
-    // Password guests use to access the guidebook page
-    // Change this each season and include new password in booking confirmation email
-    password: process.env.GUIDEBOOK_PASSWORD ?? "obx2025",
+    // Lockbox is mounted to a piling between the stairs and the outdoor shower
+    lockboxCode: process.env.LOCKBOX_CODE ?? "XXXX",
+
+    wifiName: process.env.WIFI_NAME ?? "ObservationPoint",
+    wifiPassword: process.env.WIFI_PASSWORD ?? "XXXXXXXXXX",
 
     checkIn: "3:30 PM",
     checkOut: "10:00 AM",
