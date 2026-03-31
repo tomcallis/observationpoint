@@ -86,9 +86,9 @@ export default function Booking() {
           <span>No hidden fees</span>
         </div>
 
-        {/* Deposit & cancellation info */}
-        <div className="grid sm:grid-cols-2 gap-4 mb-10">
-          <div className="bg-white rounded-xl p-5 border border-slate-100">
+        {/* Deposit info */}
+        <div className="mb-10">
+          <div className="bg-white rounded-xl p-5 border border-slate-100 max-w-sm">
             <h3 className="text-sm font-semibold text-slate-800 mb-2">Payment</h3>
             <ul className="space-y-1.5 text-sm text-slate-600">
               <li className="flex gap-2">
@@ -104,12 +104,6 @@ export default function Booking() {
                 Pay via Venmo or check
               </li>
             </ul>
-          </div>
-          <div className="bg-white rounded-xl p-5 border border-slate-100">
-            <h3 className="text-sm font-semibold text-slate-800 mb-2">Cancellation Policy</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              {payment.cancellationPolicy}
-            </p>
           </div>
         </div>
 
