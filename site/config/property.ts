@@ -130,7 +130,7 @@ export const property = {
     },
     check: {
       payableTo: "Tom Callis",
-      mailingAddress: "50184 Treasure Ct, Frisco, NC 27936",
+      mailingAddress: "296 Apple Blossom Lane, Boone, NC 28607",
     },
     deposit: {
       percent: 50,
@@ -234,7 +234,7 @@ export const property = {
     {
       question: "How does payment work?",
       answer:
-        "We accept personal checks. Once Tom confirms your booking, you'll receive an email with instructions to mail a 50% deposit check to secure your dates. The remaining 50% balance is due 45 days before check-in — you'll receive a reminder email with mailing instructions. If you're booking within 45 days of check-in, full payment is due upfront. Checks are made payable to Tom Callis.",
+        "We accept personal checks. Once Tom confirms your booking, you'll receive an email with instructions to mail a 50% deposit check to secure your dates. The remaining 50% balance is due 45 days before check-in — you'll receive a reminder. If you're booking within 45 days of check-in, full payment is due upfront. Checks are made payable to Tom Callis, 296 Apple Blossom Lane, Boone, NC 28607.",
     },
     {
       question: "Is there an age requirement?",
