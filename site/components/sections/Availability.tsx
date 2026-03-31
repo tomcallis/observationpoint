@@ -26,7 +26,11 @@ function formatMonthRange(start: string, end: string): string {
   return startMonth === endMonth ? startMonth : `${startMonth} – ${endMonth}`;
 }
 
-interface SeasonalRates {
+interface SeasonalRatesV2 {
+  bookingCutoffDate?: string;
+  seasonsByYear: Record<string, SeasonData[]>;
+}
+interface SeasonalRatesLegacy {
   bookingCutoffDate?: string;
   seasons: SeasonData[];
 }
@@ -41,15 +45,37 @@ function readJSONFile(path: string) {
   try { return JSON.parse(readFileSync(path, "utf-8")); } catch { return null; }
 }
 
-async function loadRateData(): Promise<{ seasons: SeasonData[]; bookingCutoffDate: string | null; namedWeeks: NamedWeek[] }> {
+function resolveDisplayYear(data: SeasonalRatesV2): number {
+  const keys = Object.keys(data.seasonsByYear).sort();
+  if (!keys.length) return new Date().getFullYear();
+  const target = String(new Date().getFullYear());
+  if (data.seasonsByYear[target]) return Number(target);
+  return Number(keys.reduce((a, b) =>
+    Math.abs(Number(a) - Number(target)) <= Math.abs(Number(b) - Number(target)) ? a : b
+  ));
+}
+
+async function loadRateData(): Promise<{ seasons: SeasonData[]; displayYear: number; bookingCutoffDate: string | null; namedWeeks: NamedWeek[] }> {
   const [seasonalDB, weeklyDB] = await Promise.all([
     getSetting("seasonal-rates"),
     getSetting("weekly-prices"),
   ]);
 
-  const seasonal: SeasonalRates =
-    (seasonalDB as SeasonalRates | null) ??
-    readJSONFile(join(process.cwd(), "data", "seasonal-rates.json")) ?? {};
+  const raw = (seasonalDB as SeasonalRatesV2 | SeasonalRatesLegacy | null) ??
+    readJSONFile(join(process.cwd(), "data", "seasonal-rates.json"));
+
+  let seasons: SeasonData[];
+  let displayYear: number;
+
+  if (raw && "seasonsByYear" in raw && raw.seasonsByYear) {
+    const v2 = raw as SeasonalRatesV2;
+    displayYear = resolveDisplayYear(v2);
+    seasons = v2.seasonsByYear[String(displayYear)] ?? property.seasonalRates;
+  } else {
+    const legacy = raw as SeasonalRatesLegacy | null;
+    seasons = legacy?.seasons ?? property.seasonalRates;
+    displayYear = new Date().getFullYear();
+  }
 
   const weekly: Record<string, WeeklyEntry> =
     (weeklyDB as Record<string, WeeklyEntry> | null) ??
@@ -65,8 +91,9 @@ async function loadRateData(): Promise<{ seasons: SeasonData[]; bookingCutoffDat
     .sort((a, b) => a.date.localeCompare(b.date));
 
   return {
-    seasons: seasonal.seasons ?? property.seasonalRates,
-    bookingCutoffDate: seasonal.bookingCutoffDate ?? null,
+    seasons,
+    displayYear,
+    bookingCutoffDate: raw?.bookingCutoffDate ?? null,
     namedWeeks,
   };
 }
@@ -134,7 +161,7 @@ async function CalendarLoader({ bookingCutoffDate }: { bookingCutoffDate: string
 }
 
 export default async function Availability() {
-  const { seasons, bookingCutoffDate, namedWeeks } = await loadRateData();
+  const { seasons, displayYear, bookingCutoffDate, namedWeeks } = await loadRateData();
   const currentSeasonLabel = getCurrentSeasonLabel(seasons);
 
   // Only show upcoming named weeks (within next 18 months)
@@ -164,6 +191,9 @@ export default async function Availability() {
 
         {/* Seasonal rate table */}
         <div className="mt-12 max-w-md mx-auto">
+          <p className="text-center text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
+            {displayYear} Season
+          </p>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="grid grid-cols-2 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
               <span>Season</span>

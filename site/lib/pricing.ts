@@ -8,12 +8,27 @@ export interface PriceBreakdown {
   nights: number;
 }
 
+export interface SeasonalRate {
+  label: string;
+  start: string;
+  end: string;
+  nightly: number;
+  weekly: number;
+  subtitle?: string;
+}
+
 type WeeklyOverride = number | { price: number; label?: string };
+
+function matchesSeason(mmdd: string, start: string, end: string): boolean {
+  if (start <= end) return mmdd >= start && mmdd < end;
+  return mmdd >= start || mmdd < end;
+}
 
 export function getPriceForStay(
   checkin: Date,
   checkout: Date,
-  weeklyOverrides: Record<string, WeeklyOverride> = {}
+  weeklyOverrides: Record<string, WeeklyOverride> = {},
+  seasons: SeasonalRate[] = property.seasonalRates
 ): PriceBreakdown {
   const nights = Math.round(
     (checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24)
@@ -31,9 +46,9 @@ export function getPriceForStay(
 
   // Find matching seasonal rate
   const mmdd = checkinKey.slice(5); // "MM-DD"
-  let matched = property.seasonalRates[property.seasonalRates.length - 1];
-  for (const s of property.seasonalRates) {
-    if (mmdd >= s.start && mmdd < s.end) { matched = s; break; }
+  let matched = seasons[seasons.length - 1];
+  for (const s of seasons) {
+    if (matchesSeason(mmdd, s.start, s.end)) { matched = s; break; }
   }
 
   const baseRate = nights === 7 ? matched.weekly : matched.nightly * nights;

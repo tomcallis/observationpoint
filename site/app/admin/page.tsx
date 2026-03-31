@@ -514,10 +514,11 @@ function getHolidayLabel(sat: Date): string | null {
 }
 
 function PricingTab() {
-  const [seasonal, setSeasonal] = useState<SeasonalRate[]>([]);
+  const [seasonsByYear, setSeasonsByYear] = useState<Record<string, SeasonalRate[]>>({});
   const [bookingCutoffDate, setBookingCutoffDate] = useState("");
   const [overrides, setOverrides] = useState<Record<string, OverrideEntry>>({});
   const [activeYear, setActiveYear] = useState(new Date().getFullYear());
+  const [activeSeasonYear, setActiveSeasonYear] = useState(new Date().getFullYear());
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -528,8 +529,8 @@ function PricingTab() {
   useEffect(() => {
     fetch("/api/admin/prices?type=seasonal")
       .then(r => r.json())
-      .then((data: { bookingCutoffDate?: string; seasons?: SeasonalRate[] }) => {
-        setSeasonal(data.seasons ?? []);
+      .then((data: { bookingCutoffDate?: string; seasonsByYear?: Record<string, SeasonalRate[]> }) => {
+        setSeasonsByYear(data.seasonsByYear ?? {});
         setBookingCutoffDate(data.bookingCutoffDate ?? "");
       });
     fetch("/api/admin/prices")
@@ -547,11 +548,22 @@ function PricingTab() {
       });
   }, []);
 
+  const updateSeason = (i: number, field: keyof SeasonalRate, value: string | number) => {
+    setSeasonsByYear(prev => {
+      const yr = String(activeSeasonYear);
+      const arr = [...(prev[yr] ?? [])];
+      arr[i] = { ...arr[i], [field]: value };
+      return { ...prev, [yr]: arr };
+    });
+  };
+
   const getSeasonForDate = (d: Date) => {
+    const yr = String(d.getFullYear());
     const mmdd = d.toISOString().split("T")[0].slice(5);
     const matchesSeason = (start: string, end: string) =>
       start <= end ? mmdd >= start && mmdd < end : mmdd >= start || mmdd < end;
-    return seasonal.find(s => matchesSeason(s.start, s.end)) ?? seasonal[seasonal.length - 1];
+    const pool = seasonsByYear[yr] ?? seasonsByYear[Object.keys(seasonsByYear).sort().at(-1) ?? ""] ?? [];
+    return pool.find(s => matchesSeason(s.start, s.end)) ?? pool[pool.length - 1];
   };
 
   const setOverride = (key: string, field: "price" | "label", value: string) => {
@@ -569,13 +581,15 @@ function PricingTab() {
     }
     const [r1, r2] = await Promise.all([
       fetch("/api/admin/prices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(weeklyPayload) }),
-      fetch("/api/admin/prices?type=seasonal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ bookingCutoffDate, seasons: seasonal }) }),
+      fetch("/api/admin/prices?type=seasonal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ bookingCutoffDate, seasonsByYear }) }),
     ]);
     setSaving(false);
     setMsg(r1.ok && r2.ok ? "Saved!" : "Error saving.");
   };
 
   const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const currentSeasons = seasonsByYear[String(activeSeasonYear)] ?? [];
+  const otherSeasonYears = Object.keys(seasonsByYear).filter(y => y !== String(activeSeasonYear));
 
   return (
     <div className="space-y-8">
@@ -603,29 +617,99 @@ function PricingTab() {
 
       {/* Seasonal rates */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-semibold text-slate-800">Seasonal Rates</h2>
-          <p className="text-xs text-slate-400">All prices pre-tax · 12.75% added at checkout</p>
-        </div>
-        <div className="grid grid-cols-6 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-          <span>Season</span><span>Display Text</span><span>Start (MM-DD)</span><span>End (MM-DD)</span><span>Nightly</span><span>Weekly</span>
-        </div>
-        {seasonal.map((s, i) => (
-          <div key={i} className="grid grid-cols-6 px-6 py-3 border-b border-slate-50 last:border-0 items-center gap-2">
-            <input value={s.label} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, label: e.target.value } : r))}
-              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
-            <input value={s.subtitle ?? ""} placeholder="e.g. Jun–Sep" onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, subtitle: e.target.value } : r))}
-              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
-            <input value={s.start} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, start: e.target.value } : r))}
-              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
-            <input value={s.end} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, end: e.target.value } : r))}
-              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
-            <input type="number" value={s.nightly} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, nightly: Number(e.target.value) } : r))}
-              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
-            <input type="number" value={s.weekly} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, weekly: Number(e.target.value) } : r))}
-              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-28 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex gap-1">
+              {years.map(y => (
+                <button key={y} onClick={() => setActiveSeasonYear(y)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${activeSeasonYear === y ? "bg-sky-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
+                  {y}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-slate-400">Pre-tax · 12.75% added at checkout</p>
           </div>
-        ))}
+        </div>
+
+        {currentSeasons.length === 0 ? (
+          <div className="px-6 py-10 text-center">
+            <p className="text-slate-400 text-sm mb-4">No rates for {activeSeasonYear}.</p>
+            {otherSeasonYears.length > 0 && (
+              <div className="flex justify-center gap-2">
+                {otherSeasonYears.map(y => (
+                  <button key={y}
+                    onClick={() => setSeasonsByYear(prev => ({ ...prev, [String(activeSeasonYear)]: (prev[y] ?? []).map(s => ({ ...s })) }))}
+                    className="px-4 py-2 rounded-full text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                    Copy from {y}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Desktop header */}
+            <div className="hidden md:grid grid-cols-6 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <span>Season</span><span>Display Text</span><span>Start (MM-DD)</span><span>End (MM-DD)</span><span>Nightly</span><span>Weekly</span>
+            </div>
+            {currentSeasons.map((s, i) => (
+              <div key={i} className="border-b border-slate-50 last:border-0">
+                {/* Desktop row */}
+                <div className="hidden md:grid grid-cols-6 px-6 py-3 items-center gap-2">
+                  <input value={s.label} onChange={e => updateSeason(i, "label", e.target.value)}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                  <input value={s.subtitle ?? ""} placeholder="e.g. Jun–Sep" onChange={e => updateSeason(i, "subtitle", e.target.value)}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                  <input value={s.start} onChange={e => updateSeason(i, "start", e.target.value)}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                  <input value={s.end} onChange={e => updateSeason(i, "end", e.target.value)}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                  <input type="number" value={s.nightly} onChange={e => updateSeason(i, "nightly", Number(e.target.value))}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                  <input type="number" value={s.weekly} onChange={e => updateSeason(i, "weekly", Number(e.target.value))}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-28 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                </div>
+                {/* Mobile card */}
+                <div className="md:hidden px-4 py-4">
+                  <p className="text-sm font-semibold text-slate-700 mb-3">{s.label || `Season ${i + 1}`}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">Season Name</label>
+                      <input value={s.label} onChange={e => updateSeason(i, "label", e.target.value)}
+                        className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">Display Text</label>
+                      <input value={s.subtitle ?? ""} placeholder="e.g. Jun–Sep" onChange={e => updateSeason(i, "subtitle", e.target.value)}
+                        className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">Start (MM-DD)</label>
+                      <input value={s.start} onChange={e => updateSeason(i, "start", e.target.value)}
+                        className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">End (MM-DD)</label>
+                      <input value={s.end} onChange={e => updateSeason(i, "end", e.target.value)}
+                        className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">Nightly</label>
+                      <input type="number" value={s.nightly} onChange={e => updateSeason(i, "nightly", Number(e.target.value))}
+                        className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">Weekly</label>
+                      <input type="number" value={s.weekly} onChange={e => updateSeason(i, "weekly", Number(e.target.value))}
+                        className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
       {/* Weekly overrides with year tabs */}
@@ -644,8 +728,13 @@ function PricingTab() {
           </div>
           <p className="text-xs text-slate-400 mt-1">Override weekly rate for specific check-in dates. Add a label (e.g. "July 4th") to show it on the public rate table. Amber rows are auto-detected holidays.</p>
         </div>
-        <div className="grid grid-cols-[1fr_auto_auto_auto_1fr_1fr] bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400 gap-4">
-          <span>Check-in</span><span>Check-out</span><span>Season</span><span>Base Rate</span><span>Label</span><span>Override Price</span>
+        <div className="grid grid-cols-3 md:grid-cols-[1fr_auto_auto_auto_1fr_1fr] bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400 gap-4">
+          <span>Check-in</span>
+          <span className="hidden md:block">Check-out</span>
+          <span className="hidden md:block">Season</span>
+          <span className="hidden md:block">Base Rate</span>
+          <span>Label</span>
+          <span>Price</span>
         </div>
         {saturdays.map(sat => {
           const co = new Date(sat); co.setDate(co.getDate() + 7);
@@ -656,11 +745,11 @@ function PricingTab() {
           const isHighlighted = !!holiday || !!entry.label;
 
           return (
-            <div key={key} className={`grid grid-cols-[1fr_auto_auto_auto_1fr_1fr] px-6 py-2.5 border-b border-slate-50 last:border-0 items-center gap-4 transition-colors ${isHighlighted ? "bg-amber-50" : "hover:bg-slate-50"}`}>
+            <div key={key} className={`grid grid-cols-3 md:grid-cols-[1fr_auto_auto_auto_1fr_1fr] px-6 py-2.5 border-b border-slate-50 last:border-0 items-center gap-4 transition-colors ${isHighlighted ? "bg-amber-50" : "hover:bg-slate-50"}`}>
               <span className="text-slate-700 text-sm font-medium">{fmt(sat)}</span>
-              <span className="text-slate-500 text-sm">{fmt(co)}</span>
-              <span className="text-slate-500 text-sm">{s?.label ?? "—"}</span>
-              <span className="text-slate-600 text-sm">{s ? formatUSD(s.weekly) : "—"}</span>
+              <span className="hidden md:block text-slate-500 text-sm">{fmt(co)}</span>
+              <span className="hidden md:block text-slate-500 text-sm">{s?.label ?? "—"}</span>
+              <span className="hidden md:block text-slate-600 text-sm">{s ? formatUSD(s.weekly) : "—"}</span>
               <input
                 type="text"
                 value={entry.label || (holiday && !entry.price ? "" : entry.label)}

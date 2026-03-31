@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { getPriceForStay, formatUSD, formatDisplayDate, buildAgreementText } from "@/lib/pricing";
+import type { SeasonalRate } from "@/lib/pricing";
 import { property } from "@/config/property";
 import type { BookingPayload } from "@/app/api/booking/route";
 
@@ -23,17 +24,30 @@ const REFERRAL_OPTIONS = [
 
 export default function BookingModal({ checkin, checkout, onClose }: Props) {
   const [weeklyOverrides, setWeeklyOverrides] = useState<Record<string, number | { price: number; label?: string }>>({});
+  const [seasonsByYear, setSeasonsByYear] = useState<Record<string, SeasonalRate[]>>({});
 
   useEffect(() => {
     fetch("/api/rates")
       .then(r => r.json())
-      .then((data: { weekly?: Record<string, number | { price: number; label?: string }> }) => {
+      .then((data: { weekly?: Record<string, number | { price: number; label?: string }>; seasonsByYear?: Record<string, SeasonalRate[]> }) => {
         if (data.weekly) setWeeklyOverrides(data.weekly);
+        if (data.seasonsByYear) setSeasonsByYear(data.seasonsByYear);
       })
       .catch(() => {});
   }, []);
 
-  const pricing = getPriceForStay(checkin, checkout, weeklyOverrides);
+  const resolvedSeasons = ((): SeasonalRate[] | undefined => {
+    const yr = String(checkin.getFullYear());
+    if (seasonsByYear[yr]) return seasonsByYear[yr];
+    const keys = Object.keys(seasonsByYear).sort();
+    if (!keys.length) return undefined;
+    const nearest = keys.reduce((a, b) =>
+      Math.abs(Number(a) - Number(yr)) <= Math.abs(Number(b) - Number(yr)) ? a : b
+    );
+    return seasonsByYear[nearest];
+  })();
+
+  const pricing = getPriceForStay(checkin, checkout, weeklyOverrides, resolvedSeasons);
   const { payment } = property;
 
   const [step, setStep] = useState<Step>("agreement");
