@@ -244,7 +244,7 @@ export default function Availability() {
               {
                 n: 4,
                 title: "Arrive & enjoy",
-                desc: "One week before arrival you'll receive an email with the door code, WiFi, check-in instructions, and local recommendations. Check in Saturday at 3:30 PM.",
+                desc: "One week before arrival you'll receive an email with the lockbox code, WiFi, and check-in instructions. Check in Saturday at 3:30 PM.",
               },
             ].map(({ n, title, desc }) => (
               <li key={n} className="bg-white rounded-xl p-5 border border-slate-100 flex gap-4">
