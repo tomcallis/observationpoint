@@ -45,7 +45,6 @@ export const property = {
       beds: "King bed · soundfront views · en-suite bath",
       images: [
         { src: "/images/front-bedroom_king_2.jpeg", alt: "Primary bedroom with king bed" },
-        { src: "/images/front-bedroom_king_1.jpeg", alt: "Primary bedroom, second view" },
       ],
     },
     {
