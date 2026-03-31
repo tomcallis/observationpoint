@@ -213,6 +213,7 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
   const [acting, setActing] = useState<Record<string, boolean>>({});
+  const [confirming, setConfirming] = useState<Record<string, "deposit" | "paid" | null>>({});
   const [deleting, setDeleting] = useState<Record<string, boolean>>({});
 
   const filtered = filter === "all" ? bookings : bookings.filter(b => b.status === filter);
@@ -309,18 +310,44 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
                     )}
                     {b.status === "confirmed" && (
                       <div className="w-full md:w-auto" onClick={e => e.stopPropagation()}>
-                        <button disabled={acting[b.id]} onClick={() => act(b.id, "mark-deposit-received")}
-                          className="w-full md:w-auto text-xs font-semibold px-3 py-2.5 bg-blue-500 hover:bg-blue-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap min-h-[44px]">
-                          ✓ Deposit Received
-                        </button>
+                        {confirming[b.id] === "deposit" ? (
+                          <div className="flex gap-2 w-full md:w-auto">
+                            <button onClick={() => { act(b.id, "mark-deposit-received"); setConfirming(p => ({ ...p, [b.id]: null })); }}
+                              className="flex-1 md:flex-none text-xs font-semibold px-3 py-2.5 bg-blue-600 text-white rounded-full min-h-[44px]">
+                              Confirm
+                            </button>
+                            <button onClick={() => setConfirming(p => ({ ...p, [b.id]: null }))}
+                              className="flex-1 md:flex-none text-xs font-semibold px-3 py-2.5 bg-slate-200 text-slate-700 rounded-full min-h-[44px]">
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button disabled={acting[b.id]} onClick={() => setConfirming(p => ({ ...p, [b.id]: "deposit" }))}
+                            className="w-full md:w-auto text-xs font-semibold px-3 py-2.5 bg-blue-500 hover:bg-blue-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap min-h-[44px]">
+                            ✓ Deposit Received
+                          </button>
+                        )}
                       </div>
                     )}
                     {(b.status === "confirmed" || b.status === "deposit_paid" || b.status === "balance_due") && (
                       <div className="w-full md:w-auto" onClick={e => e.stopPropagation()}>
-                        <button disabled={acting[b.id]} onClick={() => act(b.id, "mark-paid-in-full")}
-                          className="w-full md:w-auto text-xs font-semibold px-3 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap min-h-[44px]">
-                          ✓ Paid in Full
-                        </button>
+                        {confirming[b.id] === "paid" ? (
+                          <div className="flex gap-2 w-full md:w-auto">
+                            <button onClick={() => { act(b.id, "mark-paid-in-full"); setConfirming(p => ({ ...p, [b.id]: null })); }}
+                              className="flex-1 md:flex-none text-xs font-semibold px-3 py-2.5 bg-emerald-600 text-white rounded-full min-h-[44px]">
+                              Confirm
+                            </button>
+                            <button onClick={() => setConfirming(p => ({ ...p, [b.id]: null }))}
+                              className="flex-1 md:flex-none text-xs font-semibold px-3 py-2.5 bg-slate-200 text-slate-700 rounded-full min-h-[44px]">
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button disabled={acting[b.id]} onClick={() => setConfirming(p => ({ ...p, [b.id]: "paid" }))}
+                            className="w-full md:w-auto text-xs font-semibold px-3 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap min-h-[44px]">
+                            ✓ Paid in Full
+                          </button>
+                        )}
                       </div>
                     )}
                     <svg className={`w-4 h-4 text-slate-400 transition-transform absolute top-5 right-4 md:static ${isExpanded ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
