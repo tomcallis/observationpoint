@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { constructWebhookEvent } from "@/lib/stripe";
+import Stripe from "stripe";
+import { constructWebhookEvent, retrievePaymentIntent } from "@/lib/stripe";
 import {
   getBookingByDepositSession,
   getBookingByBalanceSession,
+  saveDepositPaymentInfo,
   updateBookingStatus,
   insertBookingEvent,
 } from "@/lib/db";
@@ -17,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
-  let event;
+  let event: Stripe.Event;
   try {
     event = constructWebhookEvent(body, sig);
   } catch (err) {
@@ -26,21 +28,34 @@ export async function POST(req: NextRequest) {
   }
 
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as {
-      id: string;
-      metadata?: { booking_id?: string; payment_type?: string };
-    };
+    const session = event.data.object as Stripe.Checkout.Session;
     const paymentType = session.metadata?.payment_type;
 
     if (paymentType === "deposit") {
       const booking = await getBookingByDepositSession(session.id);
       if (booking) {
-        await updateBookingStatus(booking.id, "deposit_paid", { deposit_paid_at: "now" });
+        // Extract the saved payment method so we can auto-charge the balance later
+        const customerId = typeof session.customer === "string" ? session.customer : null;
+        let paymentMethodId: string | null = null;
+
+        if (typeof session.payment_intent === "string") {
+          try {
+            const pi = await retrievePaymentIntent(session.payment_intent);
+            paymentMethodId = typeof pi.payment_method === "string" ? pi.payment_method : null;
+          } catch (err) {
+            console.error("[stripe webhook] failed to retrieve payment intent:", err);
+          }
+        }
+
+        await saveDepositPaymentInfo(booking.id, customerId, paymentMethodId);
         await insertBookingEvent(booking.id, "confirmed", "deposit_paid", "stripe", session.id);
         const updated = { ...booking, status: "deposit_paid" as const };
         await syncBookingToSheets(updated);
+
+        console.log(`[stripe webhook] deposit paid for booking ${booking.id}, customer=${customerId}, pm=${paymentMethodId}`);
       }
     } else if (paymentType === "balance") {
+      // Fallback path: guest paid via a Checkout link (card-on-file charge failed)
       const booking = await getBookingByBalanceSession(session.id);
       if (booking) {
         await updateBookingStatus(booking.id, "paid_in_full", { balance_paid_at: "now" });

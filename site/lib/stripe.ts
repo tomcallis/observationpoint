@@ -19,9 +19,16 @@ export async function createDepositSession(booking: {
 }): Promise<{ url: string; sessionId: string }> {
   const stripe = getStripe();
 
+  // Create a Stripe Customer so the card can be saved for the automatic balance charge
+  const customer = await stripe.customers.create({
+    email: booking.guestEmail,
+    name: booking.guestName,
+    metadata: { booking_id: booking.id },
+  });
+
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
-    customer_email: booking.guestEmail,
+    customer: customer.id,
     line_items: [
       {
         price_data: {
@@ -35,6 +42,9 @@ export async function createDepositSession(booking: {
         quantity: 1,
       },
     ],
+    payment_intent_data: {
+      setup_future_usage: "off_session", // saves card for automatic balance charge
+    },
     metadata: { booking_id: booking.id, payment_type: "deposit" },
     success_url: `${BASE_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${BASE_URL}/#booking`,
@@ -44,6 +54,33 @@ export async function createDepositSession(booking: {
   return { url: session.url, sessionId: session.id };
 }
 
+// Automatically charges the saved card — no guest action required
+export async function chargeBalanceOffSession(booking: {
+  id: string;
+  customerId: string;
+  paymentMethodId: string;
+  balanceAmount: number; // dollars
+  checkIn: string;
+  checkOut: string;
+  guestName: string;
+}): Promise<{ paymentIntentId: string }> {
+  const stripe = getStripe();
+
+  const pi = await stripe.paymentIntents.create({
+    amount: Math.round(booking.balanceAmount * 100),
+    currency: "usd",
+    customer: booking.customerId,
+    payment_method: booking.paymentMethodId,
+    confirm: true,
+    off_session: true,
+    description: `Observation Point — Balance Payment · ${booking.checkIn} → ${booking.checkOut}`,
+    metadata: { booking_id: booking.id, payment_type: "balance" },
+  });
+
+  return { paymentIntentId: pi.id };
+}
+
+// Fallback: send a Checkout link if the off-session charge fails (e.g. card declined)
 export async function createBalanceSession(booking: {
   id: string;
   guestEmail: string;
@@ -77,6 +114,10 @@ export async function createBalanceSession(booking: {
 
   if (!session.url) throw new Error("Stripe returned a balance session with no URL");
   return { url: session.url, sessionId: session.id };
+}
+
+export async function retrievePaymentIntent(id: string): Promise<Stripe.PaymentIntent> {
+  return getStripe().paymentIntents.retrieve(id);
 }
 
 export function constructWebhookEvent(body: string, signature: string): Stripe.Event {

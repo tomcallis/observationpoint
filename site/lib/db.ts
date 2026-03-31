@@ -63,6 +63,7 @@ export interface Booking {
   stripe_deposit_session_id: string | null;
   stripe_balance_session_id: string | null;
   stripe_customer_id: string | null;
+  stripe_payment_method_id: string | null;
   deposit_paid_at: string | null;
   balance_paid_at: string | null;
 }
@@ -163,6 +164,23 @@ export async function updateBookingStatus(
   } else if (fields[0][0] === "balance_paid_at") {
     await sql`UPDATE bookings SET status = ${status}, balance_paid_at = NOW(), updated_at = NOW() WHERE id = ${id}`;
   }
+}
+
+export async function saveDepositPaymentInfo(
+  id: string,
+  customerId: string | null,
+  paymentMethodId: string | null,
+): Promise<void> {
+  const sql = getSQL();
+  await sql`
+    UPDATE bookings
+    SET stripe_customer_id = ${customerId},
+        stripe_payment_method_id = ${paymentMethodId},
+        deposit_paid_at = NOW(),
+        status = 'deposit_paid',
+        updated_at = NOW()
+    WHERE id = ${id}
+  `;
 }
 
 export async function updateBookingNotes(id: string, notes: string): Promise<void> {
