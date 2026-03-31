@@ -217,15 +217,12 @@ export default function Availability() {
             )}
           </div>
           <p className="text-center text-xs text-slate-400 mt-2">Plus NC and Dare County tax (12.75%)</p>
-          <p className="text-center text-xs text-slate-400 mt-1">
-            Cancellation: full refund 60+ days out · 50% refund 30–59 days · no refund within 30 days
-          </p>
         </div>
 
         {/* How Direct Booking Works */}
         <div className="mt-12">
           <h3 className="text-center text-lg font-bold text-slate-800 mb-6">
-            How Booking Works
+            How to Book
           </h3>
           <ol className="grid sm:grid-cols-2 gap-4">
             {[

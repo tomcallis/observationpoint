@@ -42,8 +42,9 @@ export async function GET(req: NextRequest) {
     depositUrl = session.url;
     sessionId = session.sessionId;
   } catch (err) {
-    console.error("[confirm] Stripe error:", err);
-    // Still confirm the booking, but won't have a payment link
+    console.error("[confirm] Stripe session creation failed:", err);
+    // depositUrl stays as admin fallback — email will show broken link
+    // Check STRIPE_SECRET_KEY env var if this keeps happening
   }
 
   // Update DB

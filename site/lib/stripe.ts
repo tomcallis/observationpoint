@@ -40,7 +40,8 @@ export async function createDepositSession(booking: {
     cancel_url: `${BASE_URL}/#booking`,
   });
 
-  return { url: session.url!, sessionId: session.id };
+  if (!session.url) throw new Error("Stripe returned a deposit session with no URL");
+  return { url: session.url, sessionId: session.id };
 }
 
 export async function createBalanceSession(booking: {
@@ -74,7 +75,8 @@ export async function createBalanceSession(booking: {
     cancel_url: `${BASE_URL}/#booking`,
   });
 
-  return { url: session.url!, sessionId: session.id };
+  if (!session.url) throw new Error("Stripe returned a balance session with no URL");
+  return { url: session.url, sessionId: session.id };
 }
 
 export function constructWebhookEvent(body: string, signature: string): Stripe.Event {
