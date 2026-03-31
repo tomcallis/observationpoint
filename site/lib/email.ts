@@ -210,7 +210,7 @@ export function renderGuestRequestReceived(b: {
     <tr><td style="padding:20px 32px 0;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>
     <tr><td style="padding:20px 32px;">
       <p style="margin:0;padding:14px 16px;background:#fef9c3;border-radius:10px;font-size:12px;color:#78350f;line-height:1.5;">
-        <strong>Cancellation policy:</strong> ${(Array.isArray(property.payment.cancellationPolicy) ? property.payment.cancellationPolicy : [property.payment.cancellationPolicy]).join(" ")}
+        <strong>Cancellation policy:</strong> ${property.payment.cancellationPolicy}
       </p>
     </td></tr>`;
 

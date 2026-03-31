@@ -36,11 +36,9 @@ export default function Booking() {
           </div>
           <div className="bg-white rounded-xl p-5 border border-slate-100">
             <h3 className="text-sm font-semibold text-slate-800 mb-2">Cancellation Policy</h3>
-            <div className="text-sm text-slate-600 leading-relaxed space-y-3">
-              {(Array.isArray(payment.cancellationPolicy) ? payment.cancellationPolicy : [payment.cancellationPolicy]).map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              {payment.cancellationPolicy}
+            </p>
           </div>
         </div>
 
