@@ -55,7 +55,7 @@ export default function Hero() {
 
         {/* Trust micro-copy */}
         <p className="text-white/50 text-xs">
-          {property.vrboStats.excellent} of {property.vrboStats.total} VRBO guests rated their stay Excellent ·{" "}
+          Over 100 VRBO guests rated their stay Excellent ·{" "}
           <a
             href={property.vrboUrl}
             target="_blank"
