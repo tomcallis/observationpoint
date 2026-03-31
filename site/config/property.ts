@@ -262,6 +262,11 @@ export const property = {
         "Check-in is at 3:30 PM on your arrival Saturday. Check-out is at 10:00 AM on your departure Saturday. The key is in a lockbox under the house — it's mounted to a piling between the stairs and the outdoor shower. Early check-in or late check-out may be possible depending on the schedule — just ask.",
     },
     {
+      question: "Are linens included?",
+      answer:
+        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. The property has one king bed, one queen bed, and two twin beds.",
+    },
+    {
       question: "What should I bring?",
       answer:
         "Observation Point does not provide linens or consumables, so please plan to bring: sheets (one king bed, one queen bed, and two twin beds), pillowcases, bath towels, beach towels, garbage bags, toilet paper, paper towels, dish detergent, laundry detergent, all-purpose cleaner, and bath soap and toiletries.",
