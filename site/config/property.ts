@@ -264,7 +264,7 @@ export const property = {
     {
       question: "Are linens included?",
       answer:
-        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. The property has one king bed, one queen bed, and two twin beds.",
+        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. Comforters, blankets, and pillows are provided. The property has one king bed, one queen bed, and two twin beds.",
     },
     {
       question: "What should I bring?",
