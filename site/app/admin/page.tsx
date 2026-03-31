@@ -256,7 +256,7 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
         <div className="flex gap-2 flex-wrap">
           {STATUS_FILTERS.map(s => (
             <button key={s} onClick={() => setFilter(s)}
@@ -282,10 +282,10 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
                 <div key={b.id}>
                   {/* Row */}
                   <div
-                    className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 items-center px-6 py-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                    className="relative flex flex-col gap-2 px-4 py-4 hover:bg-slate-50 cursor-pointer transition-colors md:grid md:grid-cols-[1fr_auto_auto_auto_auto] md:gap-4 md:items-center md:px-6"
                     onClick={() => setExpanded(isExpanded ? null : b.id)}
                   >
-                    <div>
+                    <div className="min-w-0 pr-8 md:pr-0">
                       <div className="font-semibold text-slate-800 text-sm">{b.guest_name}</div>
                       <div className="text-slate-400 text-xs mt-0.5">
                         {new Date(b.check_in + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })} –{" "}
@@ -293,44 +293,44 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
                         {" · "}{b.num_guests} guests
                       </div>
                     </div>
-                    <div className="text-sm font-semibold text-slate-700 text-right">{formatUSD(b.total_price / 100)}</div>
+                    <div className="text-sm font-semibold text-slate-700 md:text-right">{formatUSD(b.total_price / 100)}</div>
                     <StatusBadge status={b.status} />
                     {b.status === "pending" && (
-                      <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                      <div className="flex gap-2 w-full md:w-auto" onClick={e => e.stopPropagation()}>
                         <button disabled={acting[b.id]} onClick={() => act(b.id, "confirm")}
-                          className="text-xs font-semibold px-3 py-1 bg-green-500 hover:bg-green-400 text-white rounded-full disabled:opacity-50 transition-colors">
+                          className="flex-1 md:flex-none text-xs font-semibold px-3 py-2.5 bg-green-500 hover:bg-green-400 text-white rounded-full disabled:opacity-50 transition-colors min-h-[44px]">
                           Confirm
                         </button>
                         <button disabled={acting[b.id]} onClick={() => act(b.id, "deny")}
-                          className="text-xs font-semibold px-3 py-1 bg-red-500 hover:bg-red-400 text-white rounded-full disabled:opacity-50 transition-colors">
+                          className="flex-1 md:flex-none text-xs font-semibold px-3 py-2.5 bg-red-500 hover:bg-red-400 text-white rounded-full disabled:opacity-50 transition-colors min-h-[44px]">
                           Deny
                         </button>
                       </div>
                     )}
                     {b.status === "confirmed" && (
-                      <div onClick={e => e.stopPropagation()}>
+                      <div className="w-full md:w-auto" onClick={e => e.stopPropagation()}>
                         <button disabled={acting[b.id]} onClick={() => act(b.id, "mark-deposit-received")}
-                          className="text-xs font-semibold px-3 py-1 bg-blue-500 hover:bg-blue-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap">
+                          className="w-full md:w-auto text-xs font-semibold px-3 py-2.5 bg-blue-500 hover:bg-blue-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap min-h-[44px]">
                           ✓ Deposit Received
                         </button>
                       </div>
                     )}
                     {(b.status === "confirmed" || b.status === "deposit_paid" || b.status === "balance_due") && (
-                      <div onClick={e => e.stopPropagation()}>
+                      <div className="w-full md:w-auto" onClick={e => e.stopPropagation()}>
                         <button disabled={acting[b.id]} onClick={() => act(b.id, "mark-paid-in-full")}
-                          className="text-xs font-semibold px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap">
+                          className="w-full md:w-auto text-xs font-semibold px-3 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap min-h-[44px]">
                           ✓ Paid in Full
                         </button>
                       </div>
                     )}
-                    <svg className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className={`w-4 h-4 text-slate-400 transition-transform absolute top-5 right-4 md:static ${isExpanded ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="6 9 12 15 18 9" />
                     </svg>
                   </div>
 
                   {/* Expanded detail */}
                   {isExpanded && (
-                    <div className="px-6 pb-6 bg-slate-50 border-t border-slate-100 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="px-4 pb-6 md:px-6 bg-slate-50 border-t border-slate-100 grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Guest info */}
                       <div>
                         <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-4 mb-3">Guest Details</h3>
