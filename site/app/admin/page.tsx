@@ -64,6 +64,7 @@ interface SeasonalRate {
   end: string;
   nightly: number;
   weekly: number;
+  subtitle?: string;
 }
 
 interface LocalRec { name: string; note: string; }
@@ -579,12 +580,14 @@ function PricingTab() {
           <h2 className="font-semibold text-slate-800">Seasonal Rates</h2>
           <p className="text-xs text-slate-400">All prices pre-tax · 12.75% added at checkout</p>
         </div>
-        <div className="grid grid-cols-5 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-          <span>Season</span><span>Start (MM-DD)</span><span>End (MM-DD)</span><span>Nightly</span><span>Weekly</span>
+        <div className="grid grid-cols-6 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <span>Season</span><span>Display Text</span><span>Start (MM-DD)</span><span>End (MM-DD)</span><span>Nightly</span><span>Weekly</span>
         </div>
         {seasonal.map((s, i) => (
-          <div key={i} className="grid grid-cols-5 px-6 py-3 border-b border-slate-50 last:border-0 items-center gap-2">
+          <div key={i} className="grid grid-cols-6 px-6 py-3 border-b border-slate-50 last:border-0 items-center gap-2">
             <input value={s.label} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, label: e.target.value } : r))}
+              className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
+            <input value={s.subtitle ?? ""} placeholder="e.g. Jun–Sep" onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, subtitle: e.target.value } : r))}
               className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-sky-300" />
             <input value={s.start} onChange={e => setSeasonal(prev => prev.map((r, j) => j === i ? { ...r, start: e.target.value } : r))}
               className="border border-slate-200 rounded-lg px-2 py-1 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-sky-300" />
