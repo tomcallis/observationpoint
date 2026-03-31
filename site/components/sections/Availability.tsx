@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { getBlockedRanges } from "@/lib/ical";
+import { getSetting } from "@/lib/db";
 import AvailabilitySection from "@/components/ui/AvailabilitySection";
 import { property } from "@/config/property";
 
@@ -36,32 +37,38 @@ interface NamedWeek {
   price: number;
 }
 
-function loadRateData(): { seasons: SeasonData[]; bookingCutoffDate: string | null; namedWeeks: NamedWeek[] } {
-  try {
-    const seasonal: SeasonalRates = JSON.parse(
-      readFileSync(join(process.cwd(), "data", "seasonal-rates.json"), "utf-8")
-    );
-    const weekly: Record<string, WeeklyEntry> = JSON.parse(
-      readFileSync(join(process.cwd(), "data", "weekly-prices.json"), "utf-8")
-    );
+function readJSONFile(path: string) {
+  try { return JSON.parse(readFileSync(path, "utf-8")); } catch { return null; }
+}
 
-    const namedWeeks: NamedWeek[] = Object.entries(weekly)
-      .filter(([, v]) => typeof v === "object" && v !== null && (v as { label?: string }).label)
-      .map(([date, v]) => ({
-        date,
-        label: (v as { price: number; label: string }).label,
-        price: (v as { price: number; label: string }).price,
-      }))
-      .sort((a, b) => a.date.localeCompare(b.date));
+async function loadRateData(): Promise<{ seasons: SeasonData[]; bookingCutoffDate: string | null; namedWeeks: NamedWeek[] }> {
+  const [seasonalDB, weeklyDB] = await Promise.all([
+    getSetting("seasonal-rates"),
+    getSetting("weekly-prices"),
+  ]);
 
-    return {
-      seasons: seasonal.seasons ?? [],
-      bookingCutoffDate: seasonal.bookingCutoffDate ?? null,
-      namedWeeks,
-    };
-  } catch {
-    return { seasons: property.seasonalRates, bookingCutoffDate: null, namedWeeks: [] };
-  }
+  const seasonal: SeasonalRates =
+    (seasonalDB as SeasonalRates | null) ??
+    readJSONFile(join(process.cwd(), "data", "seasonal-rates.json")) ?? {};
+
+  const weekly: Record<string, WeeklyEntry> =
+    (weeklyDB as Record<string, WeeklyEntry> | null) ??
+    readJSONFile(join(process.cwd(), "data", "weekly-prices.json")) ?? {};
+
+  const namedWeeks: NamedWeek[] = Object.entries(weekly)
+    .filter(([, v]) => typeof v === "object" && v !== null && (v as { label?: string }).label)
+    .map(([date, v]) => ({
+      date,
+      label: (v as { price: number; label: string }).label,
+      price: (v as { price: number; label: string }).price,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  return {
+    seasons: seasonal.seasons ?? property.seasonalRates,
+    bookingCutoffDate: seasonal.bookingCutoffDate ?? null,
+    namedWeeks,
+  };
 }
 
 function formatUSD(n: number) {
@@ -126,8 +133,8 @@ async function CalendarLoader({ bookingCutoffDate }: { bookingCutoffDate: string
   );
 }
 
-export default function Availability() {
-  const { seasons, bookingCutoffDate, namedWeeks } = loadRateData();
+export default async function Availability() {
+  const { seasons, bookingCutoffDate, namedWeeks } = await loadRateData();
   const currentSeasonLabel = getCurrentSeasonLabel(seasons);
 
   // Only show upcoming named weeks (within next 18 months)
