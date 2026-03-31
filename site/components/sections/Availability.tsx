@@ -217,33 +217,9 @@ export default function Availability() {
             )}
           </div>
           <p className="text-center text-xs text-slate-400 mt-2">Plus NC and Dare County tax (12.75%)</p>
-        </div>
-
-        {/* Payment & cancellation */}
-        <div className="grid sm:grid-cols-2 gap-4 mt-12">
-          <div className="bg-sky-50 rounded-xl p-5 border border-sky-100">
-            <h3 className="text-sm font-semibold text-slate-800 mb-2">Payment</h3>
-            <ul className="space-y-1.5 text-sm text-slate-600">
-              <li className="flex gap-2">
-                <span className="text-sky-500 shrink-0">&#x2713;</span>
-                {payment.deposit.percent}% deposit due at booking
-              </li>
-              <li className="flex gap-2">
-                <span className="text-sky-500 shrink-0">&#x2713;</span>
-                Balance due {payment.deposit.balanceDueDays} days before check-in
-              </li>
-              <li className="flex gap-2">
-                <span className="text-sky-500 shrink-0">&#x2713;</span>
-                Pay securely via Stripe (credit or debit card)
-              </li>
-            </ul>
-          </div>
-          <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
-            <h3 className="text-sm font-semibold text-slate-800 mb-2">Cancellation Policy</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              {payment.cancellationPolicy}
-            </p>
-          </div>
+          <p className="text-center text-xs text-slate-400 mt-1">
+            Cancellation: full refund 60+ days out · 50% refund 30–59 days · no refund within 30 days
+          </p>
         </div>
 
         {/* How Direct Booking Works */}
@@ -261,7 +237,7 @@ export default function Availability() {
               {
                 n: 2,
                 title: "Submit a request",
-                desc: "Fill in your details and submit. Tom confirms availability usually within an hour.",
+                desc: "Fill in your details and submit. Tom will confirm within 24 hours.",
               },
               {
                 n: 3,
@@ -285,6 +261,14 @@ export default function Availability() {
               </li>
             ))}
           </ol>
+          <div className="text-center mt-8">
+            <a
+              href="#booking"
+              className="inline-block bg-sky-500 hover:bg-sky-400 text-white font-semibold px-8 py-3 rounded-full transition-colors shadow-sm"
+            >
+              Check Availability
+            </a>
+          </div>
         </div>
 
       </div>
