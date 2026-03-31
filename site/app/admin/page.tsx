@@ -117,7 +117,7 @@ function DashboardTab({ bookings, vrboEvents, blocks }: { bookings: BookingWithE
     ...vrboEvents
       .filter(e => e.start >= today.toISOString().split("T")[0])
       .map(e => ({ date: e.start, label: e.summary, source: "VRBO", status: null })),
-  ].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 10);
+  ].sort((a, b) => a.date.localeCompare(b.date));
 
   const pending = bookings.filter(b => b.status === "pending").length;
   const nextArrival = upcoming[0];
