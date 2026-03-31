@@ -873,6 +873,60 @@ function RecListEditor({ label, items, onChange }: { label: string; items: Local
   );
 }
 
+const EMAIL_PREVIEW_TYPES = [
+  { value: "owner-new-booking",      label: "Owner: New Booking Request" },
+  { value: "guest-request-received", label: "Guest: Request Received" },
+  { value: "guest-confirmed",        label: "Guest: Confirmed (deposit)" },
+  { value: "guest-confirmed-full",   label: "Guest: Confirmed (full payment)" },
+  { value: "guest-denied",           label: "Guest: Denied" },
+  { value: "guest-deposit-received", label: "Guest: Deposit Received" },
+  { value: "guest-balance-due",      label: "Guest: Balance Due" },
+  { value: "guest-pre-arrival",      label: "Guest: Pre-Arrival Info" },
+  { value: "guest-paid-in-full",     label: "Guest: Paid in Full" },
+];
+
+function EmailPreview() {
+  const [type, setType] = useState("guest-confirmed");
+  const [url, setUrl] = useState(`/api/admin/email-preview?type=guest-confirmed`);
+
+  const load = (t: string) => {
+    setType(t);
+    setUrl(`/api/admin/email-preview?type=${t}&_=${Date.now()}`);
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-4">
+        <h2 className="font-semibold text-slate-800 shrink-0">Email Preview</h2>
+        <select
+          value={type}
+          onChange={e => load(e.target.value)}
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 flex-1 max-w-xs"
+        >
+          {EMAIL_PREVIEW_TYPES.map(t => (
+            <option key={t.value} value={t.value}>{t.label}</option>
+          ))}
+        </select>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-sky-500 hover:text-sky-700 shrink-0"
+        >
+          Open in new tab ↗
+        </a>
+      </div>
+      <iframe
+        key={url}
+        src={url}
+        className="w-full border-0"
+        style={{ height: 600 }}
+        title="Email preview"
+      />
+    </div>
+  );
+}
+
 function EmailsTab({ guidebook: initial }: { guidebook: GuidebookData }) {
   const [data, setData] = useState<GuidebookData>(initial);
   const [saving, setSaving] = useState(false);
@@ -894,6 +948,8 @@ function EmailsTab({ guidebook: initial }: { guidebook: GuidebookData }) {
 
   return (
     <div className="space-y-8">
+      <EmailPreview />
+
       {/* Email reference */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100">

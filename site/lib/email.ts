@@ -132,7 +132,7 @@ function btn(href: string, label: string, color = "#0ea5e9") {
 
 // ── 1. Owner: new booking request ────────────────────────────────────────────
 
-export async function sendOwnerNewBooking(b: {
+export function renderOwnerNewBooking(b: {
   bookingId: string;
   ownerToken: string;
   guestName: string;
@@ -146,7 +146,7 @@ export async function sendOwnerNewBooking(b: {
   balanceAmount: number;
   specialRequests?: string;
   referralSource?: string;
-}) {
+}): string {
   const confirmUrl = `${BASE_URL}/api/booking/confirm?token=${b.ownerToken}`;
   const denyUrl = `${BASE_URL}/api/booking/deny?token=${b.ownerToken}`;
   const adminUrl = `${BASE_URL}/admin`;
@@ -172,19 +172,23 @@ export async function sendOwnerNewBooking(b: {
       <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">Or manage from <a href="${adminUrl}" style="color:#0ea5e9;">the admin page</a>.</p>
     </td></tr>`;
 
+  return wrap("#0ea5e9", "New Booking Request", body);
+}
+
+export async function sendOwnerNewBooking(b: Parameters<typeof renderOwnerNewBooking>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [OWNER_EMAIL],
     replyTo: b.guestEmail,
     subject: `[NEW BOOKING] ${b.guestName} · ${d(b.checkIn)} – ${d(b.checkOut)}`,
-    html: wrap("#0ea5e9", "New Booking Request", body),
+    html: renderOwnerNewBooking(b),
   });
 }
 
 // ── 2. Guest: request received ───────────────────────────────────────────────
 
-export async function sendGuestRequestReceived(b: {
+export function renderGuestRequestReceived(b: {
   guestName: string;
   guestEmail: string;
   numGuests: number;
@@ -193,7 +197,7 @@ export async function sendGuestRequestReceived(b: {
   total: number;
   depositAmount: number;
   balanceAmount: number;
-}) {
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const body = `
     <tr><td style="padding:24px 32px 0;">
@@ -210,19 +214,23 @@ export async function sendGuestRequestReceived(b: {
       </p>
     </td></tr>`;
 
+  return wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", body);
+}
+
+export async function sendGuestRequestReceived(b: Parameters<typeof renderGuestRequestReceived>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Booking Request Received — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", body),
+    html: renderGuestRequestReceived(b),
   });
 }
 
 // ── 3. Guest: confirmed + check payment instructions ─────────────────────────
 
-export async function sendGuestConfirmed(b: {
+export function renderGuestConfirmed(b: {
   guestName: string;
   guestEmail: string;
   numGuests: number;
@@ -231,9 +239,9 @@ export async function sendGuestConfirmed(b: {
   total: number;
   depositAmount: number;
   balanceAmount: number;
-  paymentType: "deposit" | "full"; // "full" if check-in is within 45 days
-  balanceDueDate?: string; // ISO date, only set when paymentType === "deposit"
-}) {
+  paymentType: "deposit" | "full";
+  balanceDueDate?: string;
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const { holdDays, balanceDueDays } = property.payment.deposit;
 
@@ -264,24 +272,28 @@ export async function sendGuestConfirmed(b: {
     </td></tr>
     <tr><td style="padding:0 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
 
+  return wrap("#16a34a", "Your Booking is Confirmed!", body);
+}
+
+export async function sendGuestConfirmed(b: Parameters<typeof renderGuestConfirmed>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Booking Confirmed! — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#16a34a", "Your Booking is Confirmed!", body),
+    html: renderGuestConfirmed(b),
   });
 }
 
 // ── 4. Guest: denied ─────────────────────────────────────────────────────────
 
-export async function sendGuestDenied(b: {
+export function renderGuestDenied(b: {
   guestName: string;
   guestEmail: string;
   checkIn: string;
   checkOut: string;
-}) {
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const body = `
     <tr><td style="padding:24px 32px;">
@@ -296,19 +308,23 @@ export async function sendGuestDenied(b: {
       <p style="margin:20px 0 0;">${btn(`${BASE_URL}/#booking`, "Check Other Dates →")}</p>
     </td></tr>`;
 
+  return wrap("#64748b", "Dates Unavailable", body);
+}
+
+export async function sendGuestDenied(b: Parameters<typeof renderGuestDenied>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Re: Booking Request — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#64748b", "Dates Unavailable", body),
+    html: renderGuestDenied(b),
   });
 }
 
 // ── 5. Guest: deposit check received ─────────────────────────────────────────
 
-export async function sendGuestDepositReceived(b: {
+export function renderGuestDepositReceived(b: {
   guestName: string;
   guestEmail: string;
   numGuests: number;
@@ -317,8 +333,8 @@ export async function sendGuestDepositReceived(b: {
   total: number;
   depositAmount: number;
   balanceAmount: number;
-  balanceDueDate: string; // ISO date
-}) {
+  balanceDueDate: string;
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const body = `
     <tr><td style="padding:24px 32px 0;">
@@ -333,19 +349,23 @@ export async function sendGuestDepositReceived(b: {
     </td></tr>
     <tr><td style="padding:16px 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
 
+  return wrap("#0ea5e9", "Deposit Received!", body);
+}
+
+export async function sendGuestDepositReceived(b: Parameters<typeof renderGuestDepositReceived>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Deposit Received — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#0ea5e9", "Deposit Received!", body),
+    html: renderGuestDepositReceived(b),
   });
 }
 
 // ── 6. Guest: balance due reminder ───────────────────────────────────────────
 
-export async function sendGuestBalanceDue(b: {
+export function renderGuestBalanceDue(b: {
   guestName: string;
   guestEmail: string;
   numGuests: number;
@@ -354,7 +374,7 @@ export async function sendGuestBalanceDue(b: {
   total: number;
   depositAmount: number;
   balanceAmount: number;
-}) {
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const body = `
     <tr><td style="padding:24px 32px 0;">
@@ -368,25 +388,29 @@ export async function sendGuestBalanceDue(b: {
     </td></tr>
     <tr><td style="padding:0 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
 
+  return wrap("#f59e0b", "Balance Payment Due", body);
+}
+
+export async function sendGuestBalanceDue(b: Parameters<typeof renderGuestBalanceDue>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Balance Due — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#f59e0b", "Balance Payment Due", body),
+    html: renderGuestBalanceDue(b),
   });
 }
 
 // ── 7. Guest: pre-arrival (sent 7 days before check-in) ──────────────────────
 
-export async function sendGuestPreArrival(b: {
+export function renderGuestPreArrival(b: {
   guestName: string;
   guestEmail: string;
   numGuests: number;
   checkIn: string;
   checkOut: string;
-}) {
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const guidebook: typeof property.guidebook = { ...property.guidebook, ...(loadGuidebook() ?? {}) };
 
@@ -487,26 +511,30 @@ export async function sendGuestPreArrival(b: {
       <p style="margin:8px 0 0;font-size:14px;color:#64748b;">Warm regards,<br>Tom and Miranda</p>
     </td></tr>`;
 
+  return wrap("#0ea5e9", "See You in One Week!", body);
+}
+
+export async function sendGuestPreArrival(b: Parameters<typeof renderGuestPreArrival>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Your Stay is One Week Away — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#0ea5e9", "See You in One Week!", body),
+    html: renderGuestPreArrival(b),
   });
 }
 
 // ── 8. Guest: paid in full ───────────────────────────────────────────────────
 
-export async function sendGuestPaidInFull(b: {
+export function renderGuestPaidInFull(b: {
   guestName: string;
   guestEmail: string;
   numGuests: number;
   checkIn: string;
   checkOut: string;
   total: number;
-}) {
+}): string {
   const firstName = b.guestName.split(" ")[0];
   const body = `
     <tr><td style="padding:24px 32px;">
@@ -520,12 +548,16 @@ export async function sendGuestPaidInFull(b: {
       </p>
     </td></tr>`;
 
+  return wrap("#16a34a", "You're All Set!", body);
+}
+
+export async function sendGuestPaidInFull(b: Parameters<typeof renderGuestPaidInFull>[0]) {
   const resend = getResend();
   await resend.emails.send({
     from: FROM,
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `All Paid — See You ${d(b.checkIn)}! — Observation Point`,
-    html: wrap("#16a34a", "You're All Set!", body),
+    html: renderGuestPaidInFull(b),
   });
 }

@@ -245,7 +245,8 @@ export async function deleteBooking(id: string): Promise<void> {
 
 // ── Settings (key/value store) ───────────────────────────────────────────────
 
-async function ensureSettingsTable(sql: ReturnType<typeof neon>) {
+async function ensureSettingsTable() {
+  const sql = getSQL();
   await sql`
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
@@ -256,15 +257,15 @@ async function ensureSettingsTable(sql: ReturnType<typeof neon>) {
 }
 
 export async function getSetting(key: string): Promise<unknown | null> {
+  await ensureSettingsTable();
   const sql = getSQL();
-  await ensureSettingsTable(sql);
   const rows = await sql`SELECT value FROM settings WHERE key = ${key}`;
   return rows[0] ? (rows[0] as Record<string, unknown>).value : null;
 }
 
 export async function setSetting(key: string, value: unknown): Promise<void> {
+  await ensureSettingsTable();
   const sql = getSQL();
-  await ensureSettingsTable(sql);
   const json = JSON.stringify(value);
   await sql`
     INSERT INTO settings (key, value) VALUES (${key}, ${json}::jsonb)
