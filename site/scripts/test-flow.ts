@@ -125,7 +125,7 @@ async function main() {
   console.log(`\n${CLR.BOLD}Observation Point — End-to-End Flow Test${CLR.X}`);
   console.log(`${CLR.DIM}Target : ${BASE_URL}${CLR.X}`);
   console.log(`${CLR.DIM}Emails → ${TEST_EMAIL}${CLR.X}`);
-  console.log(`${CLR.DIM}Dates  : confirm flow ${CHECKIN_A}–${CHECKOUT_A} · deny flow ${CHECKIN_B}–${CHECKOUT_B}${CLR.X}`);
+  console.log(`${CLR.DIM}Dates  : confirm flow ${CHECKIN_A}–${CHECKOUT_A} · deny flow ${CHECKIN_B}–${CHECKOUT_B} · pre-arrival ${CHECKIN_PRE}–${CHECKOUT_PRE}${CLR.X}`);
 
   // ── 1. Site reachability ───────────────────────────────────────────────────
   section("Site Reachability");
@@ -314,15 +314,59 @@ async function main() {
   if (!CRON_SECRET) {
     console.log(`  ${CLR.Y}⚠ CRON_SECRET not set — pass --cron-secret <secret> or set in .env.local${CLR.X}`);
   } else {
+    // Set up a paid_in_full booking with check-in exactly 7 days out so the pre-arrival cron fires
+    section("Pre-Arrival Flow Setup");
+    info(`Check-in: ${CHECKIN_PRE}   Check-out: ${CHECKOUT_PRE} (7 days out)`);
+    const { status: preSetupS } = await post("/api/booking", {
+      ...BASE_PAYLOAD,
+      guestName: "[TEST] Pre-Arrival Flow",
+      guestEmail: TEST_EMAIL,
+      specialRequests: "Automated test — pre-arrival flow. Please ignore.",
+      checkin: CHECKIN_PRE,
+      checkout: CHECKOUT_PRE,
+    });
+    let bookingC: Record<string, unknown> | null = null;
+    if (preSetupS === 200) {
+      ok("POST /api/booking", "pre-arrival booking created");
+      await new Promise((r) => setTimeout(r, 400));
+      const { data: allBPre } = await get("/api/admin/bookings");
+      bookingC = Array.isArray(allBPre)
+        ? (allBPre as Record<string, unknown>[]).find(
+            (b) => b.guest_name === "[TEST] Pre-Arrival Flow" && b.check_in === CHECKIN_PRE
+          ) ?? null
+        : null;
+      if (bookingC?.owner_token) {
+        await fetch(`${BASE_URL}/api/booking/confirm?token=${bookingC.owner_token as string}`, { redirect: "manual" });
+        await new Promise((r) => setTimeout(r, 300));
+        await post("/api/admin/bookings", { action: "mark-deposit-received", bookingId: bookingC.id });
+        await new Promise((r) => setTimeout(r, 300));
+        const { status: preMarkS } = await post("/api/admin/bookings", { action: "mark-paid-in-full", bookingId: bookingC.id });
+        preMarkS === 200
+          ? ok("Pre-arrival booking → paid_in_full")
+          : err("Pre-arrival booking → paid_in_full", `HTTP ${preMarkS}`);
+      } else {
+        err("Pre-arrival booking found in DB", "not found");
+      }
+    } else {
+      err("POST /api/booking (pre-arrival)", `HTTP ${preSetupS}`);
+    }
+
+    section("Cron Endpoints");
     const { status: balS, data: balD } = await get(`/api/cron/balance-reminders?secret=${CRON_SECRET}`);
     balS === 200
       ? ok("/api/cron/balance-reminders", `processed: ${(balD as Record<string, unknown>)?.processed ?? 0}`)
       : err("/api/cron/balance-reminders", `HTTP ${balS}`);
 
     const { status: preS, data: preD } = await get(`/api/cron/pre-arrival?secret=${CRON_SECRET}`);
-    preS === 200
-      ? ok("/api/cron/pre-arrival", `sent: ${(preD as Record<string, unknown>)?.sent ?? 0}`)
-      : err("/api/cron/pre-arrival", `HTTP ${preS}`);
+    const preProcessed = (preD as Record<string, unknown>)?.processed as number ?? 0;
+    if (preS === 200 && preProcessed >= 1) {
+      ok("/api/cron/pre-arrival", `processed: ${preProcessed}`);
+      info("Email 9/9 → Guest: pre-arrival info");
+    } else if (preS === 200) {
+      err("/api/cron/pre-arrival", "processed: 0 — pre-arrival email not triggered");
+    } else {
+      err("/api/cron/pre-arrival", `HTTP ${preS}`);
+    }
   }
 
   // ── 12. Blocked dates ─────────────────────────────────────────────────────
@@ -372,8 +416,12 @@ async function main() {
     console.log(`\n${CLR.G}${CLR.BOLD}All checks passed.${CLR.X}`);
   }
 
-  console.log(`\n${CLR.DIM}Check ${TEST_EMAIL} for 8 test emails. Test bookings are in the admin`);
-  console.log(`as "[TEST] Confirm Flow" and "[TEST] Deny Flow" — cancel them when done.${CLR.X}\n`);
+  const emailCount = CRON_SECRET ? 9 : 8;
+  const bookingList = CRON_SECRET
+    ? '"[TEST] Confirm Flow", "[TEST] Deny Flow", and "[TEST] Pre-Arrival Flow"'
+    : '"[TEST] Confirm Flow" and "[TEST] Deny Flow"';
+  console.log(`\n${CLR.DIM}Check ${TEST_EMAIL} for ${emailCount} test emails. Test bookings are in the admin`);
+  console.log(`as ${bookingList} — cancel them when done.${CLR.X}\n`);
 
   process.exit(failed > 0 ? 1 : 0);
 }

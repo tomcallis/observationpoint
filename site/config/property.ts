@@ -244,6 +244,11 @@ export const property = {
         "We accept personal checks. Once Tom confirms your booking, you'll receive an email with instructions to mail a 50% deposit check to secure your dates. The remaining 50% balance is due 45 days before check-in — you'll receive a reminder. If you're booking within 45 days of check-in, full payment is due upfront. Checks are made payable to Tom Callis, 296 Apple Blossom Lane, Boone, NC 28607.",
     },
     {
+      question: "Are linens included?",
+      answer:
+        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. Comforters, blankets, and pillows are provided. The property has one king bed, one queen bed, and two twin beds.",
+    },
+    {
       question: "Is there an age requirement?",
       answer:
         "Yes. The primary renter must be at least 25 years of age and must be present for the duration of the stay.",
@@ -267,11 +272,6 @@ export const property = {
       question: "What are check-in and check-out times?",
       answer:
         "Check-in is at 3:30 PM on your arrival Saturday. Check-out is at 10:00 AM on your departure Saturday. The key is in a lockbox under the house — it's mounted to a piling between the stairs and the outdoor shower. Early check-in or late check-out may be possible depending on the schedule — just ask.",
-    },
-    {
-      question: "Are linens included?",
-      answer:
-        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. Comforters, blankets, and pillows are provided. The property has one king bed, one queen bed, and two twin beds.",
     },
     {
       question: "What should I bring?",

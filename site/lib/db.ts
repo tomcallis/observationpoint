@@ -242,3 +242,32 @@ export async function deleteBooking(id: string): Promise<void> {
   await sql`DELETE FROM booking_events WHERE booking_id = ${id}`;
   await sql`DELETE FROM bookings WHERE id = ${id}`;
 }
+
+// ── Settings (key/value store) ───────────────────────────────────────────────
+
+async function ensureSettingsTable(sql: ReturnType<typeof neon>) {
+  await sql`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value JSONB NOT NULL,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+export async function getSetting(key: string): Promise<unknown | null> {
+  const sql = getSQL();
+  await ensureSettingsTable(sql);
+  const rows = await sql`SELECT value FROM settings WHERE key = ${key}`;
+  return rows[0] ? (rows[0] as Record<string, unknown>).value : null;
+}
+
+export async function setSetting(key: string, value: unknown): Promise<void> {
+  const sql = getSQL();
+  await ensureSettingsTable(sql);
+  const json = JSON.stringify(value);
+  await sql`
+    INSERT INTO settings (key, value) VALUES (${key}, ${json}::jsonb)
+    ON CONFLICT (key) DO UPDATE SET value = ${json}::jsonb, updated_at = NOW()
+  `;
+}

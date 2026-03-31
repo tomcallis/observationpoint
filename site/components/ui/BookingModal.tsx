@@ -135,6 +135,7 @@ Cancellations must be submitted in writing to tom.callis@gmail.com. Refunds are 
 Pets: No pets permitted.
 Smoking: No smoking or vaping inside the cottage.Parking: Do not park or drive on septic field (marked by posts and rope).
 Grills: No grill use on deck.
+Linens: Sheets, pillowcases, bath towels, and beach towels are NOT provided — please bring your own. Comforters, blankets, and pillows are provided.
 
 4. CHECK-IN AND CHECK-OUT
 Check-in begins at 3:30 PM. Access instructions will be provided before arrival. Report any cleaning issues within 2 hours of check-in.
@@ -150,7 +151,7 @@ If authorities order a mandatory evacuation, Traveler must comply and is entitle
 Owner will provide the cottage in fit and habitable condition and make good faith efforts to repair inoperative equipment promptly. Owner or agents may enter the cottage for repairs, maintenance, or other necessary purposes. If Owner cannot provide the cottage in habitable condition at the time of occupancy, all payments will be refunded. Traveler agrees to indemnify and hold harmless the Owner from liability for personal injury or property damage unless caused by the negligent or willful act of the Owner. Owner will conduct all activities without regard to race, religion, sex, national origin, handicap, or familial status.
 
 PAYMENT
-Payment is processed securely via Stripe. A 50% deposit is due within 48 hours of booking confirmation. The remaining 50% balance is due 30 days before check-in.
+Payment is by personal check. A 50% deposit check must be mailed within 5 days of booking confirmation to secure your dates. The remaining 50% balance is due 45 days before check-in. If booking within 45 days of check-in, full payment is due at confirmation. Checks payable to Tom Callis, mailed to 296 Apple Blossom Lane, Boone, NC 28607.
 
 By checking the box below, Traveler acknowledges having read and agreed to this Vacation Rental Agreement.`;
 
@@ -211,7 +212,7 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
             <span>{formatUSD(pricing.total)}</span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            50% deposit ({formatUSD(depositAmount)}) due within 48 hrs · Balance ({formatUSD(balanceAmount)}) due 30 days before check-in
+            50% deposit ({formatUSD(depositAmount)}) due within 5 days · Balance ({formatUSD(balanceAmount)}) due 45 days before check-in
           </p>
         </div>
 
@@ -344,7 +345,7 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
             <div>
               <h3 className="font-semibold text-slate-800 mb-1">Review &amp; Submit</h3>
               <p className="text-sm text-slate-500 mb-4">
-                Your request will be sent to Tom for review. If confirmed, you&rsquo;ll receive a secure Stripe payment link for your {formatUSD(depositAmount)} deposit.
+                Your request will be sent to Tom for review. If confirmed, you&rsquo;ll receive an email with check payment instructions for your {formatUSD(depositAmount)} deposit.
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-sm space-y-2 mb-2">
                 <div className="flex justify-between">
@@ -365,11 +366,11 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Deposit (50%)</span>
-                  <span className="font-medium">{formatUSD(depositAmount)} via Stripe</span>
+                  <span className="font-medium">{formatUSD(depositAmount)} by check · due within 5 days</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Balance (50%)</span>
-                  <span className="font-medium">{formatUSD(balanceAmount)} · due 30 days before check-in</span>
+                  <span className="font-medium">{formatUSD(balanceAmount)} · due 45 days before check-in</span>
                 </div>
               </div>
 
@@ -421,7 +422,7 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
                 A confirmation has been sent to <strong>{guestEmail}</strong>.
               </p>
               <p className="text-slate-500 text-sm mb-6">
-                Tom will review your request and email you a payment link for your deposit if confirmed.
+                Tom will review your request and email you check payment instructions for your deposit if confirmed.
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-left text-sm space-y-2 mb-6">
                 <div className="flex justify-between">
@@ -438,7 +439,7 @@ By checking the box below, Traveler acknowledges having read and agreed to this 
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Deposit (if confirmed)</span>
-                  <span className="font-medium">{formatUSD(depositAmount)} via Stripe</span>
+                  <span className="font-medium">{formatUSD(depositAmount)} by check</span>
                 </div>
               </div>
               <button

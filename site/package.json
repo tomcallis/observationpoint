@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:flow": "tsx scripts/test-flow.ts",
+    "test:flow:live": "tsx scripts/test-flow.ts --url https://observationpointnc.com"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
@@ -29,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
