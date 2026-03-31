@@ -176,7 +176,7 @@ export async function sendGuestRequestReceived(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Booking Request Received — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", "Observation Point · Frisco, Hatteras Island, NC", body),
+    html: wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", "Observation Point · Frisco, NC", body),
   });
 }
 
@@ -215,7 +215,7 @@ export async function sendGuestConfirmed(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Booking Confirmed! — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#16a34a", "Your Booking is Confirmed!", "Observation Point · Frisco, Hatteras Island, NC", body),
+    html: wrap("#16a34a", "Your Booking is Confirmed!", "Observation Point · Frisco, NC", body),
   });
 }
 
@@ -247,7 +247,7 @@ export async function sendGuestDenied(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Re: Booking Request — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#64748b", "Dates Unavailable", "Observation Point · Frisco, Hatteras Island, NC", body),
+    html: wrap("#64748b", "Dates Unavailable", "Observation Point · Frisco, NC", body),
   });
 }
 
@@ -284,7 +284,7 @@ export async function sendGuestBalanceDue(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Balance Due — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#f59e0b", "Balance Payment Due", "Observation Point · Frisco, Hatteras Island, NC", body),
+    html: wrap("#f59e0b", "Balance Payment Due", "Observation Point · Frisco, NC", body),
   });
 }
 
@@ -317,6 +317,6 @@ export async function sendGuestPaidInFull(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `All Paid — See You ${d(b.checkIn)}! — Observation Point`,
-    html: wrap("#16a34a", "You're All Set!", "Observation Point · Frisco, Hatteras Island, NC", body),
+    html: wrap("#16a34a", "You're All Set!", "Observation Point · Frisco, NC", body),
   });
 }
