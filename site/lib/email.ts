@@ -18,7 +18,7 @@ function d(iso: string) {
 
 // ── Shared layout wrapper ───────────────────────────────────────────────────
 
-function wrap(headerColor: string, headerText: string, headerSub: string, body: string): string {
+function wrap(headerColor: string, headerText: string, body: string): string {
   const logoUrl = `${BASE_URL}/images/logo.png`;
   return `<!DOCTYPE html>
 <html>
@@ -40,7 +40,6 @@ function wrap(headerColor: string, headerText: string, headerSub: string, body: 
             </tr>
           </table>
           <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">${headerText}</h1>
-          <p style="margin:6px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">${headerSub}</p>
         </td></tr>
         ${body}
         <tr><td style="padding:20px 32px;border-top:1px solid #f1f5f9;background:#f8fafc;">
@@ -138,7 +137,7 @@ export async function sendOwnerNewBooking(b: {
     to: [OWNER_EMAIL],
     replyTo: b.guestEmail,
     subject: `[NEW BOOKING] ${b.guestName} · ${d(b.checkIn)} – ${d(b.checkOut)}`,
-    html: wrap("#0ea5e9", "New Booking Request", "Observation Point · Frisco, NC", body),
+    html: wrap("#0ea5e9", "New Booking Request", body),
   });
 }
 
@@ -176,7 +175,7 @@ export async function sendGuestRequestReceived(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Booking Request Received — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", "Observation Point · Frisco, NC", body),
+    html: wrap("linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%)", "Request Received!", body),
   });
 }
 
@@ -215,7 +214,7 @@ export async function sendGuestConfirmed(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Booking Confirmed! — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#16a34a", "Your Booking is Confirmed!", "Observation Point · Frisco, NC", body),
+    html: wrap("#16a34a", "Your Booking is Confirmed!", body),
   });
 }
 
@@ -247,7 +246,7 @@ export async function sendGuestDenied(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Re: Booking Request — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#64748b", "Dates Unavailable", "Observation Point · Frisco, NC", body),
+    html: wrap("#64748b", "Dates Unavailable", body),
   });
 }
 
@@ -284,7 +283,7 @@ export async function sendGuestBalanceDue(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `Balance Due — Observation Point · ${d(b.checkIn)}`,
-    html: wrap("#f59e0b", "Balance Payment Due", "Observation Point · Frisco, NC", body),
+    html: wrap("#f59e0b", "Balance Payment Due", body),
   });
 }
 
@@ -317,6 +316,6 @@ export async function sendGuestPaidInFull(b: {
     to: [b.guestEmail],
     replyTo: OWNER_EMAIL,
     subject: `All Paid — See You ${d(b.checkIn)}! — Observation Point`,
-    html: wrap("#16a34a", "You're All Set!", "Observation Point · Frisco, NC", body),
+    html: wrap("#16a34a", "You're All Set!", body),
   });
 }
