@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { join } from "path";
-
-const WEEKLY_FILE = join(process.cwd(), "data", "weekly-prices.json");
-const SEASONAL_FILE = join(process.cwd(), "data", "seasonal-rates.json");
+import { getSetting, setSetting } from "@/lib/db";
 
 function readJSON(path: string) {
   try {
@@ -17,11 +15,15 @@ export async function GET(req: NextRequest) {
   const type = req.nextUrl.searchParams.get("type");
 
   if (type === "seasonal") {
-    return NextResponse.json(readJSON(SEASONAL_FILE) ?? []);
+    const fromDB = await getSetting("seasonal-rates");
+    if (fromDB !== null) return NextResponse.json(fromDB);
+    return NextResponse.json(readJSON(join(process.cwd(), "data", "seasonal-rates.json")) ?? {});
   }
 
   // Default: weekly overrides
-  return NextResponse.json(readJSON(WEEKLY_FILE) ?? {});
+  const fromDB = await getSetting("weekly-prices");
+  if (fromDB !== null) return NextResponse.json(fromDB);
+  return NextResponse.json(readJSON(join(process.cwd(), "data", "weekly-prices.json")) ?? {});
 }
 
 export async function POST(req: NextRequest) {
@@ -30,11 +32,10 @@ export async function POST(req: NextRequest) {
 
   try {
     if (type === "seasonal") {
-      // Expect { bookingCutoffDate, seasons } object
       if (typeof body !== "object" || body === null || !Array.isArray(body.seasons)) {
         return NextResponse.json({ error: "Expected { bookingCutoffDate, seasons }" }, { status: 400 });
       }
-      writeFileSync(SEASONAL_FILE, JSON.stringify(body, null, 2));
+      await setSetting("seasonal-rates", body);
       return NextResponse.json({ ok: true });
     }
 
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
         }
       }
     }
-    writeFileSync(WEEKLY_FILE, JSON.stringify(validated, null, 2));
+    await setSetting("weekly-prices", validated);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Failed to save" }, { status: 500 });
