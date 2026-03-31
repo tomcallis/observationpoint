@@ -31,8 +31,10 @@ export default function Hero() {
         <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-widest mb-2 drop-shadow">
           Observation Point
         </h1>
-        <p className="text-sky-300 text-sm font-semibold uppercase tracking-widest mb-3">
-          Frisco, NC · Hatteras Island
+        <p className="mb-3">
+          <span className="bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 text-white/90 text-sm font-semibold uppercase tracking-widest">
+            Frisco, NC · Hatteras Island
+          </span>
         </p>
         <p className="text-white/90 text-xl sm:text-2xl mb-3 drop-shadow leading-snug max-w-xl">
           {property.tagline}
