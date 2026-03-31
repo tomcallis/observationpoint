@@ -264,7 +264,7 @@ export const property = {
     {
       question: "Can I bring a boat?",
       answer:
-        "Yes! The private dock is 30 feet long with approximately 2 feet of water depth and a sandy bottom — suitable for shallow-draft boats, kayaks, paddleboards, and small motorized craft. Guests are welcome to fish, swim, or launch from the dock. Please be aware of local boating regulations and NC Wildlife Resources Commission requirements.",
+        "Yes! The private dock is 30 feet long with approximately 2 feet of water depth and a sandy bottom — suitable for shallow-draft boats, kayaks, paddleboards, and small motorized craft. Guests are welcome to fish, swim, or launch from the dock.",
     },
     {
       question: "Is the property pet-friendly?",
