@@ -171,7 +171,7 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
     setSaving(p => ({ ...p, [id]: false }));
   };
 
-  const act = async (bookingId: string, action: "confirm" | "deny") => {
+  const act = async (bookingId: string, action: "confirm" | "deny" | "mark-deposit-received" | "mark-paid-in-full") => {
     setActing(p => ({ ...p, [bookingId]: true }));
     await fetch("/api/admin/bookings", {
       method: "POST",
@@ -239,6 +239,22 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
                         <button disabled={acting[b.id]} onClick={() => act(b.id, "deny")}
                           className="text-xs font-semibold px-3 py-1 bg-red-500 hover:bg-red-400 text-white rounded-full disabled:opacity-50 transition-colors">
                           Deny
+                        </button>
+                      </div>
+                    )}
+                    {b.status === "confirmed" && (
+                      <div onClick={e => e.stopPropagation()}>
+                        <button disabled={acting[b.id]} onClick={() => act(b.id, "mark-deposit-received")}
+                          className="text-xs font-semibold px-3 py-1 bg-blue-500 hover:bg-blue-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap">
+                          ✓ Deposit Received
+                        </button>
+                      </div>
+                    )}
+                    {(b.status === "confirmed" || b.status === "deposit_paid" || b.status === "balance_due") && (
+                      <div onClick={e => e.stopPropagation()}>
+                        <button disabled={acting[b.id]} onClick={() => act(b.id, "mark-paid-in-full")}
+                          className="text-xs font-semibold px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full disabled:opacity-50 transition-colors whitespace-nowrap">
+                          ✓ Paid in Full
                         </button>
                       </div>
                     )}

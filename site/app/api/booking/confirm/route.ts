@@ -5,11 +5,24 @@ import {
   insertBookingEvent,
 } from "@/lib/db";
 import { sendGuestConfirmed } from "@/lib/email";
-import { createDepositSession } from "@/lib/stripe";
 import { syncBookingToSheets } from "@/lib/sheets";
-import { formatUSD } from "@/lib/pricing";
+import { property } from "@/config/property";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://observationpointnc.com";
+const { fullPaymentThresholdDays, balanceDueDays } = property.payment.deposit;
+
+function daysUntil(checkIn: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const d = new Date(checkIn + "T12:00:00");
+  return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function subtractDays(iso: string, days: number): string {
+  const d = new Date(iso + "T12:00:00");
+  d.setDate(d.getDate() - days);
+  return d.toISOString().split("T")[0];
+}
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
@@ -36,39 +49,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${BASE_URL}/admin?error=already-actioned`);
   }
 
-  // Create Stripe deposit session
-  const depositAmount = booking.total_price / 100 / 2; // dollars
-  let depositUrl = `${BASE_URL}/admin`;
-  let sessionId: string | null = null;
+  const days = daysUntil(booking.check_in);
+  const paymentType = days <= fullPaymentThresholdDays ? "full" : "deposit";
+  const depositAmount = booking.total_price / 100 / 2;
+  const balanceDueDate = paymentType === "deposit" ? subtractDays(booking.check_in, balanceDueDays) : undefined;
 
-  try {
-    const session = await createDepositSession({
-      id: booking.id,
-      guestEmail: booking.guest_email,
-      guestName: booking.guest_name,
-      checkIn: booking.check_in,
-      checkOut: booking.check_out,
-      depositAmount,
-    });
-    depositUrl = session.url;
-    sessionId = session.sessionId;
-  } catch (err) {
-    console.error("[confirm] Stripe session creation failed:", err);
-    // depositUrl stays as admin fallback — email will show broken link
-    // Check STRIPE_SECRET_KEY env var if this keeps happening
-  }
-
-  // Update DB
-  await updateBookingStatus(booking.id, "confirmed", {
-    stripe_deposit_session_id: sessionId,
-  });
+  await updateBookingStatus(booking.id, "confirmed");
   await insertBookingEvent(booking.id, "pending", "confirmed", "owner");
+  await syncBookingToSheets({ ...booking, status: "confirmed" });
 
-  // Sync to Sheets
-  const updated = { ...booking, status: "confirmed" as const };
-  await syncBookingToSheets(updated);
-
-  // Email guest
   try {
     await sendGuestConfirmed({
       guestName: booking.guest_name,
@@ -79,7 +68,8 @@ export async function GET(req: NextRequest) {
       total: booking.total_price / 100,
       depositAmount,
       balanceAmount: booking.total_price / 100 - depositAmount,
-      depositUrl,
+      paymentType,
+      balanceDueDate,
     });
   } catch (err) {
     console.error("[confirm] email error:", err);

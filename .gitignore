@@ -1,1 +1,4 @@
 .DS_Store
+rental-data/client_secret.json
+rental-data/token.pickle
+rental-data/*.csv

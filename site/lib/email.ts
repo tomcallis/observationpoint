@@ -85,6 +85,37 @@ function stayCard(checkIn: string, checkOut: string, numGuests: number, total: n
   </table>`;
 }
 
+function checkInstructions(amount: number, memo: string, note: string) {
+  const { payableTo, mailingAddress } = property.payment.check;
+  return `
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;overflow:hidden;margin:4px 0;">
+    <tr><td style="padding:16px 20px 8px;">
+      <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.05em;">Check Payment Instructions</p>
+      <table cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 16px 3px 0;white-space:nowrap;">Payable to</td>
+          <td style="font-size:13px;color:#0f172a;font-weight:600;">${payableTo}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 16px 3px 0;white-space:nowrap;">Mail to</td>
+          <td style="font-size:13px;color:#0f172a;">${mailingAddress}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 16px 3px 0;white-space:nowrap;">Amount</td>
+          <td style="font-size:15px;color:#0f172a;font-weight:700;">${formatUSD(amount)}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#64748b;padding:3px 16px 3px 0;white-space:nowrap;">Memo</td>
+          <td style="font-size:13px;color:#64748b;">${memo}</td>
+        </tr>
+      </table>
+    </td></tr>
+    <tr><td style="padding:8px 20px 14px;">
+      <p style="margin:0;font-size:12px;color:#16a34a;">${note}</p>
+    </td></tr>
+  </table>`;
+}
+
 function btn(href: string, label: string, color = "#0ea5e9") {
   return `<a href="${href}" style="display:inline-block;background:${color};color:#fff;font-weight:600;font-size:14px;padding:12px 28px;border-radius:50px;text-decoration:none;">${label}</a>`;
 }
@@ -158,8 +189,8 @@ export async function sendGuestRequestReceived(b: {
     <tr><td style="padding:24px 32px 0;">
       <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
       <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
-        Thanks for your request to book Observation Point! Tom will review and respond within a few hours.
-        Once confirmed, you'll receive a secure payment link for your 50% deposit.
+        Thanks for your request to book Observation Point! Tom will review and respond within 24 hours.
+        Once confirmed, you'll receive check payment instructions for your deposit.
       </p>
     </td></tr>
     <tr><td style="padding:20px 32px 0;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>
@@ -179,7 +210,7 @@ export async function sendGuestRequestReceived(b: {
   });
 }
 
-// ── 3. Guest: confirmed + deposit link ───────────────────────────────────────
+// ── 3. Guest: confirmed + check payment instructions ─────────────────────────
 
 export async function sendGuestConfirmed(b: {
   guestName: string;
@@ -190,23 +221,38 @@ export async function sendGuestConfirmed(b: {
   total: number;
   depositAmount: number;
   balanceAmount: number;
-  depositUrl: string;
+  paymentType: "deposit" | "full"; // "full" if check-in is within 45 days
+  balanceDueDate?: string; // ISO date, only set when paymentType === "deposit"
 }) {
   const firstName = b.guestName.split(" ")[0];
+  const { holdDays, balanceDueDays } = property.payment.deposit;
+
+  const paymentSection = b.paymentType === "full"
+    ? `
+      <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
+        Since your stay is coming up soon, <strong>full payment is due now</strong> to secure your dates.
+      </p>
+      <div style="margin:16px 0;">
+        ${checkInstructions(b.total, `Observation Point · ${d(b.checkIn)}`, `Please mail within ${holdDays} days to hold your dates.`)}
+      </div>`
+    : `
+      <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
+        Please mail your <strong>50% deposit</strong> within ${holdDays} days to secure your dates.
+        Your balance will be due ${balanceDueDays} days before check-in${b.balanceDueDate ? ` (by ${d(b.balanceDueDate)})` : ""} — you'll receive a reminder.
+      </p>
+      <div style="margin:16px 0;">
+        ${checkInstructions(b.depositAmount, `Observation Point deposit · ${d(b.checkIn)}`, `Please mail within ${holdDays} days to hold your dates.`)}
+      </div>`;
+
   const body = `
     <tr><td style="padding:24px 32px 0;">
       <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
       <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
-        Great news — your booking is <strong>confirmed</strong>! Please complete your 50% deposit within 48 hours
-        to secure your dates.
+        Great news — your booking is <strong>confirmed</strong>!
       </p>
+      ${paymentSection}
     </td></tr>
-    <tr><td style="padding:16px 32px 0;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>
-    <tr><td style="padding:24px 32px;">
-      <p style="margin:0 0 16px;font-size:14px;color:#334155;font-weight:600;">Pay your deposit now — ${formatUSD(b.depositAmount)}</p>
-      ${btn(b.depositUrl, "Pay Deposit →")}
-      <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">Secure payment via Stripe. Your balance of ${formatUSD(b.balanceAmount)} will be due 30 days before check-in.</p>
-    </td></tr>`;
+    <tr><td style="padding:0 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
 
   const resend = getResend();
   await resend.emails.send({
@@ -250,7 +296,44 @@ export async function sendGuestDenied(b: {
   });
 }
 
-// ── 5. Guest: balance due reminder ───────────────────────────────────────────
+// ── 5. Guest: deposit check received ─────────────────────────────────────────
+
+export async function sendGuestDepositReceived(b: {
+  guestName: string;
+  guestEmail: string;
+  numGuests: number;
+  checkIn: string;
+  checkOut: string;
+  total: number;
+  depositAmount: number;
+  balanceAmount: number;
+  balanceDueDate: string; // ISO date
+}) {
+  const firstName = b.guestName.split(" ")[0];
+  const body = `
+    <tr><td style="padding:24px 32px 0;">
+      <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
+      <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
+        We received your deposit check — thank you! Your dates are confirmed and held.
+      </p>
+      <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
+        Your balance of <strong>${formatUSD(b.balanceAmount)}</strong> is due by <strong>${d(b.balanceDueDate)}</strong>.
+        You'll receive a reminder with payment instructions closer to that date.
+      </p>
+    </td></tr>
+    <tr><td style="padding:16px 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
+
+  const resend = getResend();
+  await resend.emails.send({
+    from: FROM,
+    to: [b.guestEmail],
+    replyTo: OWNER_EMAIL,
+    subject: `Deposit Received — Observation Point · ${d(b.checkIn)}`,
+    html: wrap("#0ea5e9", "Deposit Received!", body),
+  });
+}
+
+// ── 6. Guest: balance due reminder ───────────────────────────────────────────
 
 export async function sendGuestBalanceDue(b: {
   guestName: string;
@@ -261,21 +344,19 @@ export async function sendGuestBalanceDue(b: {
   total: number;
   depositAmount: number;
   balanceAmount: number;
-  balanceUrl: string;
 }) {
   const firstName = b.guestName.split(" ")[0];
   const body = `
     <tr><td style="padding:24px 32px 0;">
       <p style="margin:0;font-size:15px;color:#334155;line-height:1.6;">Hi ${firstName},</p>
       <p style="margin:12px 0 0;font-size:15px;color:#334155;line-height:1.6;">
-        Your stay at Observation Point is coming up! Your balance payment of <strong>${formatUSD(b.balanceAmount)}</strong> is now due.
+        Your stay at Observation Point is 45 days away! Your balance payment of <strong>${formatUSD(b.balanceAmount)}</strong> is now due.
       </p>
+      <div style="margin:16px 0;">
+        ${checkInstructions(b.balanceAmount, `Observation Point balance · ${d(b.checkIn)}`, "Please mail your check so it arrives before your check-in date.")}
+      </div>
     </td></tr>
-    <tr><td style="padding:16px 32px 0;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>
-    <tr><td style="padding:24px 32px;">
-      ${btn(b.balanceUrl, `Pay Balance ${formatUSD(b.balanceAmount)} →`)}
-      <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">Secure payment via Stripe.</p>
-    </td></tr>`;
+    <tr><td style="padding:0 32px 24px;">${stayCard(b.checkIn, b.checkOut, b.numGuests, b.total, b.depositAmount, b.balanceAmount)}</td></tr>`;
 
   const resend = getResend();
   await resend.emails.send({
@@ -287,7 +368,7 @@ export async function sendGuestBalanceDue(b: {
   });
 }
 
-// ── 6. Guest: paid in full ───────────────────────────────────────────────────
+// ── 7. Guest: paid in full ───────────────────────────────────────────────────
 
 export async function sendGuestPaidInFull(b: {
   guestName: string;

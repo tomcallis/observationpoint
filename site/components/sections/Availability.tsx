@@ -239,7 +239,7 @@ export default function Availability() {
               {
                 n: 3,
                 title: "Pay your deposit",
-                desc: `Once confirmed, you'll receive a secure Stripe payment link for your ${payment.deposit.percent}% deposit. A second payment link for the remaining balance will be sent ${payment.deposit.balanceDueDays} days before check-in.`,
+                desc: `Once confirmed, you'll receive check payment instructions for your ${payment.deposit.percent}% deposit. Mail your check within 5 days to secure your dates. Your balance is due ${payment.deposit.balanceDueDays} days before check-in — you'll get a reminder.`,
               },
               {
                 n: 4,

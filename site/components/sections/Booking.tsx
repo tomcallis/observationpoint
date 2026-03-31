@@ -62,7 +62,7 @@ export default function Booking() {
               {
                 n: 3,
                 title: "Pay the deposit",
-                desc: `Send ${payment.deposit.percent}% of the total by Venmo (@tomcallis) or check. Your dates are held for ${payment.deposit.holdHours} hours while payment clears.`,
+                desc: `Mail a check for ${payment.deposit.percent}% of the total within 5 days to secure your dates.`,
               },
               {
                 n: 4,

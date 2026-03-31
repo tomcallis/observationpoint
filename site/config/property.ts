@@ -134,8 +134,9 @@ export const property = {
     },
     deposit: {
       percent: 50,
-      balanceDueDays: 30,
-      holdHours: 48, // hours to send deposit before dates are released
+      balanceDueDays: 45,
+      fullPaymentThresholdDays: 45, // if check-in is this many days away or less, full payment is due upfront
+      holdDays: 5, // days guest has to mail deposit check before dates are released
     },
     cancellationPolicy:
       "Full refund if cancelled 60+ days before check-in. 50% refund if cancelled 30–59 days before. No refund within 30 days of check-in.",
@@ -233,7 +234,7 @@ export const property = {
     {
       question: "How does payment work?",
       answer:
-        "All payments are processed securely through Stripe — the same payment platform used by Airbnb, Amazon, and millions of other businesses. Once Tom confirms your booking, you'll receive a secure link to pay your 50% deposit by credit or debit card. No Stripe account is needed. The remaining 50% balance is due 30 days before check-in and you'll receive a payment link automatically. Your card details are never shared with the property owner.",
+        "We accept personal checks. Once Tom confirms your booking, you'll receive an email with instructions to mail a 50% deposit check to secure your dates. The remaining 50% balance is due 45 days before check-in — you'll receive a reminder email with mailing instructions. If you're booking within 45 days of check-in, full payment is due upfront. Checks are made payable to Tom Callis.",
     },
     {
       question: "Is there an age requirement?",

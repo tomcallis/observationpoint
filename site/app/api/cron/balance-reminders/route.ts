@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { listBookings, updateBookingStatus, insertBookingEvent } from "@/lib/db";
-import { createBalanceSession } from "@/lib/stripe";
 import { sendGuestBalanceDue } from "@/lib/email";
 import { syncBookingToSheets } from "@/lib/sheets";
+import { property } from "@/config/property";
+
+const { balanceDueDays } = property.payment.deposit;
 
 export async function GET(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret");
@@ -20,32 +22,13 @@ export async function GET(req: NextRequest) {
     const checkIn = new Date(booking.check_in + "T12:00:00");
     const daysUntil = Math.round((checkIn.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-    if (daysUntil !== 30) continue;
+    if (daysUntil !== balanceDueDays) continue;
 
     const balanceAmount = booking.total_price / 100 / 2;
-    let balanceUrl = "";
-    let sessionId: string | null = null;
 
-    try {
-      const session = await createBalanceSession({
-        id: booking.id,
-        guestEmail: booking.guest_email,
-        guestName: booking.guest_name,
-        checkIn: booking.check_in,
-        checkOut: booking.check_out,
-        balanceAmount,
-      });
-      balanceUrl = session.url;
-      sessionId = session.sessionId;
-    } catch (err) {
-      console.error(`[cron] Stripe error for booking ${booking.id}:`, err);
-      continue;
-    }
-
-    await updateBookingStatus(booking.id, "balance_due", { stripe_balance_session_id: sessionId });
+    await updateBookingStatus(booking.id, "balance_due");
     await insertBookingEvent(booking.id, "deposit_paid", "balance_due", "cron");
-    const updated = { ...booking, status: "balance_due" as const };
-    await syncBookingToSheets(updated);
+    await syncBookingToSheets({ ...booking, status: "balance_due" });
 
     try {
       await sendGuestBalanceDue({
@@ -57,7 +40,6 @@ export async function GET(req: NextRequest) {
         total: booking.total_price / 100,
         depositAmount: booking.total_price / 100 / 2,
         balanceAmount,
-        balanceUrl,
       });
     } catch (err) {
       console.error(`[cron] email error for booking ${booking.id}:`, err);
