@@ -41,6 +41,7 @@ export async function GET(req: NextRequest) {
         depositAmount: booking.total_price / 100 / 2,
         balanceAmount,
       });
+      await insertBookingEvent(booking.id, "balance_due", "balance_due", "email", "Guest: Balance Due Reminder");
     } catch (err) {
       console.error(`[cron] email error for booking ${booking.id}:`, err);
     }

@@ -41,6 +41,7 @@ export async function GET(req: NextRequest) {
       checkIn: booking.check_in,
       checkOut: booking.check_out,
     });
+    await insertBookingEvent(booking.id, "denied", "denied", "email", "Guest: Booking Denied");
   } catch (err) {
     console.error("[deny] email error:", err);
   }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listBookings, getBookingEvents, getBookingById, updateBookingStatus, insertBookingEvent } from "@/lib/db";
+import { listBookings, getBookingEvents, getBookingById, updateBookingStatus, insertBookingEvent, deleteBooking } from "@/lib/db";
 import { syncBookingToSheets } from "@/lib/sheets";
 import { sendGuestConfirmed, sendGuestDenied, sendGuestDepositReceived, sendGuestPaidInFull } from "@/lib/email";
 import { property } from "@/config/property";
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
         paymentType,
         balanceDueDate,
       });
+      await insertBookingEvent(booking.id, "confirmed", "confirmed", "email", "Guest: Booking Confirmed");
     } catch (err) {
       console.error("[admin confirm] email error:", err);
     }
@@ -88,6 +89,7 @@ export async function POST(req: NextRequest) {
         checkIn: booking.check_in,
         checkOut: booking.check_out,
       });
+      await insertBookingEvent(booking.id, "denied", "denied", "email", "Guest: Booking Denied");
     } catch (err) {
       console.error("[admin deny] email error:", err);
     }
@@ -118,6 +120,7 @@ export async function POST(req: NextRequest) {
         balanceAmount: booking.total_price / 100 - depositAmount,
         balanceDueDate,
       });
+      await insertBookingEvent(booking.id, "deposit_paid", "deposit_paid", "email", "Guest: Deposit Received");
     } catch (err) {
       console.error("[admin mark-deposit-received] email error:", err);
     }
@@ -144,6 +147,7 @@ export async function POST(req: NextRequest) {
         checkOut: booking.check_out,
         total: booking.total_price / 100,
       });
+      await insertBookingEvent(booking.id, "paid_in_full", "paid_in_full", "email", "Guest: Paid in Full");
     } catch (err) {
       console.error("[admin mark-paid-in-full] email error:", err);
     }
@@ -152,4 +156,11 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+}
+
+export async function DELETE(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  await deleteBooking(id);
+  return NextResponse.json({ ok: true });
 }

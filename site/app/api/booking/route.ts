@@ -96,6 +96,12 @@ export async function POST(req: Request) {
       sendOwnerNewBooking(emailData),
       sendGuestRequestReceived(emailData),
     ]);
+    if (bookingId) {
+      await Promise.all([
+        insertBookingEvent(bookingId, "pending", "pending", "email", "Owner: New Booking Request"),
+        insertBookingEvent(bookingId, "pending", "pending", "email", "Guest: Request Received"),
+      ]).catch(err => console.error("[booking API] email log error:", err));
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[booking API] email error:", err);

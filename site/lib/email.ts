@@ -1,6 +1,16 @@
 import { Resend } from "resend";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { property } from "@/config/property";
 import { formatUSD, formatDisplayDate } from "@/lib/pricing";
+
+function loadGuidebook() {
+  try {
+    return JSON.parse(readFileSync(join(process.cwd(), "data", "guidebook.json"), "utf-8"));
+  } catch {
+    return null;
+  }
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://observationpointnc.com";
 
@@ -378,7 +388,7 @@ export async function sendGuestPreArrival(b: {
   checkOut: string;
 }) {
   const firstName = b.guestName.split(" ")[0];
-  const { guidebook } = property;
+  const guidebook: typeof property.guidebook = { ...property.guidebook, ...(loadGuidebook() ?? {}) };
 
   const whatToBringHtml = (guidebook.whatToBring as string[])
     .map(item => `<li style="font-size:13px;color:#334155;padding:3px 0;">${item}</li>`)

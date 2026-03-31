@@ -66,9 +66,27 @@ interface SeasonalRate {
   weekly: number;
 }
 
+interface LocalRec { name: string; note: string; }
+
+interface GuidebookData {
+  lockboxCode: string;
+  checkIn: string;
+  checkOut: string;
+  ownerPhone: string;
+  caretakerName: string;
+  caretakerPhone: string;
+  whatToBring: string[];
+  checkoutReminders: string[];
+  localRecs: {
+    eat: LocalRec[];
+    see: LocalRec[];
+    doAndPlay: LocalRec[];
+  };
+}
+
 // ── Dashboard Tab ─────────────────────────────────────────────────────────────
 
-function DashboardTab({ bookings, vrboEvents }: { bookings: BookingWithEvents[]; vrboEvents: VrboEvent[] }) {
+function DashboardTab({ bookings, vrboEvents, blocks }: { bookings: BookingWithEvents[]; vrboEvents: VrboEvent[]; blocks: BlockedDate[] }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const yearStart = new Date(today.getFullYear(), 0, 1);
@@ -103,6 +121,20 @@ function DashboardTab({ bookings, vrboEvents }: { bookings: BookingWithEvents[];
   const pending = bookings.filter(b => b.status === "pending").length;
   const nextArrival = upcoming[0];
 
+  // VRBO sync check: find local blocks/bookings with no overlapping VRBO event
+  const todayStr = today.toISOString().split("T")[0];
+  function overlapsVrbo(start: string, end: string) {
+    return vrboEvents.some(e => e.start < end && e.end > start);
+  }
+  const unsynced = [
+    ...blocks
+      .filter(b => b.check_out > todayStr)
+      .map(b => ({ start: b.check_in, end: b.check_out, label: b.reason || "Blocked dates" })),
+    ...bookings
+      .filter(b => ["confirmed", "deposit_paid", "balance_due", "paid_in_full"].includes(b.status) && b.check_out > todayStr)
+      .map(b => ({ start: b.check_in, end: b.check_out, label: b.guest_name })),
+  ].filter(p => !overlapsVrbo(p.start, p.end));
+
   const cards = [
     { label: "YTD Revenue", value: formatUSD(ytdRevenue), sub: `${today.getFullYear()}` },
     { label: "Occupancy", value: `${occupancy}%`, sub: `${confirmedNights} nights confirmed` },
@@ -112,6 +144,28 @@ function DashboardTab({ bookings, vrboEvents }: { bookings: BookingWithEvents[];
 
   return (
     <div className="space-y-8">
+      {unsynced.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+            <div>
+              <p className="font-semibold text-amber-800 text-sm">VRBO not blocked for {unsynced.length} period{unsynced.length > 1 ? "s" : ""}</p>
+              <p className="text-amber-700 text-xs mt-0.5 mb-2">These dates are blocked or booked on your website but show as available on VRBO. Block them manually on VRBO to prevent double-booking.</p>
+              <ul className="space-y-1">
+                {unsynced.map((p, i) => (
+                  <li key={i} className="text-xs text-amber-800 font-medium">
+                    {new Date(p.start + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })} –{" "}
+                    {new Date(p.end + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {" · "}<span className="font-normal text-amber-700">{p.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map(c => (
           <div key={c.label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
@@ -158,6 +212,7 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
   const [acting, setActing] = useState<Record<string, boolean>>({});
+  const [deleting, setDeleting] = useState<Record<string, boolean>>({});
 
   const filtered = filter === "all" ? bookings : bookings.filter(b => b.status === filter);
 
@@ -182,11 +237,20 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
     onRefresh();
   };
 
+  const deleteBooking = async (id: string, name: string) => {
+    if (!confirm(`Delete booking for ${name}? This cannot be undone.`)) return;
+    setDeleting(p => ({ ...p, [id]: true }));
+    await fetch(`/api/admin/bookings?id=${id}`, { method: "DELETE" });
+    setDeleting(p => ({ ...p, [id]: false }));
+    onRefresh();
+  };
+
   const ACTOR_LABELS: Record<string, string> = {
     guest: "Guest",
     owner: "Owner",
     stripe: "Stripe",
     cron: "System",
+    email: "Email",
   };
 
   return (
@@ -304,25 +368,47 @@ function BookingsTab({ bookings, onRefresh }: { bookings: BookingWithEvents[]; o
                           <p className="text-slate-400 text-sm">No events recorded.</p>
                         ) : (
                           <ol className="space-y-3">
-                            {b.events.map(ev => (
-                              <li key={ev.id} className="flex gap-3 text-sm">
-                                <div className="flex flex-col items-center">
-                                  <div className="w-2 h-2 rounded-full bg-sky-400 mt-1.5 shrink-0" />
-                                  <div className="w-px flex-1 bg-slate-200 my-1" />
-                                </div>
-                                <div className="pb-1">
-                                  <div className="font-medium text-slate-700 capitalize">
-                                    {ev.from_status ? `${ev.from_status.replace("_", " ")} → ` : ""}{ev.to_status.replace("_", " ")}
+                            {b.events.map(ev => {
+                              const isEmail = ev.actor === "email";
+                              return (
+                                <li key={ev.id} className="flex gap-3 text-sm">
+                                  <div className="flex flex-col items-center">
+                                    {isEmail ? (
+                                      <svg className="w-3.5 h-3.5 text-violet-400 mt-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                      </svg>
+                                    ) : (
+                                      <div className="w-2 h-2 rounded-full bg-sky-400 mt-1.5 shrink-0" />
+                                    )}
+                                    <div className="w-px flex-1 bg-slate-200 my-1" />
                                   </div>
-                                  <div className="text-slate-400 text-xs">
-                                    {ACTOR_LABELS[ev.actor] ?? ev.actor} · {new Date(ev.created_at).toLocaleString()}
+                                  <div className="pb-1">
+                                    {isEmail ? (
+                                      <div className="font-medium text-violet-700">{ev.note}</div>
+                                    ) : (
+                                      <div className="font-medium text-slate-700 capitalize">
+                                        {ev.from_status && ev.from_status !== ev.to_status ? `${ev.from_status.replace(/_/g, " ")} → ` : ""}{ev.to_status.replace(/_/g, " ")}
+                                      </div>
+                                    )}
+                                    <div className="text-slate-400 text-xs">
+                                      {ACTOR_LABELS[ev.actor] ?? ev.actor} · {new Date(ev.created_at).toLocaleString()}
+                                    </div>
+                                    {!isEmail && ev.note && <div className="text-slate-400 text-xs font-mono mt-0.5">{ev.note.slice(0, 40)}</div>}
                                   </div>
-                                  {ev.note && <div className="text-slate-400 text-xs font-mono mt-0.5">{ev.note.slice(0, 40)}</div>}
-                                </div>
-                              </li>
-                            ))}
+                                </li>
+                              );
+                            })}
                           </ol>
                         )}
+                        <div className="mt-4 pt-4 border-t border-slate-200">
+                          <button
+                            onClick={() => deleteBooking(b.id, b.guest_name)}
+                            disabled={deleting[b.id]}
+                            className="text-xs font-semibold text-red-400 hover:text-red-500 disabled:opacity-50 transition-colors"
+                          >
+                            {deleting[b.id] ? "Deleting…" : "Delete Booking"}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -725,28 +811,203 @@ function CalendarTab({ bookings, vrboEvents }: { bookings: BookingWithEvents[]; 
   );
 }
 
+// ── Emails Tab ────────────────────────────────────────────────────────────────
+
+const EMAIL_REFERENCE = [
+  { name: "Owner: New Booking Request", trigger: "Guest submits a booking" },
+  { name: "Guest: Request Received", trigger: "Guest submits a booking" },
+  { name: "Guest: Booking Confirmed", trigger: "Owner confirms (email link or admin)" },
+  { name: "Guest: Booking Denied", trigger: "Owner denies (email link or admin)" },
+  { name: "Guest: Deposit Received", trigger: "Admin marks deposit received" },
+  { name: "Guest: Balance Due Reminder", trigger: "Cron — 45 days before check-in" },
+  { name: "Guest: Pre-Arrival Info", trigger: "Cron — 7 days before check-in (paid in full)" },
+  { name: "Guest: Paid in Full", trigger: "Admin marks paid in full" },
+];
+
+function StringListEditor({ label, items, onChange }: { label: string; items: string[]; onChange: (v: string[]) => void }) {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-2">{label}</label>
+      <div className="space-y-2">
+        {items.map((item, i) => (
+          <div key={i} className="flex gap-2">
+            <input
+              value={item}
+              onChange={e => { const n = [...items]; n[i] = e.target.value; onChange(n); }}
+              className="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+            />
+            <button onClick={() => onChange(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-500 text-xs px-2">✕</button>
+          </div>
+        ))}
+        <button onClick={() => onChange([...items, ""])} className="text-xs text-sky-600 hover:text-sky-500 font-semibold">+ Add item</button>
+      </div>
+    </div>
+  );
+}
+
+function RecListEditor({ label, items, onChange }: { label: string; items: LocalRec[]; onChange: (v: LocalRec[]) => void }) {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-2">{label}</label>
+      <div className="space-y-2">
+        {items.map((item, i) => (
+          <div key={i} className="flex gap-2 items-center">
+            <input
+              value={item.name}
+              placeholder="Name"
+              onChange={e => { const n = [...items]; n[i] = { ...n[i], name: e.target.value }; onChange(n); }}
+              className="w-40 border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+            />
+            <input
+              value={item.note}
+              placeholder="Note"
+              onChange={e => { const n = [...items]; n[i] = { ...n[i], note: e.target.value }; onChange(n); }}
+              className="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+            />
+            <button onClick={() => onChange(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-500 text-xs px-2">✕</button>
+          </div>
+        ))}
+        <button onClick={() => onChange([...items, { name: "", note: "" }])} className="text-xs text-sky-600 hover:text-sky-500 font-semibold">+ Add item</button>
+      </div>
+    </div>
+  );
+}
+
+function EmailsTab({ guidebook: initial }: { guidebook: GuidebookData }) {
+  const [data, setData] = useState<GuidebookData>(initial);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const set = (field: keyof Omit<GuidebookData, "whatToBring" | "checkoutReminders" | "localRecs">, value: string) =>
+    setData(d => ({ ...d, [field]: value }));
+
+  const save = async () => {
+    setSaving(true); setMsg(null);
+    const r = await fetch("/api/admin/guidebook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    setSaving(false);
+    setMsg(r.ok ? "Saved!" : "Error saving.");
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Email reference */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h2 className="font-semibold text-slate-800">Email Triggers</h2>
+          <p className="text-xs text-slate-400 mt-0.5">All 8 automated emails and when they fire.</p>
+        </div>
+        <div className="divide-y divide-slate-50">
+          {EMAIL_REFERENCE.map(e => (
+            <div key={e.name} className="flex items-center gap-4 px-6 py-3">
+              <svg className="w-4 h-4 text-violet-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <div className="flex-1 text-sm font-medium text-slate-700">{e.name}</div>
+              <div className="text-xs text-slate-400">{e.trigger}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Guidebook editor */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-6">
+        <div>
+          <h2 className="font-semibold text-slate-800">Pre-Arrival Email Content</h2>
+          <p className="text-xs text-slate-400 mt-0.5">Sent 7 days before check-in. Edit lockbox code, times, and guest info here.</p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { label: "Lockbox Code", field: "lockboxCode" as const },
+            { label: "Check-in Time", field: "checkIn" as const },
+            { label: "Check-out Time", field: "checkOut" as const },
+            { label: "Owner Phone", field: "ownerPhone" as const },
+            { label: "Caretaker Name", field: "caretakerName" as const },
+            { label: "Caretaker Phone", field: "caretakerPhone" as const },
+          ].map(({ label, field }) => (
+            <div key={field}>
+              <label className="text-xs text-slate-500 block mb-1">{label}</label>
+              <input
+                value={data[field]}
+                onChange={e => set(field, e.target.value)}
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+              />
+            </div>
+          ))}
+        </div>
+
+        <StringListEditor
+          label="What to Bring"
+          items={data.whatToBring}
+          onChange={v => setData(d => ({ ...d, whatToBring: v }))}
+        />
+
+        <StringListEditor
+          label="Checkout Reminders"
+          items={data.checkoutReminders}
+          onChange={v => setData(d => ({ ...d, checkoutReminders: v }))}
+        />
+
+        <RecListEditor
+          label="Local Recs — Where to Eat"
+          items={data.localRecs.eat}
+          onChange={v => setData(d => ({ ...d, localRecs: { ...d.localRecs, eat: v } }))}
+        />
+        <RecListEditor
+          label="Local Recs — What to See"
+          items={data.localRecs.see}
+          onChange={v => setData(d => ({ ...d, localRecs: { ...d.localRecs, see: v } }))}
+        />
+        <RecListEditor
+          label="Local Recs — Things to Do"
+          items={data.localRecs.doAndPlay}
+          onChange={v => setData(d => ({ ...d, localRecs: { ...d.localRecs, doAndPlay: v } }))}
+        />
+
+        <div className="flex items-center gap-4 pt-2">
+          <button onClick={save} disabled={saving}
+            className="bg-sky-500 hover:bg-sky-400 disabled:bg-slate-200 text-white font-semibold px-8 py-2 rounded-full transition-colors">
+            {saving ? "Saving…" : "Save Guidebook"}
+          </button>
+          {msg && <span className={`text-sm ${msg.startsWith("Saved") ? "text-green-600" : "text-red-500"}`}>{msg}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Admin Page ──────────────────────────────────────────────────────────
 
-type Tab = "dashboard" | "bookings" | "pricing" | "calendar";
+type Tab = "dashboard" | "bookings" | "pricing" | "calendar" | "emails";
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [tab, setTab] = useState<Tab>("dashboard");
   const [bookings, setBookings] = useState<BookingWithEvents[]>([]);
   const [vrboEvents, setVrboEvents] = useState<VrboEvent[]>([]);
+  const [blocks, setBlocks] = useState<BlockedDate[]>([]);
+  const [guidebook, setGuidebook] = useState<GuidebookData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [bRes, vRes] = await Promise.all([
+    const [bRes, vRes, blRes, gbRes] = await Promise.all([
       fetch("/api/admin/bookings"),
       fetch("/api/admin/vrbo-feed"),
+      fetch("/api/admin/block"),
+      fetch("/api/admin/guidebook"),
     ]);
     if (bRes.ok) setBookings(await bRes.json());
     if (vRes.ok) {
       const { events } = await vRes.json();
       setVrboEvents(events ?? []);
     }
+    if (blRes.ok) setBlocks(await blRes.json());
+    if (gbRes.ok) setGuidebook(await gbRes.json());
     setLoading(false);
   }, []);
 
@@ -761,6 +1022,7 @@ export default function AdminPage() {
     { id: "bookings", label: `Bookings${bookings.filter(b => b.status === "pending").length ? ` (${bookings.filter(b => b.status === "pending").length})` : ""}` },
     { id: "pricing", label: "Pricing" },
     { id: "calendar", label: "Calendar" },
+    { id: "emails", label: "Emails" },
   ];
 
   return (
@@ -792,10 +1054,12 @@ export default function AdminPage() {
           <div className="text-slate-400 text-sm">Loading…</div>
         ) : (
           <>
-            {tab === "dashboard" && <DashboardTab bookings={bookings} vrboEvents={vrboEvents} />}
+            {tab === "dashboard" && <DashboardTab bookings={bookings} vrboEvents={vrboEvents} blocks={blocks} />}
             {tab === "bookings" && <BookingsTab bookings={bookings} onRefresh={loadData} />}
             {tab === "pricing" && <PricingTab />}
             {tab === "calendar" && <CalendarTab bookings={bookings} vrboEvents={vrboEvents} />}
+            {tab === "emails" && guidebook && <EmailsTab guidebook={guidebook} />}
+            {tab === "emails" && !guidebook && <p className="text-slate-400 text-sm">Loading…</p>}
           </>
         )}
       </div>

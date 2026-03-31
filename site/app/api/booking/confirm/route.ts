@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
       paymentType,
       balanceDueDate,
     });
+    await insertBookingEvent(booking.id, "confirmed", "confirmed", "email", "Guest: Booking Confirmed");
   } catch (err) {
     console.error("[confirm] email error:", err);
   }

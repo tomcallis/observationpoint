@@ -236,3 +236,9 @@ export async function deleteBlockedDate(id: string): Promise<void> {
   const sql = getSQL();
   await sql`DELETE FROM blocked_dates WHERE id = ${id}`;
 }
+
+export async function deleteBooking(id: string): Promise<void> {
+  const sql = getSQL();
+  await sql`DELETE FROM booking_events WHERE booking_id = ${id}`;
+  await sql`DELETE FROM bookings WHERE id = ${id}`;
+}

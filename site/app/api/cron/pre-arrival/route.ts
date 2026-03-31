@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listBookings } from "@/lib/db";
+import { listBookings, insertBookingEvent } from "@/lib/db";
 import { sendGuestPreArrival } from "@/lib/email";
 
 export async function GET(req: NextRequest) {
@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
         checkIn: booking.check_in,
         checkOut: booking.check_out,
       });
+      await insertBookingEvent(booking.id, "paid_in_full", "paid_in_full", "email", "Guest: Pre-Arrival Info");
       processed++;
     } catch (err) {
       console.error(`[cron pre-arrival] email error for booking ${booking.id}:`, err);

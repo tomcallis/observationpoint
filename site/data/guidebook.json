@@ -1,0 +1,52 @@
+{
+  "lockboxCode": "1870",
+  "checkIn": "3:30 PM",
+  "checkOut": "10:00 AM",
+  "ownerPhone": "252-996-0578",
+  "caretakerName": "Jennie",
+  "caretakerPhone": "252-305-2415",
+  "whatToBring": [
+    "Sheets (one king bed, one queen bed, and two twin beds)",
+    "Pillow cases",
+    "Bath towels",
+    "Beach towels",
+    "Garbage bags",
+    "Toilet paper",
+    "Paper towels",
+    "Dish detergent",
+    "Laundry detergent",
+    "All-purpose cleaner",
+    "Bath soap and toiletries"
+  ],
+  "checkoutReminders": [
+    "Dishes washed and put away (or in the dishwasher running).",
+    "All trash in outdoor bins.",
+    "Towels and linens left in the laundry room.",
+    "All windows and doors locked.",
+    "Thermostat set to 78°F (summer) or 65°F (off-season).",
+    "Kayaks, paddleboards, and dock equipment secured."
+  ],
+  "localRecs": {
+    "eat": [
+      { "name": "Buxton Seafood", "note": "Local institution — fresh catch, no frills" },
+      { "name": "Hatteras Sol Waterside Grill", "note": "Outdoor dining with water views" },
+      { "name": "Sonny's Restaurant", "note": "Classic OBX breakfast & lunch, Waves" },
+      { "name": "Orange Blossom Bakery", "note": "Famous apple uglies — worth the detour, Buxton" },
+      { "name": "The Froggy Dog", "note": "Casual bar & grill, Avon" }
+    ],
+    "see": [
+      { "name": "Cape Hatteras Lighthouse", "note": "Tallest brick lighthouse in the US · 5 miles" },
+      { "name": "Frisco Native American Museum", "note": "Unique local history · 1 mile" },
+      { "name": "Graveyard of the Atlantic Museum", "note": "Shipwreck history · Hatteras Village · 8 miles" },
+      { "name": "Pea Island National Wildlife Refuge", "note": "Birding & beach access · 25 miles north" },
+      { "name": "Ocracoke Island", "note": "Take the free ferry from Hatteras · ferry is 45 min" }
+    ],
+    "doAndPlay": [
+      { "name": "Kiteboarding at Canadian Hole", "note": "World-famous spot, 6 miles north" },
+      { "name": "Surfing", "note": "Multiple breaks between Frisco and Buxton" },
+      { "name": "Frisco Mini Golf & Go Karts", "note": "Great for families · 1 mile" },
+      { "name": "Fishing", "note": "Off the dock, or surf fishing along the National Seashore" },
+      { "name": "Birdwatching", "note": "Brown pelicans, ospreys, herons are regulars" }
+    ]
+  }
+}
