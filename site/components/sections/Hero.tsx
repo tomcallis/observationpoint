@@ -40,7 +40,7 @@ export default function Hero() {
           {property.tagline}
         </p>
         <p className="text-white/60 text-sm mb-10 drop-shadow">
-          Soundfront cottage · Private dock · Sleeps 6
+          Soundfront cottage · Private dock · 2 BR / 2 BA
         </p>
 
         {/* Direct booking value prop */}
