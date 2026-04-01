@@ -19,13 +19,6 @@ interface SeasonData {
   subtitle?: string;
 }
 
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-function formatMonthRange(start: string, end: string): string {
-  const startMonth = MONTHS[parseInt(start.split("-")[0]) - 1];
-  const endMonth = MONTHS[parseInt(end.split("-")[0]) - 1];
-  return startMonth === endMonth ? startMonth : `${startMonth} – ${endMonth}`;
-}
-
 interface SeasonalRatesV2 {
   bookingCutoffDate?: string;
   seasonsByYear: Record<string, SeasonData[]>;
@@ -98,14 +91,6 @@ async function loadRateData(): Promise<{ seasons: SeasonData[]; displayYear: num
   };
 }
 
-function formatUSD(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
-}
-
 function matchesSeason(mmdd: string, start: string, end: string): boolean {
   if (start <= end) return mmdd >= start && mmdd < end;
   // Wraparound (e.g. Nov–Apr): matches if date is >= start OR < end
@@ -150,12 +135,28 @@ function CalendarSkeleton() {
   );
 }
 
-async function CalendarLoader({ bookingCutoffDate }: { bookingCutoffDate: string | null }) {
+async function CalendarLoader({
+  bookingCutoffDate,
+  seasons,
+  namedWeeks,
+  displayYear,
+  currentSeasonLabel,
+}: {
+  bookingCutoffDate: string | null;
+  seasons: SeasonData[];
+  namedWeeks: NamedWeek[];
+  displayYear: number;
+  currentSeasonLabel: string | null;
+}) {
   const blockedRanges = await getBlockedRanges();
   return (
     <AvailabilitySection
       blockedRanges={blockedRanges}
       bookingCutoffDate={bookingCutoffDate ?? undefined}
+      seasons={seasons}
+      namedWeeks={namedWeeks}
+      displayYear={displayYear}
+      currentSeasonLabel={currentSeasonLabel}
     />
   );
 }
@@ -184,83 +185,16 @@ export default async function Availability() {
           </p>
         </div>
 
-        {/* Availability calendar */}
+        {/* Availability calendar + interactive rate table */}
         <Suspense fallback={<CalendarSkeleton />}>
-          <CalendarLoader bookingCutoffDate={bookingCutoffDate} />
+          <CalendarLoader
+            bookingCutoffDate={bookingCutoffDate}
+            seasons={seasons}
+            namedWeeks={upcomingNamedWeeks}
+            displayYear={displayYear}
+            currentSeasonLabel={currentSeasonLabel}
+          />
         </Suspense>
-
-        {/* Seasonal rate table */}
-        <div className="mt-12 max-w-md mx-auto">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
-            {displayYear} Season
-          </p>
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="grid grid-cols-2 bg-slate-50 border-b border-slate-100 px-6 py-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-              <span>Season</span>
-              <span className="text-right">Weekly</span>
-            </div>
-            {seasons.map((row) => {
-              const isCurrent = currentSeasonLabel?.startsWith(row.label) ?? false;
-              return (
-                <div
-                  key={row.label}
-                  className={`grid grid-cols-2 px-6 py-4 border-b border-slate-50 last:border-0 transition-colors ${
-                    isCurrent ? "bg-sky-50" : "hover:bg-slate-50"
-                  }`}
-                >
-                  <span className="flex items-center gap-2 text-slate-700 font-medium">
-                    <span>
-                      {row.label}
-                      <span className="block text-xs font-normal text-slate-400">
-                        {row.subtitle ?? formatMonthRange(row.start, row.end)}
-                      </span>
-                    </span>
-                    {isCurrent && (
-                      <span className="text-[10px] font-semibold uppercase tracking-wide bg-sky-500 text-white rounded-full px-2 py-0.5 leading-tight shrink-0">
-                        Now
-                      </span>
-                    )}
-                  </span>
-                  <span className="text-right text-slate-600 font-medium">
-                    {formatUSD(row.weekly)}
-                  </span>
-                </div>
-              );
-            })}
-
-            {/* Named holiday weeks */}
-            {upcomingNamedWeeks.length > 0 && (
-              <>
-                <div className="px-6 py-2 bg-amber-50 border-t border-amber-100">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-amber-600">Holiday Weeks</span>
-                </div>
-                {upcomingNamedWeeks.map((week) => {
-                  const checkin = new Date(week.date + "T12:00:00");
-                  const checkout = new Date(checkin);
-                  checkout.setDate(checkout.getDate() + 7);
-                  const fmtDate = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-                  return (
-                    <div
-                      key={week.date}
-                      className="grid grid-cols-2 px-6 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
-                    >
-                      <span className="text-slate-700 font-medium">
-                        {week.label}
-                        <span className="block text-xs font-normal text-slate-400">
-                          {fmtDate(checkin)} – {fmtDate(checkout)}
-                        </span>
-                      </span>
-                      <span className="text-right text-slate-600 font-medium self-center">
-                        {formatUSD(week.price)}
-                      </span>
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
-          <p className="text-center text-xs text-slate-400 mt-2">Plus NC and Dare County tax (12.75%)</p>
-        </div>
 
         {/* How Direct Booking Works */}
         <div className="mt-12">

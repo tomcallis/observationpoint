@@ -82,6 +82,19 @@ export default function FAQ() {
                         </a>
                       </>
                     )}
+                    {"links" in item && Array.isArray(item.links) && item.links.map((link: { text: string; url: string }) => (
+                      <span key={link.url}>
+                        {" "}
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sky-600 hover:text-sky-500 font-medium underline underline-offset-2"
+                        >
+                          {link.text} →
+                        </a>
+                      </span>
+                    ))}
                   </p>
                 </div>
               </div>

@@ -9,9 +9,10 @@ interface Props {
   blockedRanges: BlockedRange[];
   bookingCutoffDate?: string;
   onRangeSelected?: (checkin: Date, checkout: Date) => void;
+  initialMonth?: Date;
 }
 
-export default function AvailabilityCalendar({ blockedRanges, bookingCutoffDate, onRangeSelected }: Props) {
+export default function AvailabilityCalendar({ blockedRanges, bookingCutoffDate, onRangeSelected, initialMonth }: Props) {
   const [pendingCheckin, setPendingCheckin] = useState<Date | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -180,7 +181,7 @@ export default function AvailabilityCalendar({ blockedRanges, bookingCutoffDate,
           minDetail="month"
           calendarType="gregory"
           className="!border-0 !font-sans"
-          defaultActiveStartDate={new Date(today.getFullYear(), today.getMonth(), 1)}
+          defaultActiveStartDate={initialMonth ?? new Date(today.getFullYear(), today.getMonth(), 1)}
         />
       </div>
 

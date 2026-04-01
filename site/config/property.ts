@@ -245,7 +245,10 @@ export const property = {
     {
       question: "Are linens included?",
       answer:
-        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. Comforters, blankets, and pillows are provided. The property has one king bed, one queen bed, and two twin beds.",
+        "Linens are not provided — please bring your own sheets, pillowcases, bath towels, and beach towels. Comforters, blankets, and pillows are provided. The property has one king bed, one queen bed, and two twin beds. You can also rent linens with delivery and pickup from Money$Worth Linen Rentals:",
+      links: [
+        { text: "Money$Worth Linen Rentals", url: "https://www.rentbeachequipment.com/?destination=OBX" },
+      ],
     },
     {
       question: "Is there an age requirement?",
@@ -263,6 +266,14 @@ export const property = {
         "Yes! The private dock is 30 feet long with approximately 2 feet of water depth and a sandy bottom — suitable for shallow-draft boats, kayaks, paddleboards, and small motorized craft. Guests are welcome to fish, swim, or launch from the dock.",
     },
     {
+      question: "Can I rent kayaks or paddleboards?",
+      answer:
+        "The property doesn't include water sports equipment, but Ocean Atlantic Rentals delivers right to the property — kayaks, paddleboards, bikes, beach chairs, umbrellas, and more, with pickup included:",
+      links: [
+        { text: "Ocean Atlantic Rentals", url: "https://www.oceanatlanticrentals.com/" },
+      ],
+    },
+    {
       question: "Is the property pet-friendly?",
       answer:
         "No, pets are not permitted at Observation Point.",
@@ -275,7 +286,10 @@ export const property = {
     {
       question: "What should I bring?",
       answer:
-        "Observation Point does not provide linens or consumables, so please plan to bring: sheets (one king bed, one queen bed, and two twin beds), pillowcases, bath towels, beach towels, garbage bags, toilet paper, paper towels, dish detergent, laundry detergent, all-purpose cleaner, and bath soap and toiletries.",
+        "Observation Point does not provide linens or consumables, so please plan to bring: sheets (one king bed, one queen bed, and two twin beds), pillowcases, bath towels, beach towels, garbage bags, toilet paper, paper towels, dish detergent, laundry detergent, all-purpose cleaner, and bath soap and toiletries. Linens can be rented with delivery and pickup from Money$Worth Linen Rentals:",
+      links: [
+        { text: "Money$Worth Linen Rentals", url: "https://www.rentbeachequipment.com/?destination=OBX" },
+      ],
     },
     {
       question: "How do I reach the owner?",
