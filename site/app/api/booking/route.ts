@@ -274,7 +274,7 @@ function guestConfirmationHtml(b: BookingPayload): string {
 export async function POST(req: Request) {
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json(
-      { error: "Email service not configured. Please contact the owner directly." },
+      { error: "Email service not configured. Please contact the owners directly." },
       { status: 503 }
     );
   }
@@ -327,7 +327,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("[booking API] Resend error:", err);
     return NextResponse.json(
-      { error: "Failed to send confirmation emails. Please contact the owner directly." },
+      { error: "Failed to send confirmation emails. Please contact the owners directly." },
       { status: 500 }
     );
   }

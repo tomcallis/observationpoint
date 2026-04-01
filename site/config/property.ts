@@ -217,12 +217,12 @@ export const property = {
     {
       question: "Why book direct instead of through VRBO?",
       answer:
-        "VRBO charges guests a service fee (typically 6–12% on top of the rental rate). When you book directly here, that fee disappears — same property, same host, same experience, just less money going to a platform middleman. You'll work directly with Tom, and any questions get answered faster.",
+        "VRBO charges guests a service fee (typically 6–12% on top of the rental rate). When you book directly here, that fee disappears — same property, same hosts, same experience, just less money going to a platform middleman. You'll work directly with Miranda and Tom, and any questions get answered faster.",
     },
     {
       question: "Is it safe to pay by Venmo or check?",
       answer:
-        "Yes. This is a direct relationship between you and Tom Callis, the property owner. The process is the same as any private landlord arrangement: you request dates, Tom confirms availability, you pay a 50% deposit (via Venmo or check), and Tom sends a booking confirmation once payment clears. The property has 101 verified VRBO reviews — feel free to read them before booking.",
+        "Yes. This is a direct relationship between you and Miranda and Tom Callis, the property owners. The process is the same as any private landlord arrangement: you request dates, they confirm availability, you pay a 50% deposit (via Venmo or check), and they send a booking confirmation once payment clears. The property has 101 verified VRBO reviews — feel free to read them before booking.",
     },
     {
       question: "What is your cancellation policy?",

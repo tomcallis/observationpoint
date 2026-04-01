@@ -83,7 +83,7 @@ function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
             href={`mailto:${property.contactEmail}`}
             className="text-sky-600 hover:underline"
           >
-            Contact Tom
+            Contact Miranda and Tom
           </a>
         </p>
       </div>

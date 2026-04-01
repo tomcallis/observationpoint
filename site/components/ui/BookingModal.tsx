@@ -125,7 +125,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
 
   const agreementText = `VACATION RENTAL AGREEMENT
 
-This Vacation Rental Agreement ("Agreement") is entered into between the property owner ("Owner") and the guest ("Guest") identified in this booking request.
+This Vacation Rental Agreement ("Agreement") is entered into between the property owners ("Owners") and the guest ("Guest") identified in this booking request.
 
 PROPERTY
 Observation Point · 50184 Treasure Ct, Frisco, NC 27936
@@ -159,19 +159,19 @@ HOUSE RULES
 • Please treat the property with respect and report any damage promptly.
 
 DOCK AND WATER SAFETY
-Use of the private dock and any watercraft or water equipment is entirely at Guest's own risk. Owner is not responsible for accidents, injuries, or losses on or near the water. Children must be supervised by an adult at all times near the water. Guests should be aware of local boating and fishing regulations.
+Use of the private dock and any watercraft or water equipment is entirely at Guest's own risk. Owners are not responsible for accidents, injuries, or losses on or near the water. Children must be supervised by an adult at all times near the water. Guests should be aware of local boating and fishing regulations.
 
 PROPERTY CARE
 Guest agrees to return the property in the same condition as received, normal wear excepted. Guest is responsible for the cost of repairing any damage caused during the rental period, beyond normal wear and tear.
 
 INDEMNIFICATION
-Guest agrees to indemnify and hold harmless the Owner and property managers from any and all claims, damages, losses, or expenses arising from Guest's use of the property or breach of this Agreement, except where directly caused by Owner's negligence or willful misconduct.
+Guest agrees to indemnify and hold harmless the Owners and property managers from any and all claims, damages, losses, or expenses arising from Guest's use of the property or breach of this Agreement, except where directly caused by Owners' negligence or willful misconduct.
 
 RIGHT OF ENTRY
-Owner or Owner's agents reserve the right to enter the property for emergency repairs or safety inspections with reasonable notice, except in cases of emergency.
+Owners or Owners' agents reserve the right to enter the property for emergency repairs or safety inspections with reasonable notice, except in cases of emergency.
 
 ENTIRE AGREEMENT
-This Agreement constitutes the entire agreement between Owner and Guest and shall be governed by the laws of the State of North Carolina.
+This Agreement constitutes the entire agreement between Owners and Guest and shall be governed by the laws of the State of North Carolina.
 
 By checking the box below, Guest acknowledges having read, understood, and agreed to all terms and conditions of this Vacation Rental Agreement.`;
 
