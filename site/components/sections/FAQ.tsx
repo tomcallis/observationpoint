@@ -111,7 +111,7 @@ export default function FAQ() {
             >
               Send us a message
             </a>{" "}
-            — Tom typically responds within a few hours.
+           .
           </p>
         </div>
       </div>
