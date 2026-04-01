@@ -72,6 +72,9 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
   const balanceAmount = pricing.total - depositAmount;
   const daysUntilCheckin = Math.ceil((checkin.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   const isFullPaymentDue = daysUntilCheckin <= payment.deposit.balanceDueDays;
+  const balanceDueDate = new Date(checkin);
+  balanceDueDate.setDate(balanceDueDate.getDate() - payment.deposit.balanceDueDays);
+  const balanceDueDateStr = balanceDueDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
   const handleAgreementScroll = () => {
     const el = agreementRef.current;
@@ -208,7 +211,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
           <p className="text-xs text-slate-400 mt-0.5">
             {isFullPaymentDue
               ? `Full payment (${formatUSD(pricing.total)}) due within 5 days`
-              : `50% deposit (${formatUSD(depositAmount)}) due within 5 days · Balance (${formatUSD(balanceAmount)}) due ${payment.deposit.balanceDueDays} days before check-in`}
+              : `50% deposit (${formatUSD(depositAmount)}) due within 5 days · Balance (${formatUSD(balanceAmount)}) due by ${balanceDueDateStr}`}
           </p>
         </div>
 
@@ -373,7 +376,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Balance (50%)</span>
-                      <span className="font-medium">{formatUSD(balanceAmount)} · due {payment.deposit.balanceDueDays} days before check-in</span>
+                      <span className="font-medium">{formatUSD(balanceAmount)} · due by {balanceDueDateStr}</span>
                     </div>
                   </>
                 )}
