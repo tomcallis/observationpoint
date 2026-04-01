@@ -294,7 +294,7 @@ export const property = {
     {
       question: "How do I reach the owner?",
       answer:
-        "You can message through VRBO, or reach Tom directly by text or call at 252-996-0578, or by email at tom.callis@gmail.com. If you can't reach Tom, please contact the caretaker, Jennie, at 252-305-2415.",
+        "You can reach Tom at tom.callis@gmail.com or Miranda at 252-996-0578.",
     },
     {
       question: "What amenities does the kitchen have?",
