@@ -67,6 +67,9 @@ export default function AvailabilitySection({
   const [booking, setBooking] = useState<{ checkin: Date; checkout: Date } | null>(null);
   const [seasonPicker, setSeasonPicker] = useState<SeasonData | null>(null);
 
+  const bookedCheckins = new Set(blockedRanges.map((r) => r.start));
+  const availableNamedWeeks = namedWeeks.filter((w) => !bookedCheckins.has(w.date));
+
   return (
     <>
       <AvailabilityCalendar
@@ -120,12 +123,12 @@ export default function AvailabilitySection({
           })}
 
           {/* Named holiday weeks */}
-          {namedWeeks.length > 0 && (
+          {availableNamedWeeks.length > 0 && (
             <>
               <div className="px-6 py-2 bg-amber-50 border-t border-amber-100">
-                <span className="text-xs font-semibold uppercase tracking-wide text-amber-600">Special Weeks</span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-amber-600">Special Weeks Available</span>
               </div>
-              {namedWeeks.map((week) => {
+              {availableNamedWeeks.map((week) => {
                 const checkin = new Date(week.date + "T12:00:00");
                 const checkout = new Date(checkin);
                 checkout.setDate(checkout.getDate() + 7);
