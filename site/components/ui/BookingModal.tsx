@@ -152,7 +152,7 @@ Check-in is at 4:00 PM on the arrival date. Check-out is at 10:00 AM on the depa
 
 HOUSE RULES
 • No smoking inside the property or on enclosed decks.
-• No pets without prior written approval from the Owner.
+• No pets permitted.
 • Quiet hours: 10:00 PM – 8:00 AM daily.
 • No commercial activities, events, or parties without prior written approval.
 • Maximum occupancy must not be exceeded at any time.

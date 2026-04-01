@@ -269,7 +269,7 @@ export const property = {
 
     houseRules: [
       "No smoking indoors or on enclosed portions of the deck.",
-      "Pets by prior approval only — please contact Miranda and Tom before bringing a pet.",
+      "No pets permitted.",
       "Maximum 6 guests at all times.",
       "Quiet hours: 10:00 PM – 8:00 AM. Please be mindful of neighbors.",
       "No parties or commercial events without written approval.",
