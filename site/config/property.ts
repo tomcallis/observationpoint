@@ -237,7 +237,7 @@ export const property = {
     {
       question: "Is the property pet-friendly?",
       answer:
-        "Pets may be allowed with prior written approval from the owner. Please reach out before booking to discuss your specific situation. Unauthorized pets may result in additional cleaning fees.",
+        "No, pets are not permitted at Observation Point.",
     },
     {
       question: "What are check-in and check-out times?",
