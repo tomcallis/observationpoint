@@ -70,6 +70,8 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
 
   const depositAmount = Math.round(pricing.total * (payment.deposit.percent / 100));
   const balanceAmount = pricing.total - depositAmount;
+  const daysUntilCheckin = Math.ceil((checkin.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const isFullPaymentDue = daysUntilCheckin <= payment.deposit.balanceDueDays;
 
   const handleAgreementScroll = () => {
     const el = agreementRef.current;
@@ -204,7 +206,9 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
             <span>{formatUSD(pricing.total)}</span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            50% deposit ({formatUSD(depositAmount)}) due within 5 days · Balance ({formatUSD(balanceAmount)}) due 45 days before check-in
+            {isFullPaymentDue
+              ? `Full payment (${formatUSD(pricing.total)}) due within 5 days`
+              : `50% deposit (${formatUSD(depositAmount)}) due within 5 days · Balance (${formatUSD(balanceAmount)}) due ${payment.deposit.balanceDueDays} days before check-in`}
           </p>
         </div>
 
@@ -337,7 +341,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
             <div>
               <h3 className="font-semibold text-slate-800 mb-1">Review &amp; Submit</h3>
               <p className="text-sm text-slate-500 mb-4">
-                Your request will be sent to Tom for review. If confirmed, you&rsquo;ll receive an email with check payment instructions for your {formatUSD(depositAmount)} deposit.
+                Your request will be sent to Tom and Miranda for review. If confirmed, you&rsquo;ll receive an email with check payment instructions for your {isFullPaymentDue ? "full payment" : `${formatUSD(depositAmount)} deposit`}.
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-sm space-y-2 mb-2">
                 <div className="flex justify-between">
@@ -356,14 +360,23 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
                   <span className="text-slate-500">Total (incl. tax)</span>
                   <span className="font-bold text-sky-600">{formatUSD(pricing.total)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Deposit (50%)</span>
-                  <span className="font-medium">{formatUSD(depositAmount)} by check · due within 5 days</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Balance (50%)</span>
-                  <span className="font-medium">{formatUSD(balanceAmount)} · due 45 days before check-in</span>
-                </div>
+                {isFullPaymentDue ? (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Full payment</span>
+                    <span className="font-medium">{formatUSD(pricing.total)} by check · due within 5 days</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Deposit (50%)</span>
+                      <span className="font-medium">{formatUSD(depositAmount)} by check · due within 5 days</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Balance (50%)</span>
+                      <span className="font-medium">{formatUSD(balanceAmount)} · due {payment.deposit.balanceDueDays} days before check-in</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {submitError && (
@@ -396,7 +409,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
                 )}
               </button>
               <p className="text-xs text-slate-400 text-center mt-2">
-                You&apos;ll receive a confirmation email once Tom reviews your request.
+                You&apos;ll receive a confirmation email once Tom and Miranda review your request.
               </p>
             </div>
           )}
@@ -414,7 +427,7 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
                 A confirmation has been sent to <strong>{guestEmail}</strong>.
               </p>
               <p className="text-slate-500 text-sm mb-6">
-                Tom will review your request and email you check payment instructions for your deposit if confirmed.
+                Tom and Miranda will review your request and email you check payment instructions {isFullPaymentDue ? "for full payment" : "for your deposit"} if confirmed.
               </p>
               <div className="bg-slate-50 rounded-xl p-4 text-left text-sm space-y-2 mb-6">
                 <div className="flex justify-between">
@@ -430,8 +443,8 @@ export default function BookingModal({ checkin, checkout, onClose }: Props) {
                   <span className="font-bold text-sky-600">{formatUSD(pricing.total)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Deposit (if confirmed)</span>
-                  <span className="font-medium">{formatUSD(depositAmount)} by check</span>
+                  <span className="text-slate-500">{isFullPaymentDue ? "Full payment (if confirmed)" : "Deposit (if confirmed)"}</span>
+                  <span className="font-medium">{isFullPaymentDue ? formatUSD(pricing.total) : formatUSD(depositAmount)} by check</span>
                 </div>
               </div>
               <button
