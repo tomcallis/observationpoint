@@ -211,7 +211,7 @@ export default async function Availability() {
               {
                 n: 2,
                 title: "Submit a request",
-                desc: "Fill in your details and submit. Tom will confirm by email within 24 hours.",
+                desc: "Fill in your details and submit. Tom and Miranda will confirm by email within 24 hours, typically within minutes.",
               },
               {
                 n: 3,
