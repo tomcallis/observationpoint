@@ -292,7 +292,7 @@ export const property = {
       ],
     },
     {
-      question: "How do I reach the owner?",
+      question: "How do I reach the owners?",
       answer:
         "You can reach Tom at tom.callis@gmail.com or Miranda at 252-996-0578.",
     },
