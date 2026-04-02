@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
+import Script from "next/script";
 import "./globals.css";
 import NavBar from "@/components/ui/NavBar";
 import BackToTop from "@/components/ui/BackToTop";
@@ -63,6 +64,18 @@ export default async function RootLayout({
         {children}
         {!isAdmin && <BackToTop />}
         <Analytics />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18056930291"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-18056930291');
+          `}
+        </Script>
       </body>
     </html>
   );
